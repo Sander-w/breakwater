@@ -1,0 +1,592 @@
+id,harbour,description,country,worktype,length,depth,duration,start,finish,cost(M$),owner,contractor,consultant,Hydr.Lab,type,Hs,Tz,Tp,front armour,front (unit),front size,front slope,rear armour,rear (unit),rear size,rear slope,heigth,width,wall,comments,Lat,Lon
+304,Durres,,Albania,Rehabilitation,0,0,0,0,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,41.308,19.456
+1,Arzew,North breakwater,Algeria,New construction,1250,25,5,1972,1978,1234,Port of Arzew,,,,Rubble Mound,9.8,13.0,14.2,Tetrapod,ton,48.0,1:1.33,rock,ton,4.0,1:2,9.0,0.0,0.0,Major failure during severe storm in 1980,35.82,-0.254
+2,Skikda,,Algeria,,0,16,4,0,1973,0,,,,,Rubble Mound,9.0,13.0,0.0,Tetrapod,ton,43.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,36.889,6.92588
+12,Arzew,North breakwater,Algeria,Rehabilitation,0,0,0,1986,1986,0,Port of Arzew,Boskalis,Nedeco,,Rubble Mound,0.0,0.0,0.0,Antifer,ton,65.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,35.82,-0.254
+282,Alger-Agha,,Algeria,,0,18,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,ton,46.0,1:1.25,,ton,0.0,1:0,5.5,0.0,0.0,,36.769,3.071
+283,Algiers,North breakwater,Algeria,,0,33,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,m3,15.0,1:1,,ton,0.0,1:1,5.5,0.0,0.0,,36.781,3.071
+351,Oran,,Algeria,,0,20,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,m3,20.0,1:1,Rock,ton,0.0,1:1.33,0.0,0.0,0.0,Subject to multiple improvements,35.713,-0.6409999999999999
+352,Philippeville,,Algeria,,0,15,0,0,1890,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,m3,15.0,1:1.5,Rock,ton,0.0,1:1.25,6.0,15.5,0.0,Subject to multiple improvements,36.889,6.925
+359,Algiers,Mustapha breakwater,Algeria,,0,0,0,0,1923,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Cyclopean block breakwater,36.766,3.071
+389,Arzew,,Algeria,,0,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,6.3,1:0,,ton,0.0,1:0,0.0,0.0,0.0,in progress,35.847,-0.266
+511,Dande,Dalia UFL spool base jetty,Angola,Reinforcement,300,9,0,2007,0,0,,,,,Rubble Mound,7.0,0.0,16.0,Accropode II,m3,8.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,-8.465,13.37
+3,Porto Quequen,West Breakwater,Argentina,Rehabilitaiton and 500 m extension,11,0,4,0,2007,0,,,,,Rubble Mound,7.2,0.0,15.0,Core-Loc,m3,11.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,-38.583,-58.698
+326,"Caleta la Mision, Tierra del Fuego",,Argentina,,0,0,0,2001,2001,0,,,COWI,,Rubble Mound,7.5,0.0,0.0,Core-Loc,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-53.702,-67.812
+408,Rawson,,Argentina,,0,7,0,2001,2003,0,,,,,Rubble Mound,4.7,0.0,16.0,Accropode,m3,3.0,1:1.33,Accropode,m3,0.0,1:0,0.0,0.0,0.0,,-43.342,-65.05
+450,Comodoro Rivadavia,,Argentina,Protection of reclaimed land,0,5,0,1996,1997,0,,,,,Revetment,3.3,0.0,9.0,Accropode,m3,1.0,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,-45.861,-67.461
+456,Comodoro Rivadavia,,Argentina,Breakwater extension,350,8,0,1995,1996,0,,,,,Rubble Mound,6.0,0.0,12.0,Accropode,m3,9.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-45.861,-67.461
+4,Cape Preston,,Australia,,1800,8,0,2008,0,0,,,,,Rubble Mound,5.2,0.0,15.0,Core-Loc,m3,5.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,-20.9,116.191
+5,Coffs Harbour,,Australia,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,-30.31,153.146
+6,Newcastle,,Australia,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,-32.915,151.798
+200,Hay Point,,Australia,,0,9,0,0,0,0,,,,,Berm,5.0,0.0,7.0,Rock,ton,7.0,1:1.35,Rock,ton,2.0,1:2,8.4,19.0,0.0,,-21.2912,149.3
+201,Townsville,,Australia,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-19.2445,146.834
+346,Gorgon LNG terminal,,Australia,New Construction,2500,0,0,2010,2011,0,Chevron-Shell JV,BAM-Thiess JV,,WRL Sydney,Rubble Mound,6.0,0.0,0.0,Xbloc,m3,6.0,1:1.33,Xbloc,ton,0.0,1:1.5,0.0,0.0,0.0,,-20.149,117.919
+539,Onslow,Protection for LNG Material Offloading F,Australia,New construction,1020,8,0,0,0,0,Chevron Australia,BESIX THIESS JV,Lanier Wallingford International,,Rubble Mound,4.5,0.0,11.6,Accropode II,m3,3.0,1:1.5,Accropode II,m3,3.0,1:1.5,9.2,7.9,0.0,,-21.6815,115.009
+513,"Gun point, Ragged Island",North and South breakwaters,Bahamas,Harbour development,300,0,0,0,0,0,,,Baird,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,2.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,22.232,-75.74
+393,Muharraq sewage treatment plant,,Bahrain,,0,10,0,2009,0,0,,,,,Revetment,3.5,0.0,7.0,Accropode,m3,1.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,in progress,26.195,50.718
+7,Zeebrugge,New breakwaters,Belgium,,0,13,0,0,0,0,,TVZ2,Haecon,,,6.2,11.0,0.0,Antifer,ton,25.0,1:1.5,,,1.0,1:0,0.0,0.0,0.0,,51.34399999999999,3.202
+508,Cotonou,,Benin,Groyne protection,0,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode II,m3,4.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,6.343,2.432
+8,Ilheus,,Brazil,,0,14,0,0,1990,0,,,,,Berm,3.8,0.0,8.0,Rock,ton,4.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,-14.781,-39.025
+9,Sergipe,,Brazil,,560,13,0,0,1994,0,,Odebrecht,,,Berm,4.0,0.0,10.0,Rock,ton,4.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,-10.844,-36.918
+247,Fortaleza,Pecem,Brazil,New breakwater,500,17,0,0,0,0,,,,INPH,,1.9,6.0,0.0,Rock,ton,4.0,1:1.25,Rock,ton,0.0,1:1,6.5,5.0,0.0,,-3.537,-38.797
+341,Itajai,,Brazil,,0,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-26.914,-48.636
+347,Belmonte,Veracel terminal,Brazil,,300,0,0,0,0,0,,Odebrecht,,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-15.839,-38.852
+514,Sao Joao da Barra,L-shape breakwater,Brazil,,2000,14,0,2010,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,5.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-21.614,-41.012
+407,Burgas,,Bulgaria,,0,12,0,2001,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,3.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,in progress,42.478,27.478
+339,Limbe,,Cameroon,,700,15,0,2006,2007,0,CNIC,BAM,DMC,Deltares,Rubble Mound,2.8,0.0,18.0,Rock,ton,5.0,1:1.5,Rock,ton,0.0,1:1.5,6.4,0.0,0.0,,3.999,9.202
+10,Baie Comeau,,Canada,,0,10,0,0,1976,0,,,,,Rubble Mound,0.0,0.0,0.0,Dolos,ton,4.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,49.231,-68.12899999999999
+11,Cap-aux-Meules,,Canada,,0,5,0,0,1970,0,,,,,Rubble Mound,4.3,0.0,14.5,Dolos,ton,3.0,1:1.5,,,0.0,1:1.25,0.0,0.0,0.0,,47.375,-61.853
+31,Chandler,,Canada,,0,0,0,0,0,0,,,,,Rubble Mound,4.9,0.0,10.0,Tetrapod,m3,9.0,1:1.25,,m3,0.0,1:1.25,0.0,0.0,0.0,,48.3433,-64.6585
+32,French Creek,,Canada,,0,0,0,0,1978,0,,,,,Rubble Mound,3.0,0.0,6.5,Rock,m3,9.0,1:1.5,,m3,0.0,1:1.5,0.0,0.0,0.0,,49.3512,-124.356
+33,Grande - Riviere,,Canada,,0,0,0,0,1974,0,,,,,Rubble Mound,4.9,0.0,10.0,Dolos,t,7.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,48.3924,-64.4971
+34,Matane,,Canada,,1450,0,0,0,1966,0,,,,,Rubble Mound,4.4,0.0,0.0,Tetrapod,t,6.0,1:1.25,,,0.0,1:1.25,0.0,0.0,0.0,,48.8455,-67.5791
+35,Musgrave Harbour,,Canada,,0,0,0,0,1972,0,,,,,Rubble Mound,3.0,6.5,0.0,Rock,t,4.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,49.4548,-53.9537
+36,Ogden Point,,Canada,,0,0,0,0,1920,0,,,,,Rubble Mound,3.7,0.0,5.0,Rock,t,10.0,1:1.5,,,0.0,1:1,0.0,0.0,0.0,,48.4138,-123.393
+37,Old Pelican,,Canada,,0,0,0,0,1973,0,,,,,Rubble Mound,4.0,0.0,7.5,Rock,t,4.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,48.0883,-53.0084
+38,Riviere-aux-renard,,Canada,,0,0,2,0,1973,0,,,,,Rubble Mound,5.5,0.0,14.0,Dolos,t,4.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,48.9991,-64.385
+367,Comeau bay,,Canada,,0,30,0,0,1966,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,26.0,0.0,56.0,Perforated wall,49.253,-68.132
+383,Comeau Bay,,Canada,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Use of perforated wall caissons,49.253,-68.132
+212,Palmeira,Phase 1,Cape Verde,Modernization of commercial port,0,8,0,2009,0,0,,,Haskoning,,Rubble Mound,3.3,0.0,0.0,Accropode,m3,2.0,1:2,,ton,0.0,1:0,0.0,0.0,0.0,ongoing,16.7541,-22.9823
+39,Puerto de Arica,,Chile,Rehabilitation,1300,12,0,2005,2005,0,Terminal Puerto Arica,,Baird,,Rubble Mound,5.0,0.0,18.0,Core-Loc,m3,5.0,1:1.5,,,0.0,1:0,6.6,5.0,3.0,,-18.4731,-70.3257
+400,Loma Larga platform,,Chile,Repair of reclamation,0,3,0,2007,2008,0,,,,,Revetment,6.5,0.0,14.0,Accropode,m3,5.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-33.043,-71.658
+423,Loma Larga platform,Protection of water treatment plant,Chile,Repair of platform,0,7,0,1999,1999,0,,,,,Revetment,5.9,0.0,12.0,Accropode,m3,5.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,-33.043,-71.658
+467,"Pamandzi airport, Mayotte",,Comoros,Protection of the runway extension,700,8,0,1993,1995,0,,,,,Revetment,4.2,0.0,14.0,Accropode,m3,2.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-12.812,45.285
+546,Le Port Autonome de Pointe-Noire,,Congo,Extension,300,12,1,2011,2012,0,,Boskalis,DMC,HR Wallingford,Rubble Mound,5.25,0.0,13.0,Xbloc,m3,3.0,1:1.33,Xbloc,m3,3.0,1:1.33,5.2,10.0,15.0,,-4.773630000000001,11.8239
+300,Caldera,,Costa Rica,modification of initial design,75,0,0,0,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,9.913,-84.721
+208,Limassol,,Cyprus,Port extension,600,23,0,1993,1996,79,Cyprus Ports,Archirodon,Coode & Partners,,Rubble Mound,4.1,0.0,0.0,COB,ton,22.0,1:1.33,Rock,ton,3.0,1:1.75,4.0,0.0,0.0,total project costs are mentioned,34.6463,33.0218
+40,Hirtshals,,Denmark,,0,9,3,0,1973,0,,,,,Rubble Mound,3.9,8.0,0.0,Dolos,t,8.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,57.5977,9.95885
+319,"Skopun, Faroe Islands",,Denmark,,0,10,0,1995,0,0,,,,,Berm,5.8,0.0,18.0,Rock,ton,12.5,1:1.2,Rock,ton,0.0,1:1.5,8.0,6.0,0.0,,61.912,-6.872999999999999
+325,"Tuborg Syd, Hellerup",,Denmark,,0,0,0,0,0,0,Carlsberg Properties,,COWI,,Rubble Mound,0.0,0.0,0.0,Rock,ton,0.0,1:0,Rock,ton,0.0,1:0,0.0,0.0,0.0,,55.72600000000001,12.589
+386,Hanstholm,,Denmark,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Use of sloping caissons,57.125,8.596
+545,Hvide Sande Harbour,,Denmark,New construction,700,7,0,0,0,12,,,DHI,,Rubble Mound,5.0,0.0,13.0,rock,ton,20.0,1:2,rock,ton,10.0,1:1.5,4.5,4.5,0.0,,55.9983,8.11057
+41,Cabo Caucedo,,Dominican Republic,,0,16,0,2002,2004,0,,Bouygues,,,Rubble Mound,8.5,0.0,14.0,Accropode,m3,16.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,18.4257,-69.6283
+42,Damietta Commercial Port,Western and eastern breakwaters,Egypt,,0,7,0,1982,1986,0,,,,,,6.0,10.0,0.0,Accropode,m3,9.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,31.4856,31.7576
+183,Idku LNG terminal,,Egypt,,900,12,0,2003,2004,0,,,COWI,,,6.8,0.0,16.0,Core-Loc,ton,11.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,31.3528,30.3093
+430,"Alexandria, Cleopatra",Detached submerged breakwater,Egypt,Shore protection,0,6,0,1998,0,0,,,,,Rubble Mound,4.1,0.0,13.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,Completion is suspended,31.233,29.92
+293,Muuga,,Estonia,Piled breakwater concept,0,0,0,2004,2005,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,59.493,24.971
+43,Bastia Commercial Harbour,,France,Consolidation of main breakwater - 1st s,0,5,0,1983,1985,0,,,,,,6.0,11.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,42.7012,9.4565
+44,Bastia Commercial Harbour,,France,Consolidation of main breakwater - 2nd s,0,25,0,1985,1986,0,,,,,,6.0,0.0,11.0,Accropode,m3,6.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,42.7012,9.4565
+45,"Bastia , Toga marina",,France,Rehabilitation of breakwater,0,15,1,1998,1998,0,,,,,Rubble Mound,6.1,0.0,11.0,Accropode,m3,9.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,42.709,9.45623
+46,Calais Commercial Port,Eastern breakwater,France,,1100,17,0,1984,1986,0,,,,,,6.5,0.0,10.0,Accropode,m3,12.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,50.9716,1.84407
+47,Dunkirk (avant Port Ouest),,France,,0,28,5,0,1975,0,,,,,Rubble Mound,6.5,10.0,0.0,Cubes,t,20.0,1:1.33,,,0.0,1:1.33,0.0,0.0,0.0,,51.0382,2.16726
+48,Frioul Marina,Main breakwater,France,,0,3,0,1984,1984,0,,,,,,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,43.279,5.31183
+49,Ile Rousse,Main breakwater,France,Consolidation of main breakwater,0,6,0,1986,1988,0,,,,,,5.5,11.0,11.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,42.6414,8.9385
+52,Le Havre - Antifer,,France,,0,30,3,0,1974,0,,,,,Rubble Mound,7.3,9.0,0.0,Cubes,t,24.0,1:1.4,,,0.0,1:1.4,0.0,0.0,0.0,,49.6517,0.148207
+53,Le Havre - Port 2000,,France,,3700,10,0,2002,2005,0,,Deme / Vinci JV,,,Rubble Mound,3.7,0.0,8.0,Accropode,m3,3.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,49.4579,0.130584
+54,"Molene Harbour, Brittany",Main breakwater,France,Consolidation of main breakwater,0,1,0,1985,1985,0,,,,,,6.0,0.0,19.0,Accropode,m3,12.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,48.4015,-4.95696
+55,Nice,Main breakwater,France,Consolidation of main breakwater,300,8,0,1989,1990,0,,,,,,0.0,0.0,0.0,Accropode,m3,16.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,43.6924,7.285480000000001
+57,Sete,Dellon offshore breakwater,France,Rehabilitation of seaward roundhead,0,14,0,1992,1992,0,,,,,Rubble Mound,8.5,0.0,11.0,Accropode,m3,20.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,Previously armoured with tetrapods,43.3964,3.71702
+58,Sete,Epi Dellon,France,,0,0,0,1979,1981,0,,,,,Rubble Mound,6.2,9.0,0.0,Tetrapod,,24.0,1:1.33,,,0.0,1:1.33,0.0,0.0,0.0,,43.4,3.73
+59,Sete,Digue Est,France,,1800,0,0,1980,1982,0,,,,,,0.0,0.0,0.0,Accropode,,10.0,1:1.33,,,0.0,1:1.33,0.0,0.0,0.0,,43.4,3.72831
+60,Sete,Eastern breakwater,France,,0,9,0,1981,1981,0,,,,,,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,43.4149,3.74571
+61,Sete - Rhone Sete canal outlet,Eastern breakwater,France,,0,5,0,1986,1987,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,43.4233,3.75144
+184,Argeles,,France,Renovation of existing breakwater,0,8,1,1998,1999,0,,,,,,5.6,0.0,12.0,Accropode,ton,6.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,42.5434,3.05439
+185,Bastia,,France,Reinforcement of north jetty breakwater,0,13,0,1999,1999,0,,,,,,6.7,0.0,12.0,Accropode,m3,6.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,42.6942,9.45343
+286,Cherbourg,,France,,0,10,0,1781,0,0,,,,,Composite,0.0,0.0,0.0,Rock,ton,0.0,1:0,Rock,ton,0.0,1:0,10.8,0.0,0.0,Cross-section subject to multiple historical alterations,49.674,-1.624
+353,Marseille,Outer breakwater,France,,0,0,0,1845,0,0,,,,,Composite,0.0,0.0,0.0,Cubes,ton,33.0,1:2,,ton,0.0,1:0,8.4,0.0,0.0,,43.302,5.36
+360,Marseille,Cyclopean block breakwater,France,,0,0,0,1930,1953,0,,,,,Composite,0.0,0.0,0.0,Rock,ton,0.0,1:1.33,Rock,ton,0.0,1:1.33,6.5,11.0,0.0,Subject to multiple improvements,43.343,5.324
+414,Frontignan - Sete,Protection of coastal road,France,,0,7,0,2000,2001,0,,,,,Rubble Mound,5.5,0.0,11.0,Accropode,m3,4.0,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,43.41399999999999,3.738
+422,Gruissan,South jetty,France,Reinforcement,0,6,0,1999,1999,0,,,,,Rubble Mound,4.9,0.0,11.0,Accropode,m3,4.0,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,43.09399999999999,3.113
+453,"Joinville, Isle of Yeu",,France,Breakwater extension,0,8,0,1995,1996,0,,,,,Rubble Mound,4.5,0.0,14.0,Accropode,m3,2.5,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,46.72600000000001,-2.345
+459,Palavas-les-Flots marina,,France,Breakwater extension,550,5,0,1994,1995,0,,,,,Rubble Mound,4.2,0.0,12.0,Accropode,m3,3.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.52399999999999,3.934
+460,Bastia commercial port,Saint Nicolas jetty,France,Reconstruction of roundhead,0,13,0,1994,1995,0,,,,,Rubble Mound,6.7,0.0,12.0,Accropode,m3,12.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,42.698,9.455
+468,Cap Sicie,,France,Protection of reclaimed land,0,5,0,1993,1993,0,,,,,Revetment,6.3,0.0,12.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.049,5.851
+470,"Marseille, Pointe rouge",,France,Rehabilitation of main breakwater,600,10,0,1992,1993,0,,,,,Rubble Mound,5.3,0.0,9.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.244,5.363
+475,Gruissan,,France,Rehabilitation of roundhead,0,6,0,1991,1992,0,,,,,Rubble Mound,4.9,0.0,11.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.11,3.132
+479,Gravelines,,France,Extension of jetties,600,7,0,1991,1992,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,51.01,2.097
+483,Toga fill platform,2nd stage,France,Extension,0,9,0,1989,1990,0,,,,,Revetment,7.0,0.0,13.0,Accropode,m3,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,42.705,9.455
+486,Fortignan fishing harbour,,France,,0,5,2,1989,1990,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.42,3.747
+487,Saint-Denis d Oleron marina,,France,,0,2,0,1988,1989,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,1.5,1:1.75,,ton,0.0,1:0,0.0,0.0,0.0,,46.037,-1.368
+490,Toga fill platform,1st stage,France,Extension,0,9,0,1988,1989,0,,,,,Revetment,7.0,0.0,10.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,42.698,9.454
+496,Aude river,Breakwater in the estuary,France,,0,4,0,1987,1987,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,2.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,depth-limited waves,43.081,3.007
+497,"Bastia, Toga marina",,France,,9,0,0,1987,1988,0,,,,,Rubble Mound,6.5,0.0,12.0,Accropode,m3,9.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,42.707,9.455
+505,Toga fill platform,,France,,0,4,0,1981,1982,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,42.705,9.456
+506,Cerbere,,France,Reconstruction of existing structures,0,0,0,2010,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode II,m3,9.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,42.441,3.167
+532,Fos industrial port,Roundhead of breakwater,France,,0,9,0,2007,2007,0,,,,,Rubble Mound,4.0,0.0,9.5,Core-Loc,m3,2.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.415,4.903
+540,Gorey Marina,Pierhead,France,New construction,260,0,370,1243,1640,0,Jersey Harbours,,,,Caisson,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,9.7,10.0,0.0,Severely damaged in 1965,49.1979,-2.02123
+541,Gorey Marina,Pierhead,France,Maintenance,260,0,2,2013,2014,0,Jersey Harbours,,ARUP Maritime,,Caisson,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,9.7,10.0,0.0,Maintainance of the pierhead,49.1979,-2.02123
+558,"St. Catherine, Jersey",Breakwater Roundhead Restoration,France,Maintenance,650,0,0,0,0,0,Jersey Harbours,,,,Rubble Mound,5.1,0.0,0.0,rock,ton,30.0,1:2,rock,ton,30.0,1:2,13.24,4.6,0.0,,49.2235,-2.01464
+576,La Collete,Reclamation Breakwater,France,New construction,1700,0,0,0,1993,0,Jersey Harbours,,Coode & Partners,HR Wallingford,Rubble Mound,8.0,0.0,0.0,rock,ton,8.0,1:4,,,0.0,1:1.5,14.0,0.0,0.0,,49.168,-2.11143
+50,"Grande-riviere , Martinique",,France overseas,Extension of the fishing harbour,0,5,0,2007,0,0,,,,,Rubble Mound,4.7,0.0,13.0,Accropode,m3,5.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,ongoing,14.8731,-61.1823
+51,"Bellefontaine terminal, Martinique",,France overseas,Consolidation of breakwater,0,8,0,1990,1991,0,,,,,,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,14.672,-61.16399999999999
+56,Est,,France overseas,Protection of the spur at entrance of th,0,17,0,2006,2007,0,,,,,Rubble Mound,7.3,0.0,14.5,Accropode,m3,12.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,-20.928,55.32100000000001
+401,"Sainte Suzanne, La Reunion",Anti-flooding scheme,France overseas,,0,6,1,2007,2008,0,,,,,Rubble Mound,4.4,0.0,14.0,Accropode,m3,3.0,1:1.33,Accropode,m3,0.0,1:1.33,0.0,0.0,0.0,,-20.908,55.61600000000001
+406,Le Precheur - Martinique,Protection of RD10 coastal road,France overseas,,0,2,0,2002,2003,0,,,,,Revetment,4.4,0.0,11.0,Accropode,m3,2.5,1:2,,ton,0.0,1:0,0.0,0.0,0.0,,14.797,-61.222
+415,St. Pierre et Miquelon,Protection of Buttereaux coastline,France overseas,,0,1,0,2000,0,0,,,,,Revetment,2.4,0.0,9.0,Accropode,m3,2.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,46.981,-56.347
+445,"Gustavia, St. Barthelemy",,France overseas,Protection against erosion,0,6,0,1996,1996,0,,,,,Revetment,6.0,0.0,8.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,17.901,-62.853
+466,Galisbay commercial harbour,,France overseas,Roundhead construction,0,5,0,1993,1994,0,,,,,Rubble Mound,5.1,0.0,13.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,18.083,-63.085
+471,"We, New Caledonia",,France overseas,,0,12,0,1992,1994,0,,,,,Rubble Mound,6.0,0.0,14.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-20.917,167.278
+476,"Tadine, New Caledonia",,France overseas,,0,10,0,1992,1996,0,,,,,Rubble Mound,4.0,0.0,9.0,Accropode,m3,3.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-21.547,167.876
+477,Martinique,,France overseas,Shore protection,0,0,0,1992,1992,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,2.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Several sites along the island,14.644,-60.99100000000001
+488,St. Barthelemy,Jeanne d Arc quay,France overseas,,0,4,0,1988,1988,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,17.9,-62.852
+492,"Grande-riviere, Martinique",Coastal protection,France overseas,,0,0,0,1988,1989,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,depth-limited waves,14.874,-61.17899999999999
+493,"Grande-riviere, Martinique",Shelter for fishing boats,France overseas,,0,3,0,1988,1989,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,14.873,-61.182
+498,"Beausejour, Guadeloupe",,France overseas,Breakwater extension,0,2,0,1987,1987,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,1.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,depth-limited waves,16.295,-61.085
+499,"Marigot, Martinique",Coastal protection,France overseas,,0,1,0,1987,1987,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,depth-limited waves,14.825,-61.03100000000001
+502,"St. Pierre, Martinique",,France overseas,Protection of coastal road,0,0,0,1985,1986,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,14.751,-61.18
+503,"Grande-riviere fishing harbour, Martiniq",Main breakwater,France overseas,,0,3,0,1985,1985,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,depth-limited waves,14.873,-61.182
+504,"Bellefontaine terminal, Martinique",,France overseas,,0,8,0,1981,1983,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,4.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,depth-limited waves,14.672,-61.16399999999999
+62,Poti,,Georgia,Rehabilitation of existing breakwater,1800,0,0,2007,2008,0,Poti Seaport,Boskalis,DMC,Deltares-CSIR,Composite,5.2,0.0,0.0,Xbloc,m3,2.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,Existing concrete cubes remain in place and are covered with filter layer,42.155,41.653
+155,Poti,Wave-dissipating blocks,Georgia,New construction,1800,0,0,0,1856,0,,,,,Composite,0.0,0.0,0.0,Cubes,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,This breakwater has been built in 1856 and after that has been renovated numerous times. Historical evolution of the cross-section can be seen in the drawing. Finally it was renovated entirely in 2008,42.15600000000001,41.651
+340,Takoradi,,Ghana,Breakwater extension,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,4.883,-1.736
+301,Gibraltar Port,Extension of the Southern Mole,Gibraltar,Extension,800,0,10,1895,1905,0,,,,,Rubble Mound,0.0,0.0,0.0,rock,ton,0.0,1:1.5,rock,ton,0.0,1:0,0.0,0.0,0.0,,36.1276,-5.35898
+550,Gibraltar Port,Detached Breakwater,Gibraltar,New construction,800,0,10,1895,1905,0,,,,,Caisson,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,8.0,0.0,,36.1385,-5.3655
+551,Gibraltar Port,North Mole,Gibraltar,New construction,450,0,10,1895,1905,0,,,,,Caisson,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,40.0,0.0,,36.1489,-5.36421
+63,Patras Port,,Greece,,0,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Earthquake damage 1984,38.2531,21.7324
+474,"Plimiri, Rhodes",,Greece,Extension of main breakwater,0,5,0,1992,1993,0,,,,,Rubble Mound,5.0,0.0,10.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,36.448,28.235
+239,Champerico,Fishing harbour,Guatemala,New construction,500,0,1,2008,2008,0,Oret project,Van Oord,Haskoning,,Rubble Mound,4.0,0.0,0.0,Xbloc,m3,4.0,1:1.33,,ton,0.0,1:1.33,0.0,0.0,0.0,,14.292,-91.916
+543,Kaumalapau Harbor,,Hawaii,Maintenance,95,5,0,0,2007,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,ton,35.0,1:1.5,Core-Loc,ton,35.0,1:1.5,4.6,4.4,0.0,Maintance of the old breakwater,20.7859,-156.992
+559,Kaumalapau Harbor,,Hawaii,New construction,95,5,0,0,1925,0,,,,,Rubble Mound,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,"Original construction made to protect a barge pier, maintaned in 2007",20.7859,-156.992
+434,River Trade,Terminal 38,Hong Kong,Protection of reclaimed land,0,20,0,1997,1999,0,,,,,Revetment,4.2,0.0,7.0,Accropode,m3,3.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,22.362,113.941
+435,River Trade,Offshore breakwater,Hong Kong,,542,20,0,1997,1999,0,,,,,Rubble Mound,4.2,0.0,7.0,Accropode,m3,3.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,22.36,113.94
+64,Akranes,,Iceland,,330,12,0,0,1991,0,,,,,Berm,3.8,0.0,19.0,Rock,t,8.0,1:1.5,,,0.0,1:0.75,10.0,6.0,0.0,,64.3131,-22.0774
+65,Bakkafjara,,Iceland,,0,0,0,2008,0,0,,,,,Berm,0.0,0.0,0.0,Rock,,20.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Not yet built but out for tender,66.0221,-14.8256
+66,Bakkafjordur,,Iceland,,0,10,0,1983,1984,0,,,,,Berm,4.8,0.0,12.0,Rock,ton,6.0,1:1,Rock,ton,6.0,1:1,7.0,6.0,0.0,,66.0389,-14.8067
+67,Blonduos,,Iceland,,225,10,0,1993,1994,0,,,,,Berm,4.8,0.0,12.0,Rock,ton,6.0,1:1.25,Rock,ton,6.0,1:1.35,7.0,5.0,0.0,,65.664,-20.304
+68,Bolungarvik,,Iceland,,300,12,0,0,1993,0,,,,,Berm,6.3,0.0,17.0,Rock,ton,10.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,66.1585,-23.2406
+69,Dalvik,,Iceland,,0,10,0,1994,1995,0,,,,,Berm,2.5,0.0,8.0,Rock,ton,4.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,65.9739,-18.5208
+70,Djupivogur,,Iceland,,0,0,0,0,1995,0,,,,,Berm,3.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,64.6603,-14.2794
+71,Grindavik,,Iceland,2 new breakwaters,0,0,0,2001,2002,0,,,,,Berm,5.1,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,63.835,-22.4286
+72,Hafnarfjordur,,Iceland,,0,0,0,1998,1999,0,,,,,Berm,3.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,64.0697,-21.9832
+73,Helguvik,,Iceland,2 new breakwaters,0,28,0,0,1986,1988,,,Baird,,Berm,5.9,0.0,10.0,Rock,ton,7.0,1:1.5,Rock,ton,1.7,1:1.5,9.0,6.0,0.0,,64.023,-22.553
+74,Helguvik,,Iceland,,0,0,0,2008,0,0,,,,,Berm,5.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Not yet built but out for tender,64.0,-22.5
+75,Hornafjordur,,Iceland,,0,0,0,0,1995,0,,,,,Berm,3.8,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,64.23,-15.19
+76,Husavik,,Iceland,,0,10,0,1988,1989,0,,,,,Berm,4.0,0.0,16.0,Rock,ton,5.0,1:1.25,,,0.0,1:0.75,6.0,4.0,0.0,,66.04,-17.36
+77,Husavik,,Iceland,,0,0,0,2001,2002,0,,,,,Berm,6.8,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,66.044,-17.35
+78,Keflavik,,Iceland,,0,20,0,0,1996,0,,,,,Berm,3.7,0.0,10.0,Rock,ton,8.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,63.997,-22.544
+79,Olafsvik,,Iceland,,0,11,0,0,1995,0,,,,,Berm,4.4,0.0,10.0,Rock,ton,8.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,64.90100000000001,-23.703
+80,Porshofn,,Iceland,Extension,0,0,0,1997,1998,0,,,,,Berm,4.5,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,66.1956,-15.34
+81,Porshofn,,Iceland,New breakwater protecting new harbour ba,0,0,0,2004,2005,0,,,,,Berm,5.5,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,66.194,-15.34
+82,Siglufjordur,,Iceland,,0,0,0,0,1988,0,,,,,Rubble Mound,2.5,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,66.1531,-18.8969
+83,Skagastrond,,Iceland,Protection of caisson breakwater,0,8,0,0,1992,0,,,,,Berm,3.5,0.0,15.0,Rock,ton,8.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,65.8247,-20.3113
+84,Ennore Coal Port,,India,Breakwater protection works,4000,13,0,1997,2000,0,,,Haskoning,,Rubble Mound,6.5,0.0,10.0,Accropode,m3,6.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,13.267,80.34899999999999
+85,Gangavaram deepwater port,,India,2 new breakwaters,2600,15,0,2006,0,0,,,,,Rubble Mound,7.6,0.0,10.0,Accropode,m3,12.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,17.617,83.235
+86,Hazira LNG terminal,,India,Construction of two breakwaters,0,13,0,2002,2004,0,,,,,Rubble Mound,5.4,0.0,9.1,Accropode,m3,6.3,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,21.0878,72.6158
+87,Jaigarh Port,,India,Protection of the main breakwater,520,15,0,2008,0,0,,,,,Rubble Mound,7.5,0.0,11.0,Accropode,m3,12.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,ongoing,17.304,73.21
+186,Dabhol LNG terminal,Offshore breakwater,India,,1200,10,2,1999,2001,0,,Besix / Kier JV,,,,8.3,0.0,16.0,Accropode,m3,12.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,Construction halted,17.5317,73.1273
+246,Tuticorin,East breakwater,India,repairwork,4000,11,0,0,1994,0,Tuticorin Port Trust,,,,Rubble Mound,4.0,10.0,0.0,Cubes,ton,10.0,1:2,Cubes,ton,0.0,1:1.5,3.65,10.0,0.0,Concrete cubes only in repaired section; rest of breakwater has 6 tons rock,8.75,78.227
+311,Karwar Naval Base,,India,,5000,0,0,0,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,Rock,ton,20.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,14.759,74.139
+321,Kalpeni,L-shaped breakwater,India,,155,3,0,0,0,0,,,,CWPRS,Rubble Mound,5.0,0.0,0.0,Tetrapod,ton,8.0,1:1.5,Rock,ton,0.0,1:1.5,8.0,11.0,0.0,,10.071,73.64699999999999
+322,Androth,,India,,530,0,0,1995,0,0,,,,CWPRS,Rubble Mound,5.0,0.0,0.0,Tetrapod,ton,8.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,10.82,73.678
+362,Madras,Wave-dissipating blocks,India,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Cubes,ton,3.0,1:0,,ton,0.0,1:0,4.5,0.0,0.0,,13.108,80.308
+364,Marmagao,Wave-dissipating blocks,India,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Cubes,ton,20.0,1:0,,ton,0.0,1:0,6.5,0.0,0.0,,15.416,73.791
+387,Kattupalli shipyard,,India,,2000,0,0,2010,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,4.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,13.256,80.347
+396,Karaikal,Private industrial harbour,India,,0,8,0,2008,0,0,,,,,Rubble Mound,4.2,0.0,12.0,Accropode,m3,3.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,in progress,10.838,79.854
+409,Dahej,Breakwater protecting LNG terminal,India,,0,20,0,2001,0,0,,,,,Rubble Mound,4.6,0.0,16.0,Accropode,m3,6.3,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,in progress,21.684,72.52199999999999
+507,Kattupalli shipyard,Roundheads of breakwaters,India,,2000,0,0,2010,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode II,m3,6.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,13.261,80.351
+520,Colachel,Main breakwater,India,,500,10,0,2009,0,0,,,,,Rubble Mound,6.0,0.0,10.0,Core-Loc,m3,3.9,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,8.169,77.256
+521,Colachel,Lee breakwater,India,,100,10,0,2009,0,0,,,,,Rubble Mound,6.0,0.0,10.0,Core-Loc,m3,3.9,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,8.171,77.248
+530,Pawas bay export facility,,India,,600,15,0,2007,0,0,,,,,Rubble Mound,6.3,0.0,10.0,Core-Loc,m3,6.2,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,16.8884,73.2858
+248,"Petrochemical site, West Java",Shore Protection,Indonesia,New construction,300,0,0,0,2004,0,,,,,Revetment,3.3,0.0,0.0,Xbloc,m3,1.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-5.88455,106.053
+88,Assaluyeh 1,temporary 2-year shore protection,Iran,,2200,14,0,0,0,0,,,,,Berm,5.2,0.0,10.0,Rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,28.9462,50.8035
+89,Chabahar,,Iran,,0,14,0,0,1997,0,,,,,Berm,6.5,12.0,10.9,Rock,ton,12.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,25.3011,60.6131
+90,Khark,,Iran,,0,7,0,0,1997,0,,,,,Berm,3.4,5.0,8.0,Rock,ton,4.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,29.2455,50.3428
+91,Konarak,,Iran,,0,0,0,0,1998,0,,,,,Berm,3.0,10.0,12.0,Rock,ton,4.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,25.3549,60.4344
+92,Pasabandar,,Iran,,0,7,0,0,1997,0,,,,,Berm,4.0,10.0,10.0,Rock,ton,6.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,25.0697,61.4207
+93,Urmia,lake shore protection,Iran,,0,9,0,0,1996,0,,,,,Berm,2.5,6.0,6.0,Rock,ton,1.0,1:2,,,0.0,1:0,0.0,0.0,0.0,,37.5869,45.2834
+213,Deylam,,Iran,,0,4,0,0,0,0,,,,,Berm,2.5,6.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,30.0583,50.1435
+214,Genaveh,,Iran,,0,3,0,0,0,0,,,,,Berm,2.8,6.4,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,29.5582,50.5051
+215,Pars petrochemical complex,,Iran,,0,28,0,2002,2002,0,National Iranian Petrochemical Company,Fater Kosaran Jonoob,Sazeh Pardaz,,Berm,5.2,10.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,27.528,52.555
+216,Assaluyeh 2,permanent shore protection,Iran,,2000,13,0,0,0,0,,,,,Berm,5.2,10.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,28.96,50.8093
+217,Gavbandi,,Iran,,0,5,0,0,0,0,,,,,Berm,3.0,7.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,27.1262,52.9985
+218,Gorzeh,,Iran,,0,18,0,0,0,0,,,,,Berm,4.8,9.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.7166,53.9287
+219,Kish,,Iran,,0,18,0,0,0,0,,,,,Berm,4.5,9.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.5692,54.006
+220,Band Kong,,Iran,,0,3,0,0,0,0,,,,,Berm,2.5,6.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.5928,54.9497
+221,Kuhin,,Iran,,0,4,0,0,0,0,,,,,Berm,2.5,6.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,0.0,0.0
+222,Shenas,,Iran,,0,9,0,0,0,0,,,,,Berm,4.6,9.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.5077,54.805
+223,Bandar Lengeh,,Iran,,0,10,0,0,0,0,,,,,Berm,4.5,9.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.5496,54.8913
+224,Abu Musa,,Iran,,0,12,0,0,0,0,,,,,Berm,4.8,10.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,25.8719,55.012
+225,Basaedu,,Iran,,0,7,0,0,0,0,,,,,Berm,2.3,5.9,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.6612,55.2703
+226,Suza,,Iran,,0,5,0,0,0,0,,,,,Berm,2.2,6.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.7929,56.0869
+227,"Ramin, Chabahar",,Iran,,0,6,0,0,0,0,,,,,Berm,2.5,8.0,0.0,Rock,ton,0.0,1:0,Rock,ton,0.0,1:0,0.0,0.0,0.0,,25.2676,60.746
+228,Neka 1,2 new breakwaters,Iran,Port expansion,0,8,0,2004,2006,0,,,Haskoning,,Berm,4.3,9.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,36.847,53.2628
+229,Neka 2,,Iran,,0,7,0,0,0,0,,,,,Berm,4.3,9.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,36.859,53.3725
+230,Babolsar,,Iran,,0,6,0,0,0,0,,,,,Berm,3.7,8.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,36.715,52.654
+231,Parehsar,,Iran,,0,6,0,0,0,0,,,,,Berm,2.4,6.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,37.5908,49.2067
+295,Tombak LNG facility,,Iran,,0,0,0,2004,2004,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,27.732,52.159
+306,"Kharg, Gas Gathering and NGL",,Iran,,0,0,0,0,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,29.243,50.32
+315,"Shahid Rajaee, Bandar Abbas",,Iran,,5000,0,0,0,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,27.134,56.207
+395,Pars petrochemical complex,,Iran,Protection of reclaimed land,0,9,0,2008,0,0,,,,,Revetment,3.5,0.0,9.0,Accropode,m3,1.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,in progress,27.523,52.56100000000001
+588,Abumousa,Persian Gulf,Iran,New Construction,650,12,0,0,0,0,,,,,Berm,4.8,0.0,10.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Good Andesite,25.8719,55.0556
+589,Akhtar seawall,Persian Gulf,Iran,New Construction,1250,0,0,0,0,0,,,,,Berm,4.8,0.0,8.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Good Limestone,27.6941,52.2088
+590,Gawater,Gulf of Oman,Iran,New Construction,0,5,0,0,0,0,,,,,Berm,3.5,0.0,12.35,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Sandstone?Some damage at Bending,0.0,0.0
+591,Roudik,Gulf of Oman,Iran,New Construction,0,6,0,0,0,0,,,,,Berm,3.9,0.0,20.7,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Sandstone,0.0,0.0
+592,Gurdim,Gulf of Oman,Iran,New Construction,600,7,0,0,0,0,,,,,Berm,3.3,0.0,10.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Sandstone,25.3585,60.1063
+593,Jod,Gulf of Oman,Iran,New Construction,0,5,0,0,0,0,,,,,Berm,3.1,0.0,10.6,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Sandstone Local damage due to Kiyar Hurricae?,0.0,0.0
+594,Damigaz,Persian Gulf,Iran,New Construction,0,5,0,0,0,0,,,,,Berm,2.1,0.0,6.7,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,0.0,0.0
+595,Gambron,Persian Gulf,Iran,New Construction,0,5,0,0,0,0,,,,,Berm,2.8,0.0,7.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,0.0,0.0
+596,Kandal,Persian Gulf,Iran,New Construction,800,5,0,0,0,0,,,,,Berm,2.7,0.0,8.9,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,26.7988,57.019
+597,Kish 2,Persian Gulf,Iran,New Construction,600,6,0,0,0,0,,,,,Berm,3.1,0.0,9.4,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,26.5766,53.9442
+598,Kolahi,Persian Gulf,Iran,New Construction,0,6,0,0,0,0,,,,,Berm,2.4,0.0,8.1,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,0.0,0.0
+599,Mulo,Persian Gulf,Iran,New Construction,0,5,0,0,0,0,,,,,Berm,3.0,0.0,9.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,0.0,0.0
+600,Farasakoo,Persian Gulf,Iran,New Construction,0,20,0,0,0,0,,,,,Berm,5.0,0.0,9.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Good Limestone,0.0,0.0
+601,Nakhle Taghi,Persian Gulf,Iran,New Construction,1300,0,0,0,0,0,,,,,,0.0,0.0,0.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Good Limestone,27.4861,52.5818
+602,Tonbak Port,Persian Gulf,Iran,New Construction,300,32,0,0,0,0,,,,,,4.8,0.0,9.5,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Good Limestone,27.7206,52.1769
+603,New Suza,Persian Gulf,Iran,New Construction,650,6,0,0,0,0,,,,,,3.0,0.0,7.6,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,sandstone,26.7803,56.0815
+604,Birdaf,Gulf of Oman,Iran,New Construction,600,0,0,0,0,0,,,,,,0.0,0.0,0.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,sandstone,25.3993,59.8169
+605,Biahi,Gulf of Oman,Iran,New Construction,650,0,0,0,0,0,,,,,,0.0,0.0,0.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,sandstone,25.4474,58.9673
+606,Karati,Gulf of Oman,Iran,New Construction,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,sandstone?,27.1273,52.9875
+607,Parsian,Persian Gulf,Iran,New Construction,800,12,0,0,0,0,,,,,,5.2,0.0,9.0,rock,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,0.0,0.0
+24,Tory Island,Supply harbour,Ireland,rehabilitation of main breakwater,100,0,2,1999,2001,0,"Department of Communications, Marine & N",Carillion Irishenco Ltd,Kirk McKlure Morton,"Civil Engineering, Queen's University",Rubble Mound,5.8,0.0,18.0,Core-Loc,m3,5.0,1:1.5,,,0.0,1:0,8.0,4.54,0.0,,55.262,-8.22
+233,Port Oriel,small (fishing) harbour,Ireland,,210,8,0,2005,2006,0,,Lagan Construction,RPS,,Rubble Mound,5.7,0.0,10.7,Xbloc,m3,4.0,1:1.33,,ton,0.0,1:0,7.3,0.0,0.0,technical assistance provided by DMC,53.798,-6.221
+235,Calladh Mor,Ferry harbour,Ireland,rehabilitation,200,0,1,2007,2008,0,County Galway,SIAC,RPS,,Rubble Mound,4.5,0.0,0.0,Xbloc,m3,4.0,1:1.5,Xbloc,m3,4.0,1:1.5,0.0,0.0,0.0,,53.08,-9.5711
+17,Cagliari Industrial Port,Southern breakwater,Italy,New breakwater,2120,0,0,1975,1981,0,,Condotte,Bonifica Roma,,Rubble Mound,0.0,0.0,0.0,Tetrapod,ton,16.0,1:1.5,Rock,ton,0.0,1:1.5,7.0,0.0,0.0,,39.2,9.1
+18,Cagliari Commerical port,East breakwater,Italy,New breakwater,630,0,0,1978,0,0,,SIDER spa,Geni civile opere marittime di Cagliari,,Rubble Mound,0.0,0.0,0.0,Dolos,ton,10.0,1:1.5,Rock,,0.0,1:1,5.0,0.0,0.0,,39.2,9.1
+94,Bari,,Italy,,2670,16,0,1976,1980,0,,,,,,5.0,8.5,0.0,Tetrapod,t,30.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,41.1429,16.8586
+95,Civitavecchia,,Italy,,0,30,0,0,1980,0,,,,,,8.0,11.0,0.0,Tetrapod,t,25.0,1:2,,,0.0,1:0,0.0,0.0,0.0,,42.0968,11.7785
+96,Genoa,,Italy,,3330,0,0,0,0,0,,,,,,7.0,10.0,0.0,Cubes,t,40.0,1:3,,,0.0,1:0,0.0,0.0,0.0,,44.3983,8.90548
+97,Gioia Tauro,,Italy,,0,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,38.4435,15.8933
+98,Gioia Tauro,,Italy,,630,0,0,1978,1980,0,,,,,,7.5,12.0,0.0,Dolos,ton,15.0,1:2,,ton,0.0,1:0,0.0,0.0,0.0,,38.4446,15.8972
+99,Ortona,,Italy,Extension of Northern Breakwater,820,10,0,2005,0,0,,,,,Rubble Mound,5.0,0.0,10.0,Accropode,m3,6.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,completed,42.3549,14.4176
+100,Palermo,,Italy,,760,35,0,0,0,0,,,,,,5.0,8.0,0.0,Cubes,ton,40.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,38.1279,13.3755
+101,Venice - Chioggia inlet,detached breakwater,Italy,,525,12,1,2003,2004,0,,,,,Rubble Mound,4.9,0.0,8.0,Accropode,m3,6.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,45.2277,12.3209
+187,Venice - Malamocco inlet,,Italy,,1280,12,0,2003,2006,0,,,,,,4.9,0.0,8.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,45.3329,12.3342
+202,Brindisi,,Italy,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,40.6631,17.9789
+285,Catania,,Italy,Reinforcement,0,19,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,ton,60.0,1:1.5,Rock,ton,0.0,1:0,8.5,0.0,0.0,"1. Subject to multiple improvements, 2. Values refer to the final design",37.492,15.1
+335,Genova Cornigliano,,Italy,,0,18,5,1961,1966,0,Genova Port Authority,GLF,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,44.409,8.838
+355,Galliera Genoa,,Italy,,0,23,0,0,1890,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:2,Rock,ton,0.0,1:1.5,8.5,0.0,0.0,"1. Step-type front armour layer, 2. Completion date approximate",44.412,8.792
+356,St. Vincenzo Naples,,Italy,,0,35,0,0,1890,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:0,Rock,ton,0.0,1:1,8.5,0.0,0.0,"1. Step-type front armour layer, 2. Completion date approximate",40.833,14.263
+357,Naples,detached breakwater,Italy,,0,31,0,0,1890,0,,,,,Composite,0.0,0.0,0.0,Rock,ton,0.0,1:1,Rock,ton,0.0,1:1.5,6.0,0.0,13.5,Completion year approximate,40.833,14.288
+358,Granili Naples,,Italy,,0,20,0,0,1890,0,,,,,Composite,0.0,0.0,0.0,Rock,ton,0.0,1:1.5,Rock,ton,0.0,1:1,7.0,0.0,15.5,Completion year approximate,40.839,14.278
+385,Naples,,Italy,,0,0,0,0,1906,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Use of sloping caissons,40.833,14.266
+397,Ortona,,Italy,Port extension (phase 2),500,13,0,2007,0,0,,,,,Rubble Mound,7.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,42.35,14.41
+398,Ortona,Extension of main breakwater,Italy,Port extension (phase 2),500,13,0,2007,0,0,,,,,Rubble Mound,7.0,0.0,11.0,Accropode,m3,12.0,1:0,Accropode,m3,0.0,1:0,0.0,0.0,0.0,in progress,42.35100000000001,14.415
+402,Oneglia commercial port,Main and lee breakwater,Italy,Armour protection,0,10,0,2005,0,0,,,,,Rubble Mound,4.8,0.0,12.3,Accropode,m3,4.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,completed,43.885,8.042
+461,Ciro Marina,,Italy,,0,12,0,1994,1996,0,,,,,Rubble Mound,6.6,0.0,12.5,Accropode,m3,12.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,39.369,17.135
+510,Ospedaletti marina,,Italy,,1200,0,0,2008,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode II,m3,8.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,43.799,7.716
+512,Aspra,Short detatched breakwaters,Italy,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,Accropode II,m3,4.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Ecopode units are also used,38.106,13.498
+547,Port of Gela,,Italy,New construction,500,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,ton,12.0,1:1.33,,,0.0,1:0,4.7,5.0,7.0,,37.0644,14.2299
+548,Port of Sant Erasmo,,Italy,New construction,90,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Rock,ton,7.0,1:3,,,0.0,1:0,3.7,27.3,1.8,,38.1134,13.3789
+555,Rodi Garganico,Marina,Italy,New construction,700,0,2,2007,2009,250,,,MODIMAR,,Rubble Mound,6.3,0.0,0.0,rock,ton,5.0,1:2,rock,ton,2.0,1:1.33,3.5,8.6,0.0,,41.9332,15.8872
+188,Abidjan,,Ivory Coast,,0,20,0,1996,1996,0,,,,,,5.0,0.0,14.0,Accropode,m3,6.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,5.25044,-4.0115
+294,San Pedro,,Ivory Coast,Rehabilitation of existing breakwaters,0,0,0,2004,2005,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,proposed,4.738,-6.613
+102,Ambo,,Japan,,1500,0,0,1978,0,0,,,,,,7.0,11.0,0.0,Tetrapod,ton,50.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,30.3172,130.667
+103,Nobeoka - Shin,,Japan,,528,0,0,1977,0,0,,,,,,8.0,14.0,0.0,Tetrapod,ton,50.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,32.5263,131.696
+104,Taganoura,,Japan,,970,0,0,1972,1980,0,,,,,,13.5,17.0,0.0,Tetrapod,ton,50.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,32.998,133.007
+105,Tomakomai East Port,,Japan,,0,0,0,0,0,0,,,,,,7.2,13.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,42.6199,141.625
+106,Omoto North,,Japan,,50,17,0,1980,0,0,,,,,,6.5,12.0,0.0,Tetrapod,ton,32.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Severe,39.8473,141.979
+107,Himetsu North,,Japan,,30,0,0,1980,1981,0,,,,,,8.6,12.0,0.0,,ton,40.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,38.0833,138.239
+108,Yura 2nd West,,Japan,,50,11,0,1980,0,0,,,,,,6.8,14.0,0.0,Tetrapod,ton,32.0,1:0,,,0.0,1:0,0.0,0.0,0.0,25% damage,33.9592,135.112
+109,Ikumi Yokoshima,,Japan,,15,0,0,1979,1980,0,,,,,,6.4,13.0,0.0,Tetrapod,ton,32.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,33.5215,134.283
+110,Noroshi,,Japan,,11,11,0,1980,0,0,,,,,,8.3,11.0,0.0,Tetrapod,ton,50.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,37.5246,137.33
+111,Mitsu 4th Oki,,Japan,,112,0,0,1974,0,0,,,,,,7.3,13.0,0.0,Tetrapod,ton,32.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,33.8451,132.689
+112,Miyanoura East,,Japan,,30,0,0,1980,1981,0,,,,,,7.8,16.0,0.0,Tetrapod,ton,50.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,34.4548,133.971
+113,Niigata West Port 2nd,,Japan,,532,0,0,1978,1980,0,,,,,,7.0,13.0,0.0,Tetrapod,ton,40.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Severe,37.871,138.922
+114,Fukui South (G-J),,Japan,,582,0,0,1974,1979,0,,,,,,7.5,13.0,0.0,Tetrapod,ton,50.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,36.1976,136.111
+115,Akita South,,Japan,,500,0,0,1967,1980,0,,,,,,7.0,12.0,0.0,Tetrapod,ton,40.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,39.7673,140.022
+280,Akasaki,Secondary breakwater,Japan,,0,5,0,0,0,0,,,,,Caisson,1.8,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,2.6,4.3,6.6,,35.5118,133.66
+288,Sakata,North breakwater,Japan,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,38.946,139.81
+366,Otaru,North breakwater,Japan,,0,0,0,0,1897,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:4,,ton,0.0,1:1.5,0.0,7.3,0.0,Composite breakwater with block masonry,43.20399999999999,141.02
+368,Takamatsu,,Japan,,0,9,0,0,1970,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,4.5,9.9,0.0,Perforated wall,34.3604,134.054
+369,Yobuko,,Japan,,0,15,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,4.3,10.5,0.0,Perforated wall,33.544,129.891
+370,Funakawa,,Japan,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Perforated wall,39.88800000000001,139.861
+371,Kamaishi Bay,,Japan,,0,63,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,6.0,19.0,0.0,,39.258,141.93
+372,Shibayama,,Japan,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,8.5,32.0,0.0,,35.656,134.664
+373,Nagashima,,Japan,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,32.199,130.154
+374,Naha,,Japan,,0,25,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Core-Loc,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Sloping wall breakwater,26.232,127.658
+375,Onahama,Offshore breakwater,Japan,,0,25,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Use of trapezoidal caissons,36.911,140.895
+376,Miyazaki,,Japan,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Use of semi-circular caissons,31.9158,131.482
+377,Sakata,,Japan,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Use of wave power extracting caissons,38.946,139.802
+378,Wakayama,,Japan,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Tetrapod,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,34.215,135.132
+379,Wakayama marina,Promenade breakwater,Japan,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,34.156,135.174
+380,Hitachinaka,Offshore breakwater,Japan,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,36.4236,140.636
+381,Noshiro,,Japan,,0,16,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,6.1,21.5,12.5,,40.208,139.983
+382,Akasaki,Offshore breakwater,Japan,,0,0,0,0,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,35.511,133.659
+384,Niigata,,Japan,,0,24,0,0,0,0,,,,,Caisson,8.0,14.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,8.0,23.0,22.5,Use of sloping caissons,37.959,139.069
+417,Higashi Dori power station,Stage II,Japan,,0,12,0,2000,2000,0,,,,,,7.9,0.0,16.0,Accropode,m3,18.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,41.1881,141.39
+418,Ohma nuclear power station,,Japan,,0,9,0,2000,2000,0,,,,,Revetment,6.2,0.0,14.0,Accropode,m3,16.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,41.50899999999999,140.905
+426,Okinawa,Kim power plant,Japan,Protection of reclaimed land,0,6,0,1998,1999,0,,,,,Revetment,4.0,0.0,9.0,Accropode,m3,2.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,26.221,127.661
+432,Hitachinaka power station,Phase 2,Japan,Protection of reclaimed land,0,15,0,1997,1998,0,,,,,Revetment,6.8,0.0,16.0,Accropode,m3,12.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,36.436,140.622
+433,Haramachi,External protection of reflecting wall,Japan,,0,13,0,1997,1998,0,,,,,Revetment,7.0,0.0,16.0,Accropode,m3,9.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,37.667,141.025
+437,Hibiki Nada,Phase 2,Japan,Protection of reclaimed land,0,13,0,1997,1999,0,,,,,Revetment,4.9,0.0,0.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,33.936,130.766
+438,Isogo power station,,Japan,Protection of a roundhead structure,0,11,0,1997,1997,0,,,,,,3.8,0.0,0.0,Accropode,m3,2.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,35.406,139.648
+439,Higashi Dori,,Japan,,0,12,0,1997,1998,0,,,,,Rubble Mound,7.9,0.0,16.0,Accropode,m3,20.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,41.10899999999999,141.412
+444,Hibiki Nada,,Japan,Protection of reclaimed land,0,13,0,1996,1997,0,,,,,Revetment,4.9,0.0,0.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,33.934,130.749
+463,Nakaminato power plant,,Japan,,0,15,0,1993,1996,0,,,,,Revetment,6.8,0.0,16.0,Accropode,m3,12.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,36.341,140.605
+480,Haramachi industrial port,,Japan,Protection of thermal power plant,5500,10,0,1990,1996,0,,,,,Rubble Mound,7.0,0.0,16.0,Accropode,m3,12.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,37.668,141.028
+205,Kashagan East Field,ice protection breakwater,Kazakhstan,,0,0,0,2003,2004,60,Agip KCO,Archirodon,Agip KCO,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Total project costa are mentioned,46.3814,51.7908
+307,Az Zour North Powerplant,twin breakwaters,Kuwait,,0,0,0,0,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,29.197,48.178
+404,Fitnas,Main breakwater,Kuwait,,520,5,0,2004,2007,0,,,,,Rubble Mound,4.4,0.0,10.8,Accropode,m3,3.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,29.166,48.129
+554,Al Khiran,Breakwater,Kuwait,New construction,1200,0,0,0,0,0,,,Buro Happold,HR Wallingford,Revetment,4.0,0.0,12.0,Seabees,mm,700.0,1:2,Seabees,mm,700.0,1:2,4.5,0.0,0.0,,28.6886,48.3888
+116,Beirut,Main breakwater,Lebanon,Extension,280,21,0,1997,1999,0,,,,,,8.2,0.0,14.0,Accropode,m3,18.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,33.9088,35.5227
+189,Beirut - Movenpick hotel marina,,Lebanon,,0,0,0,2001,2001,0,,,,,,0.0,0.0,0.0,Accropode,m3,18.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,33.8835,35.4722
+190,Beirut - Central district marina,,Lebanon,,450,20,0,1998,2000,0,,,,,,8.4,0.0,14.0,Accropode,m3,16.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,33.9045,35.4968
+191,Portemilio marina,Main breakwater,Lebanon,,0,11,3,1987,1990,0,,,,,,7.0,0.0,14.0,Accropode,m3,16.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,33.9869,35.6194
+482,Beirut north shore,,Lebanon,,0,11,3,1989,1992,0,,,,,Revetment,0.0,0.0,0.0,Accropode,m3,18.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,33.919,35.579
+501,Beirut,Main breakwater,Lebanon,Extension,0,9,0,1986,1990,0,,,,,Rubble Mound,7.8,0.0,14.0,Accropode,m3,18.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,33.908,35.523
+117,Benghazi,,Libya,,3000,12,0,1961,1965,0,,,,,,7.2,10.0,0.0,Stabit,ton,29.0,1:2,,ton,0.0,1:1.33,0.0,0.0,0.0,,32.1131,20.0409
+118,Garabulli fishing harbour,Main breakwater and roundhead of seconda,Libya,,500,7,0,2007,0,0,,,,,Rubble Mound,5.5,15.0,0.0,Accropode,m3,6.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,ongoing,32.796,13.7466
+119,Tripoli,Phase 2,Libya,Reinforcement,0,8,0,2007,0,218,Libyan Maritime and Ports Authority,Archirodon,Nedeco,,Rubble Mound,5.0,0.0,11.0,Accropode,m3,6.3,1:1.33,,,0.0,1:0,0.0,0.0,0.0,in progress; total project costs are mentioned,32.9123,13.2005
+211,Al Marsa,,Libya,,1700,5,0,2009,0,0,,,,,Rubble Mound,3.5,0.0,13.0,Accropode,m3,2.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,ongoing,30.4183,19.5927
+245,Tripoli,Coastal protection,Libya,,0,8,0,2008,0,0,,,,,Rubble Mound,5.0,0.0,11.0,Accropode,ton,4.0,1:1.33,,m3,0.0,1:0,0.0,0.0,0.0,,32.908,13.2008
+289,Ras Lanuf,,Libya,Rehabilitation,0,0,0,2006,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,Tetrapod,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,30.501,18.589
+388,Tripoli,Main breakwater,Libya,Breakwater reconstruction,3600,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,9.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,32.914,13.21
+425,Surt,Main and secondary breakwater,Libya,,0,10,0,1998,2005,0,,,,,Rubble Mound,6.7,0.0,14.0,Accropode,m3,12.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,31.213,16.632
+120,Klaipeda,,Lithuania,Rehabilitation and extension,0,0,0,2001,2002,0,,Aarsleff,,,Rubble Mound,0.0,0.0,0.0,Rock,ton,13.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,55.7293,21.0825
+472,Macau airport,,Macau,Protection of reclaimed platform,8000,5,0,1992,1995,0,,,,,Revetment,5.7,0.0,14.0,Accropode,m3,6.3,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,22.148,113.595
+484,Ka Ho,,Macau,Protection of reclaimed land,0,7,1,1989,1990,0,,,,,Revetment,5.5,0.0,0.0,Accropode,m3,0.0,1:0,,ton,0.0,1:1.33,0.0,0.0,0.0,,22.133,113.59
+121,"Ehoala, Fort Dauphin",,Madagascar,,600,15,3,2006,2009,145,,Daiho,Baird,HR Wallingford - CHC,Berm,8.0,0.0,16.0,Core-Loc,m3,16.0,1:1.5,,,0.0,1:1.33,22.5,11.5,0.0,Total project costs are mentioned,-25.0671,46.9661
+436,Dungun coast,Groynes assisting in beach nourishment,Malaysia,,0,5,0,1997,1999,0,,,,,Rubble Mound,4.0,0.0,12.0,Accropode,m3,2.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,4.766,103.422
+446,Chendering fishing harbour,,Malaysia,Protection of reclaimed land,0,4,0,1996,1997,0,,,,,Revetment,3.6,0.0,10.0,Accropode,m3,1.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,5.273,103.184
+451,Kuala Besut,,Malaysia,,0,5,0,1996,1998,0,,,,,Rubble Mound,6.5,0.0,12.0,Accropode,m3,4.0,1:0,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,5.835,102.56
+122,Cirkewwa ferry terminal,,Malta,Extension of existing breakwater,0,12,0,2002,2004,0,,,Haskoning,,Rubble Mound,8.2,0.0,11.9,Accropode,m3,16.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,35.9902,14.329
+412,Cirkewwa ferry terminal,,Malta,Protection of reclaimed land,0,4,0,2000,2001,0,,,,,Revetment,3.0,0.0,11.0,Accropode,m3,1.5,1:2,,ton,0.0,1:0,0.0,0.0,0.0,,35.989,14.329
+309,Nouadhibou,,Mauritania,,0,0,0,0,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,20.906,-17.045
+331,Costa Azul LNG terminal,,Mexico,New construction,650,25,2,2005,2007,0,,Costain-China Harbour JV,Scott Wilson,,Caisson,9.2,0.0,18.6,,ton,0.0,1:0,,ton,0.0,1:0,4.5,50.8,0.0,,31.985,-116.847
+416,Condamine,,Monaco,Underwater slope protection,0,20,0,2000,2001,0,,,,,Composite,5.0,0.0,12.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,43.735,7.427
+411,Luka Bar,,Montenegro,Breakwater renovation,0,16,0,2000,2001,0,,,,,Rubble Mound,6.8,0.0,10.0,Accropode,m3,5.0,1:2.5,,ton,0.0,1:0,0.0,0.0,0.0,,42.093,19.08
+123,Mohammedia,,Morocco,,2585,29,0,0,0,0,,,,,,11.8,21.0,0.0,Cubes,ton,58.0,1:1.4,,,0.0,1:1.33,0.0,0.0,0.0,,33.7241,-7.391369999999999
+124,Tanger container terminal,,Morocco,,970,20,3,2003,2006,0,,Bouygues,Haskoning,,Rubble Mound,7.7,0.0,18.0,Accropode,m3,16.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,35.789,-5.80054
+125,Tanger ro-ro terminal,,Morocco,,0,20,0,2007,0,0,,,Haskoning,,Rubble Mound,7.8,0.0,17.0,Accropode,m3,12.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,ongoing,35.789,-5.80054
+312,Agadir,,Morocco,Breakwater prolongation,0,0,0,0,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,Accropode,ton,50.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,30.416,-9.638
+354,Safi,,Morocco,,0,14,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Tetrapod,ton,25.0,1:1,Rock,ton,0.0,1:1,9.5,0.0,0.0,,32.306,-9.25
+491,"New Hassan II mosque, Casablanca",,Morocco,Shore Protection,0,2,0,1988,1989,0,,,,,,16.0,0.0,20.0,Accropode,m3,6.3,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Hs indicated for deep water. Wave breaking takes place at the site.,33.608,-7.629
+500,"New Hassan II mosque, Casablanca",Temporary breakwater,Morocco,,0,2,0,1987,1987,0,,,,,Rubble Mound,16.0,0.0,20.0,Accropode,m3,6.3,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,deep water wave height is mentioned,33.609,-7.629
+509,Mar Chica,,Morocco,Marina development,1000,9,0,2008,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode II,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,35.179,-2.824
+586,Safi power plant,Safi power plant breakwater,Morocco,New Construction,470,14,0,0,2018,0,ONEE,Daewoo Engineering & Construction,ARTELIA,ARTELIA,Rubble Mound,8.3,0.0,0.0,Accropode II,m3,20.0,1:1,Accropode II,m3,20.0,1:1.5,0.0,18.0,0.0,,32.1514,-9.28514
+29,Scheveningen,Zuiderdam,Netherlands,Breakwater extension,600,9,3,1969,1971,120,Rijkswaterstaat,Boskalis,,Deltares,Rubble Mound,6.0,12.0,0.0,Cubes,ton,25.0,1:1.5,Cubes,ton,25.0,1:1.5,4.0,0.0,0.0,,52.102,4.256
+126,IJmuiden,,Netherlands,,0,0,0,0,1962,0,,,,,,0.0,0.0,0.0,Cubes,ton,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,52.4638,4.5445
+127,Rotterdam Europoort,,Netherlands,,0,15,0,1966,1975,0,,,,,,8.5,12.0,0.0,Cubes,ton,42.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,51.9891,4.075080000000001
+299,"NIOZ, Texel",sheet pile breakwater,Netherlands,,0,0,0,0,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,53.006,4.796
+363,IJmuiden,Pier,Netherlands,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,,ton,20.0,1:0,,ton,0.0,1:0,0.0,0.0,4.2,Wave-dissipating blocks,52.467,4.555
+556,IJmuiden,Breakwater (1990),Netherlands,Maintenance,0,15,0,0,1990,0,,,,,Rubble Mound,7.0,0.0,9.0,Cubes,ton,22.0,1:2,Cubes,ton,22.0,1:2,0.0,7.0,0.0,,52.4635,4.542
+557,IJmuiden,Breakwater (2011),Netherlands,Maintenance,0,15,3,2011,2014,0,,,,,Rubble Mound,7.5,0.0,9.0,Xbloc,ton,24.0,1:1.33,Cubes,ton,22.0,1:1.75,4.0,7.0,0.0,,52.4635,4.542
+128,"Fort Bay Harbour, Saba",,Netherlands Antilles,Rehabilitation,0,11,0,2003,2005,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,16.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,17.616,-63.2516
+129,"Philipsburg, St. Maarten",,Netherlands Antilles,Extension of ferry terminal,0,13,0,2008,0,0,,,,,Rubble Mound,8.1,0.0,13.0,Accropode,m3,16.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,completed,18.0156,-63.0467
+424,St. Maarten,Acces to cruise liner jetty,Netherlands Antilles,,0,15,0,1999,1999,0,,,,,Rubble Mound,6.7,0.0,13.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,18.008,-63.047
+481,"Fort Bay Harbour, Saba",,Netherlands Antilles,Rehabilitation,0,3,0,1990,1991,0,,,,,Rubble Mound,4.5,0.0,12.0,Accropode,m3,6.3,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,17.616,-63.251
+250,Corinto,,Nicaragua,,500,6,0,1993,1993,8,ENAP,Boskalis-Zincon JV,Rijkswaterstaat,Delft Hydraulics,Rubble Mound,3.5,12.0,0.0,Rock,ton,5.0,1:3,Rock,ton,1.0,1:1.5,3.5,16.5,0.0,,12.479,-87.181
+240,Lagos,Bar Beach protection,Nigeria,Erosion prevention work,1000,0,1,2006,2006,0,Eko Atlantic City,Hitech Construction Ltd,,,,4.0,0.0,0.0,Xbloc,m3,1.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,6.42,3.412
+310,Lagos,,Nigeria,Rehabilitation,0,0,0,0,0,0,,,Haskoning-5A JV,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,6.407999999999999,3.406
+130,Arviksand,,Norway,,0,12,0,0,1991,0,,,,,Berm,6.4,0.0,15.0,Rock,ton,10.0,1:1.3,Rock,ton,6.0,1:0,10.0,0.0,0.0,Design wave height is at 20m depth. Rock weight as used inmodel tests.,70.1987,20.5171
+131,Laukvik,,Norway,,0,0,0,2008,0,0,,,,,Berm,9.4,0.0,16.0,Rock,ton,30.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,68.3898,14.4047
+132,Mortavika,,Norway,,0,22,0,1992,1993,0,,,,,Berm,6.5,0.0,15.6,Rock,ton,8.0,1:0,,,0.0,1:0,8.0,0.0,0.0,,59.1693,5.46042
+133,Sirevag,,Norway,,500,20,0,1999,2001,8,,E. Pihl & Son A.S.,,,Berm,7.0,0.0,14.2,Rock,ton,30.0,1:1.5,,ton,4.0,1:1.5,10.0,0.0,0.0,,58.5053,5.78783
+192,Hammerfest LNG terminal,,Norway,,0,0,0,0,0,0,,,,,Berm,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,70.6805,23.584
+318,Rennesoy ferry terminal,,Norway,,0,20,0,0,0,0,,,,,Berm,7.0,0.0,0.0,Rock,ton,5.5,1:1.3,Rock,ton,0.0,1:1.3,8.0,6.0,0.0,,59.096,5.697
+336,Gismeroy,,Norway,,0,0,0,0,0,0,,,,,Berm,5.7,0.0,12.0,Rock,ton,10.0,1:1.5,Rock,ton,0.0,1:2,0.0,9.0,0.0,revetment with berm,58.01600000000001,7.468999999999999
+134,Dalkut fisheries harbour,Main breakwater,Oman,,0,1,4,1997,2001,0,Ministry of Agriculture & Fisheries of O,Galfar,Scott Wilson,HR Wallingford,Rubble Mound,6.9,0.0,14.0,Core-Loc,m3,9.0,1:1.5,Core-Loc,m3,9.0,1:1.5,11.5,7.2,0.0,2D modeling elaborated by Baird & Associates,16.7029,53.2538
+135,Duqm,2 new breakwaters,Oman,Port construction,0,14,0,2002,2006,0,,Daewoo-Galfar JV,Haskoning,Deltares,Rubble Mound,5.8,0.0,0.0,Core-Loc,ton,10.0,1:1.5,,,0.0,1:1.5,11.0,25.0,0.0,proposed,19.6687,57.7047
+136,Mina Qaboos,,Oman,,700,18,0,1970,1974,0,,,,,,6.4,12.0,0.0,Stabit,ton,15.0,1:2,,,0.0,1:1.33,0.0,0.0,0.0,,23.628,58.5723
+137,Salalah container port,,Oman,,2850,23,2,2006,2008,0,,Archirodon,CES,,Rubble Mound,8.9,0.0,9.0,Accropode,m3,12.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,16.9441,54.0256
+138,Sohar industrial port,,Oman,,6000,16,0,1999,2002,0,,,Halcrow,,Rubble Mound,4.5,0.0,7.5,Core-Loc,m3,3.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,24.5009,56.629
+139,Sohar industrial port,,Oman,port extension,0,9,0,2006,2009,0,,,,,,4.5,0.0,8.6,Core-Loc,m3,3.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,24.5009,56.629
+332,Dhalkut fisheries harbour,Lee breakwater,Oman,,0,1,4,1997,2001,0,Ministry of Agriculture & Fisheries of O,Galfar,Scott Wilson,HR Wallingford,Rubble Mound,6.9,0.0,14.0,Core-Loc,m3,9.0,1:1.5,Core-Loc,m3,0.0,1:1.5,8.0,7.2,0.0,2d modeling by Baird & Associates,16.703,53.254
+390,Shinas,Main and lee breakwater,Oman,,890,0,0,2009,2010,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,3.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,24.746,56.473
+394,Al Jalali,,Oman,Repair,300,17,0,2008,0,0,,,,,Revetment,9.0,0.0,14.0,Accropode,m3,16.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,in progress,23.617,58.597
+447,Sur fishing harbour,,Oman,,0,11,0,1996,1997,0,,,,,Rubble Mound,5.8,0.0,11.0,Accropode,m3,9.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,22.578,59.528
+454,Shinas,,Oman,,0,7,0,1995,1996,0,,,,,Rubble Mound,4.2,0.0,10.0,Accropode,m3,3.0,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,24.7469,56.4731
+455,Quriyyat,,Oman,,0,4,0,1995,1996,0,,,,,Rubble Mound,5.8,0.0,11.0,Accropode,m3,4.0,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,23.264,58.928
+457,Al Nadi Al Bahri marina,,Oman,,0,5,0,1994,1996,0,,,,,Rubble Mound,6.0,0.0,11.0,Accropode,m3,6.3,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,23.883,58.098
+462,Mina Al Fahal oil terminal,New jetty,Oman,,0,4,0,1994,1995,0,,,,,Rubble Mound,5.3,0.0,12.0,Accropode,m3,4.0,1:1.33,Accropode,m3,0.0,1:0,0.0,0.0,0.0,,23.633,58.511
+469,Mina Qaboos,,Oman,Protection of reclaimed land,400,12,0,1993,1994,0,,,,,Revetment,5.8,0.0,11.0,Accropode,m3,5.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,23.632,58.566
+516,"Bait Al Barakah, As Seeb",Main breakwater,Oman,,1100,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,5.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,23.689,58.18
+517,"Bait Al Barakah, As Seeb",Lee breakwater,Oman,,800,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,5.5,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,23.689,58.17899999999999
+518,Suwayq fishery harbour,East breakwater,Oman,,910,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,2.4,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,23.851,57.44
+519,Suwayq fishery harbour,West breakwater,Oman,,740,0,0,2009,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,2.4,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,23.851,57.44
+522,Asian beach game complex marina,Two breakwaters,Oman,,850,7,0,2009,0,0,,,,,Rubble Mound,3.0,0.0,9.0,Core-Loc,m3,2.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,23.828,57.529
+523,Seeb,Two breakwaters,Oman,,0,13,0,2008,0,0,,,,,Rubble Mound,4.0,0.0,9.0,Core-Loc,m3,2.4,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,23.63,58.268
+524,Muttrah,Protection along Al Bahri road,Oman,Repair,120,0,0,2008,2010,0,,,,,Revetment,5.0,0.0,0.0,Core-Loc,m3,3.9,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,23.622,58.57
+525,Barr Al Jissah,,Oman,Repair,250,9,0,2008,0,0,,,,,Rubble Mound,3.7,0.0,10.0,Core-Loc,m3,1.4,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,23.548,58.655
+526,Barr Al Jissah,,Oman,Repair,50,9,0,2008,0,0,,,,,Revetment,3.7,0.0,10.0,Core-Loc,m3,1.4,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,23.548,58.655
+528,Duqm,Main breakwater,Oman,,2600,19,0,2007,0,0,,,,,Rubble Mound,5.8,0.0,9.4,Core-Loc,m3,8.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,19.666,57.72
+529,Duqm,Lee breakwater,Oman,,2400,19,0,2007,0,0,,,,,Rubble Mound,5.8,0.0,9.4,Core-Loc,m3,8.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,19.666,57.72
+531,Muscat,Offshore breakwater,Oman,,1000,11,0,2007,0,0,,,,,Rubble Mound,0.0,0.0,9.5,Core-Loc,m3,6.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,23.615,58.602
+533,Shannah ferry harbour,Offshore breakwater,Oman,Protection of mooring facilities,0,9,0,2007,2008,0,Ministry of Transport & Communication,AFCONS,CES,,Rubble Mound,4.19,0.0,12.0,Core-Loc,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,20.512,58.58600000000001
+236,Cinta Costera,Boulevard,Panama,Shore Protection,3300,0,2,2008,2009,0,Ministerio de Obras Publicas de Panama,Odebrecht,Plant Service,DMC-lab,Revetment,2.5,0.0,0.0,Xbloc,m3,0.75,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,8.966000000000001,-79.533
+298,Salaverry,,Peru,Extension,0,0,0,0,0,0,,,Haskoning-IHC JV,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-8.228,-78.987
+443,Masinloc,,Philippines,Protection of outfall channel,0,9,0,1997,1998,0,,,,,Rubble Mound,3.3,0.0,15.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,15.558,119.929
+427,Smiala Wisla river,East training wall,Poland,Protection of river mouth,0,8,0,1998,1998,0,,,,,Rubble Mound,3.2,0.0,5.0,Accropode,m3,2.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,54.371,18.78
+585,Swinoujscie Port,Swinoujscie Eastern Breakwater,Poland,New Construction,3000,0,0,0,2012,0,,Boskalis,DMC,,Rubble Mound,0.0,0.0,0.0,Xbloc,m3,2.5,1:1,,,0.0,1:0,6.0,5.5,0.0,,53.9334,14.28
+193,"Funchal, Madeira",,Portugal,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,32.6417,-16.9119
+194,Ponta Delgada,,Portugal,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,37.7342,-25.6648
+195,Sines (1970s),West breakwater,Portugal,,0,30,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Dolos,ton,42.0,1:1.5,Rock,ton,6.0,1:1.33,19.0,0.0,0.0,,37.9467,-8.88851
+196,Sines (1980s),West breakwater rebuild,Portugal,,0,30,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Antifer,ton,90.0,1:0,,ton,0.0,1:0,15.0,0.0,0.0,,37.9467,-8.88851
+197,Sines Power Station Harbour,Coal harbour,Portugal,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,37.9325,-8.85674
+365,Leixoes,,Portugal,,0,0,0,1884,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,ton,0.0,1:2,Cubes,ton,0.0,1:2,1.0,0.0,0.0,"1. Subject to multiple repairs, 2. Values refer to the final design",41.176,-8.703
+577,Ericeira,Fishing port,Portugal,Maintenance,400,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Tetrapod,ton,32.0,1:1.5,Cubes,ton,0.0,1:1.5,10.2,0.0,0.0,,38.9647,-9.42218
+579,Leixoes Harbour,,Portugal,Maintenance,700,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Tetrapod,ton,40.0,1:1.33,,,0.0,1:0,15.0,0.0,7.75,The new cross-section was built on top of the olser cross-sections,41.1773,-8.71013
+14,Ras Laffan,North Breakwater,Qatar,New breakwater,10000,12,0,2007,0,0,Qatar Petroleum,Boskalis-JanDeNul,Sogreah,SogreahLab,Rubble Mound,4.5,0.0,11.0,Antifer,m3,3.0,1:1.5,Rock,ton,3.0,1:1.33,8.1,0.0,0.0,,25.9,51.62
+140,Ras Laffan LNG terminal,"Northern, southern & offshore breakwater",Qatar,Reinforcement,21000,0,0,2007,2009,0,,Boskalis,,,Rubble Mound,4.6,0.0,10.0,Accropode,m3,5.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,25.9238,51.5991
+141,Ras Laffan LNG terminal,,Qatar,initial breakwaters,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,25.9238,51.5991
+206,Halul,West breakwater,Qatar,Harbour refurbishment,512,0,0,2001,2002,18,Qatar Petroleum,Archirodon,COWI,DHI,Rubble Mound,4.4,0.0,7.0,Core-Loc,m3,2.0,1:1.33,Core-Loc,ton,0.0,1:1.33,6.5,0.0,0.0,Work included demolition of existing lee breakwater of 91m,25.6796,52.3968
+323,Halul,East breakwater,Qatar,,350,10,0,2003,2005,0,,Consolidated Engineering Construction,COWI,,Rubble Mound,4.4,0.0,7.0,Core-Loc,m3,2.4,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,25.673,52.417
+324,Halul,Main breakwater,Qatar,Extension of industrial port,600,11,0,2001,2002,0,,,,,Rubble Mound,4.4,0.0,7.0,Core-Loc,m3,2.4,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,25.67,52.416
+327,Pearl,Beach breakwaters,Qatar,,0,0,0,0,0,0,United Development Company,,COWI,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,25.365,51.581
+330,Mesaieed,Wave screen of small craft berth,Qatar,,85,7,0,0,0,0,,GLF,COWI,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,24.97,51.605
+305,Constantza,,Romania,Extension,0,0,0,0,0,0,,,Haskoning-Iptana JV,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,44.124,28.687
+142,Jubail,,Saudi Arabia,,4562,17,0,1975,1980,0,,,,,,6.5,9.0,0.0,Stabit,ton,15.0,1:1.5,,,0.0,1:1.25,0.0,0.0,0.0,,27.0511,49.6956
+207,Assir,,Saudi Arabia,,250,0,0,1995,1997,0,SWCC,Korea Heavy Industr.,EWE,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,subcontractor for offshore works: Archirodon,17.5534,42.1478
+210,Dammam,,Saudi Arabia,Extension of breakwater,0,0,0,1969,0,0,Saudi Seaports,Archirodon,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,26.4849,50.2082
+392,Shoaiba,,Saudi Arabia,Power plant extension,0,2,0,2008,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,2.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,in progress,20.681,39.516
+421,Shoaiba,,Saudi Arabia,Protection of intake works,0,22,0,1999,2001,0,,,,,Rubble Mound,4.2,0.0,6.0,Accropode,m3,1.5,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,20.618,39.552
+527,Marafiq IWPP,,Saudi Arabia,,500,7,0,2008,0,0,,,,,Rubble Mound,2.1,0.0,11.0,Core-Loc,m3,0.7,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,27.06,49.63
+204,Fregat Island,Yatch harbour,Seychelles,Breakwater repair,250,5,0,2000,2000,0,,,,,Rubble Mound,4.3,0.0,15.0,Accropode,m3,2.0,1:1.8,Accropode,m3,0.0,1:0,0.0,0.0,0.0,,-4.585,55.948
+143,East London,,South Africa,,0,7,0,0,1964,0,,,,,,8.5,12.0,0.0,Dolos,ton,17.0,1:1.25,,,0.0,1:0,0.0,0.0,0.0,,-33.0301,27.9197
+144,Richards Bay,,South Africa,,0,16,0,1973,1976,0,,,,,,7.2,12.0,0.0,Dolos,ton,20.0,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,-28.8105,32.0954
+145,Cape Town - Club Mykonos Marina,,South Africa,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,Accropode,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,-33.9017,18.4256
+198,Coega,,South Africa,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,-33.8064,25.697
+495,"Lynch point marina, Langebaan",Main breakwater,South Africa,,5,0,0,1987,1988,0,,,,,Rubble Mound,4.2,0.0,13.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-33.075,18.035
+553,Yzerfontein,,South Africa,Maintenance,150,0,0,0,0,0,,,E2C,,Rubble Mound,0.0,0.0,0.0,Dolos,ton,20.0,1:1.5,Rock,,0.0,1:1.33,0.0,12.0,0.0,,-33.3455,18.1487
+560,Mukho Port,North Breakwater,South Korea,New construction,370,10,0,0,0,0,,,,,Rubble Mound,6.1,0.0,14.0,Tetrapod,ton,20.0,1:2,Tetrapod,ton,8.0,1:1.5,7.5,12.0,1.0,,37.5823,129.114
+561,Jeju Port,West Breakwater,South Korea,New construction,1800,15,0,0,0,0,,,,,Rubble Mound,6.0,0.0,12.0,Tetrapod,ton,20.0,1:1.5,rock,ton,2.5,1:2,5.0,13.0,1.0,,33.525,126.535
+562,Hupo Port,East Breakwater,South Korea,New construction,525,14,0,0,0,0,,,,,Rubble Mound,6.7,0.0,14.0,Tetrapod,ton,32.0,1:1.5,rock,ton,2.5,1:1.5,4.0,12.0,0.5,,36.6761,129.454
+563,Hwasun Port,,South Korea,New construction,0,16,0,0,0,0,,,,,Rubble Mound,9.4,0.0,15.0,Tetrapod,ton,64.0,1:1.5,rock,ton,2.5,1:1.5,11.5,26.2,1.5,,33.2341,126.33
+564,Sokcho Port,,South Korea,New construction,920,13,0,0,0,0,,,,,Rubble Mound,6.5,0.0,14.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,10.0,0.0,,38.2063,128.603
+565,Okgye Port,,South Korea,New construction,1000,15,0,0,0,0,,,,,Rubble Mound,6.2,0.0,14.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,9.0,0.0,,37.6244,129.061
+566,Donghae Port,North Breakwater,South Korea,New construction,1350,14,0,0,0,0,,,,,Rubble Mound,7.4,0.0,13.0,Tetrapod,ton,0.0,1:0,Tetrapod,ton,0.0,1:0,0.0,9.0,0.0,,37.5453,129.118
+567,Samcheok Port,East Breakwater,South Korea,New construction,1100,7,0,0,0,0,,,,,Rubble Mound,4.9,0.0,14.0,Tetrapod,ton,0.0,1:0,Tetrapod,ton,0.0,1:0,0.0,12.0,0.0,,37.4351,129.194
+568,Pohang Port,East Breakwater,South Korea,New construction,720,13,0,0,0,0,,,,,Rubble Mound,5.6,0.0,10.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,9.0,0.0,,36.0491,129.382
+569,Samchunpo Port,South Breakwater,South Korea,New construction,1200,16,0,0,0,0,,,,,Rubble Mound,5.4,0.0,14.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,9.0,0.0,,34.9014,128.108
+570,Jangseungpo Port,,South Korea,New construction,440,3,0,0,0,0,,,,,Rubble Mound,4.5,0.0,12.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,7.0,0.0,,34.8384,128.721
+571,Okpo Port,South Breakwater,South Korea,New construction,900,18,0,0,0,0,,,,,Rubble Mound,3.5,0.0,7.5,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,6.0,0.0,,34.891,128.723
+572,Seogwipo Port,East Breakwater,South Korea,New construction,450,23,0,0,0,0,,,,,Rubble Mound,8.8,0.0,12.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,33.2353,126.57
+573,Jumunjin Port,North Breakwater,South Korea,New construction,950,9,0,0,0,0,,,,,Rubble Mound,4.7,0.0,14.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,7.0,0.0,,37.8894,128.833
+574,Guryongpo Port,North Breakwater,South Korea,New construction,550,12,0,0,0,0,,,,,Rubble Mound,6.1,0.0,13.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,9.0,0.0,,35.9876,129.559
+575,Geomundo Port,South Breakwater,South Korea,New construction,920,10,0,0,0,0,,,,,Rubble Mound,4.7,0.0,11.0,Tetrapod,ton,0.0,1:0,,,0.0,1:0,0.0,9.0,0.0,,34.0369,127.312
+146,A Coru&ntide;a - Punta Lagosteira,,Spain,,4000,42,0,0,0,500,Port Authority of A Coruña,SATO,,Deltares,Rubble Mound,15.1,0.0,18.0,Cubes,ton,150.0,1:2,,,0.0,1:1.5,25.0,0.0,0.0,,43.3496,-8.502510000000001
+147,"Ensfinge, Las Palmas",,Spain,,302,39,0,2001,2003,0,,,,,Rubble Mound,7.7,0.0,15.0,Accropode,m3,16.0,1:1.5,,,0.0,1:0,15.0,0.0,0.0,,28.1449,-15.413
+148,Llanca marina and fishing harbour,,Spain,,0,10,0,1986,1989,0,,,,,Rubble Mound,6.5,0.0,13.0,Accropode,m3,9.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,42.3739,3.16255
+149,Mazagon marina,Main breakwater,Spain,,0,5,0,1990,1992,0,,,,,,4.0,0.0,0.0,Accropode,m3,4.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,37.131,-6.831
+150,Palamos marina,,Spain,,0,15,0,1990,1994,0,,,,,Rubble Mound,6.3,0.0,14.0,Accropode,m3,12.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,41.84399999999999,3.135
+151,Port Bou marina,,Spain,,0,15,0,1995,1998,0,,,,,Rubble Mound,6.0,0.0,12.5,Accropode,m3,9.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,42.4262,3.16703
+152,Puerto do Carboneras,,Spain,,0,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,,ton,57.0,1:2,,,0.0,1:0,12.0,0.0,0.0,,36.9902,-1.89706
+153,"Puerto Colon, Canary Islands",,Spain,,0,10,0,1985,1988,0,,,,,Rubble Mound,6.0,10.0,16.0,Accropode,m3,9.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,28.078,-16.737
+154,San Ciprian,,Spain,,0,0,0,1978,1979,0,,,,,,13.0,16.0,0.0,Dolos,ton,50.0,1:1.25,,,0.0,1:1.5,0.0,0.0,0.0,,43.71100000000001,-7.47
+199,Algeciras marina,,Spain,,0,11,0,1995,1996,0,,,,,Rubble Mound,6.0,0.0,12.5,Accropode,m3,9.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,36.1191,-5.437180000000001
+232,Gijon,Torres,Spain,New breakwater,1450,22,0,0,0,0,,,,,Rubble Mound,9.5,0.0,0.0,Cubes,ton,145.0,1:2,,ton,0.0,1:0,22.0,0.0,0.0,,43.578,-5.691
+241,Ferrol,Outer port,Spain,New construction,1100,0,0,2001,2004,0,,,,Cedex,Rubble Mound,7.6,18.6,0.0,Cubes,ton,90.0,1:1.75,,ton,0.0,1:0,18.0,0.0,0.0,,43.457,-8.333
+242,La Coruna,,Spain,New construction,4000,42,0,0,0,0,,,,Cedex,Rubble Mound,15.1,0.0,0.0,Rock,ton,150.0,1:2,Cubes,ton,0.0,1:1.5,25.0,22.0,0.0,With L-wall on top,43.35100000000001,-8.51
+243,Valencia,,Spain,New construction,1123,16,0,0,0,0,,,,,Rubble Mound,6.3,0.0,0.0,Rock,ton,35.0,1:1.5,,ton,0.0,1:0,12.0,0.0,0.0,under construction,39.442,-0.303
+244,Barcelona,East breakwater,Spain,New construction,2165,20,0,0,0,0,,,,Cedex,,7.3,0.0,0.0,Cubes,ton,50.0,1:1.75,,ton,0.0,1:0,12.0,0.0,0.0,,41.322,2.171
+251,Barcelona,"Southern breakwater, stretches 1 & 3",Spain,,3100,27,0,0,0,0,,,,Cedex,Rubble Mound,7.3,0.0,0.0,Cubes,ton,40.0,1:1.75,Rock,ton,0.0,1:0,11.0,0.0,0.0,,41.324,2.167
+252,Barcelona,"Southern breakwater, stretch 2",Spain,,1700,20,0,0,0,0,,,,Cedex,Caisson,7.6,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,11.0,0.0,0.0,,41.324,2.167
+253,Barcelona,North mouth,Spain,,1000,25,0,0,0,0,,,,,Rubble Mound,6.4,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:1.5,11.0,0.0,0.0,,41.3248,2.16746
+254,Alicante,,Spain,,1200,16,0,0,0,0,,,,,Rubble Mound,4.4,0.0,0.0,,ton,20.0,1:1.5,,ton,0.0,1:0,7.5,0.0,0.0,,38.33,-0.489
+255,Gijon,North breakwater,Spain,,1588,30,0,0,0,0,,,,Cedex,Caisson,9.5,0.0,19.0,,ton,0.0,1:0,,ton,0.0,1:1.5,24.0,32.0,0.0,under construction,43.567,-5.689
+256,"Algeciras, Isla Verde",,Spain,,1750,43,0,0,0,0,,,,Cedex,Caisson,4.8,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,7.5,21.4,0.0,,36.134,-5.428
+257,"Levante, Malaga",,Spain,,20,0,0,0,0,0,,,,,Caisson,6.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,10.0,21.0,0.0,,36.703,-4.412
+258,Motril,,Spain,,550,20,0,0,0,0,,,,,Caisson,6.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,7.5,21.1,0.0,,36.718,-3.522
+259,"Escombreras, Cartagena",South-western breakwater,Spain,Port enlargement,1038,29,0,2001,0,0,,,,Cedex,Caisson,8.1,0.0,13.0,,ton,0.0,1:0,,ton,0.0,1:0,3.6,26.0,0.0,,37.562,-0.972
+260,"Escombreras, Cartagena",Perimeter breakwater of an islet,Spain,Port enlargement,518,32,0,2001,0,0,,,,Cedex,Caisson,8.1,0.0,13.0,,ton,0.0,1:0,,ton,0.0,1:0,13.0,10.0,13.0,,37.562,-0.972
+261,Escombreras. Cartagena,Initial section,Spain,,202,52,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,ton,45.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,37.587,-0.9790000000000001
+262,"Escombreras, Cartagena",Southern breakwater,Spain,,401,19,0,2001,0,0,,,,Cedex,Caisson,8.1,0.0,13.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,18.5,0.0,,37.587,-0.9790000000000001
+263,Valencia,North breakwater,Spain,Port enlargement,2271,16,0,0,0,0,,,,,Caisson,6.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,13.0,19.17,0.0,under construction,39.447,-0.3
+264,Sagunto,,Spain,,1204,15,0,0,0,0,,,,,Caisson,6.4,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,9.0,19.6,0.0,,39.64,-0.211
+265,Castellon,Eastern breakwater,Spain,,440,12,0,0,0,0,,,,,Caisson,7.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,12.0,19.6,0.0,,39.964,0.029
+266,Castellon,Eastern breakwater,Spain,Extension,358,15,0,0,0,0,,,,,Caisson,7.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,12.0,19.6,0.0,under construction,39.964,0.029
+267,Castellon,Southern breakwater,Spain,,819,16,0,0,0,0,,,,,Caisson,7.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,12.0,15.0,0.0,under construction,39.964,0.029
+268,Tarragona,,Spain,Enlargement,736,30,0,0,0,0,,,,,Caisson,7.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,8.0,24.0,0.0,,41.082,1.219
+269,Barcelona,North mouth,Spain,,450,29,0,0,0,0,,,,,Caisson,6.4,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,6.0,19.6,0.0,,41.334,2.176
+270,"Botafoc, Ibiza",,Spain,,615,25,0,0,0,0,,,,,Caisson,6.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,7.0,21.1,0.0,,38.903,1.45
+271,Las Palmas,Stretch 3,Spain,,997,40,0,1988,1991,0,,,,,Caisson,7.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,12.2,24.0,0.0,"part of ""Reina Sofia"" breakwater",28.138,-15.405
+272,Las Palmas,Stretch 1,Spain,,2417,0,0,1967,1972,0,,,,,Rubble Mound,6.4,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,part of,28.138,-15.405
+273,Las Palmas,Stretch 2,Spain,,691,0,0,1975,1979,0,,,,,Rubble Mound,6.4,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,"part of ""Reina Sofia ""breakwater",28.138,-15.405
+274,"Esfinge, Las Palmas",,Spain,,664,55,0,0,0,0,,,,,Caisson,7.3,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,12.2,24.6,0.0,under construction,28.138,-15.405
+275,Gijon,"""Principe de Asturias"" Breakwater",Spain,,2145,0,0,0,1976,0,,,,,Rubble Mound,9.4,0.0,0.0,Cubes,ton,120.0,1:1.5,Cubes,ton,0.0,1:1.5,18.0,18.7,0.0,,43.566,-5.685
+276,Bilbao,"""Punta Lucero"" breakwater",Spain,Reinforcement,2498,54,0,1980,1985,0,,,,,Rubble Mound,10.1,0.0,0.0,Cubes,ton,150.0,1:2,Rock,ton,0.0,1:0,0.0,0.0,0.0,,43.37,-3.095
+277,Tenerife,Stretch 1,Spain,,779,0,0,1971,1980,0,,,,,Composite,4.6,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,8.0,15.63,0.0,"part of ""Los Llanos"" breakwater",28.486,-16.222
+278,Tenerife,Stretch 2,Spain,,710,40,0,1971,1980,0,,,,,Composite,4.6,0.0,0.0,Rock,ton,2.0,1:1.5,Rock,ton,0.0,1:1.5,8.0,15.63,0.0,part of,28.484,-16.223
+279,Tenerife,stretch 3,Spain,,30,0,0,1983,1987,0,,,,,Composite,4.6,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,"part of ""Los Llanos"" breakwater",28.484,-16.223
+342,Aviles,,Spain,,0,0,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Cubes,ton,0.0,1:0,Cubes,ton,0.0,1:0,0.0,0.0,0.0,,43.592,-5.945
+410,"Gomera, Las Palmas",Breakwater protecting La Esfinge,Spain,,0,24,0,2001,2003,0,,,,,Revetment,7.7,0.0,15.0,Accropode,m3,16.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,28.164,-15.399
+419,"Garachico, Tenerife",Coastal protection,Spain,,350,0,0,2000,2001,0,,,,,Revetment,9.0,0.0,16.0,Accropode,m3,18.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,Combination of accropodes and ecopodes,28.375,-16.762
+464,Melilla,,Spain,Protection of marina basin,0,9,0,1993,1995,0,,,,,Rubble Mound,4.5,0.0,9.5,Accropode,m3,4.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,35.288,-2.93231
+537,ACoruña,Western Breakwater for the Outer Port,Spain,Extension of the secondary breakwater,900,22,2,2015,2017,0,Port Authority of A Coruña,SATO,,Aalborg,Rubble Mound,8.75,0.0,18.0,Cubipod,ton,30.0,1:1.5,,Roc,0.0,1:2,10.0,24.0,7.0,protected by north breakwater,43.3395,-8.51661
+580,Malaga,San Andres Breakwater,Spain,New Construction,270,7,2,2011,2013,12,Port of Malaga,,,,Rubble Mound,5.6,0.0,12.0,Cubipod,ton,6.0,1:1,rock,ton,1.0,1:2,5.0,8.44,0.0,,36.7009,-4.426369999999999
+581,Punta Langosteira,Punta Langosteira North Breakwater,Spain,New Construction,550,8,2,2012,2013,17,Port of Malaga,,,GEAMA,Rubble Mound,5.85,0.0,18.0,Cubipod,ton,12.0,1:1,Cubipod,ton,12.0,1:1.5,10.5,0.0,0.0,Construction of system of two groynes to protect from western storms,43.3442,-8.51931
+582,Punta Langosteira,Punta Langosteira South Breakwater,Spain,New Construction,330,8,2,2012,2013,17,Port of Malaga,,,GEAMA,Rubble Mound,5.85,0.0,18.0,Cubipod,ton,23.0,1:1,Cubipod,ton,23.0,1:1.5,10.5,0.0,0.0,Construction of system of two groynes to protect from western storms,43.3442,-8.51931
+583,Punta Langosteira,Langosteira Western Breakwater,Spain,Extension,1350,9,2,2015,2016,0,Port of Malaga,,,GEAMA,Rubble Mound,8.75,0.0,18.0,Cubipod,ton,25.0,1:1,rock,ton,2.0,1:1.5,17.0,22.8,0.0,,43.3442,-8.51931
+156,Colombo,Wave-dissipating blocks,Sri Lanka,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Cubes,ton,30.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,6.956,79.848
+345,Dikkowita,Fishing Harbour,Sri Lanka,New construction,1000,0,0,2009,2010,0,Ministry of Fisheries & Aq. Resources,BAM,DMC,DMC-lab,Rubble Mound,3.2,0.0,0.0,Xbloc,m3,4.0,1:1.33,Xbloc,ton,0.0,1:1.33,0.0,0.0,0.0,design in colaboration with Royal Haskoning,6.997000000000001,79.866
+549,Colombo Port,South Breakwater,Sri Lanka,New construction,5200,0,4,2008,2012,0,Sri Lanka Ports,,URS Infrastructure & Environment,,Rubble Mound,7.7,0.0,14.0,Core-Loc,ton,20.4,1:1.33,,,0.0,1:0,0.0,25.0,0.0,,6.954439999999999,79.8291
+584,Hambantota Port,Hambantota Port Breakwater,Sri Lanka,New Construction,1600,14,3,2013,2015,0,Sri Lanka Ports,CHEC,CDR International B.V.,Tianjin Port Engineering Institute,Rubble Mound,5.6,0.0,18.0,Xbloc,ton,8.0,1:1,rock,kg,600.0,1:1.5,10.0,15.0,0.0,Berm breakwater revetment design for protection of an artificial island on the southern shore of Sri Lanka,6.11793,81.1028
+303,LNG terminal,,Taiwan,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,23.767,120.156
+431,Chang Hua,,Taiwan,Protection of reclaimed land,0,6,0,1998,2000,0,,,,,Revetment,3.8,0.0,10.0,Accropode,m3,2.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,24.075,120.388
+403,Map Ta Phut,Cooling water intake lagoon,Thailand,,0,5,0,2005,2006,0,,,,,Revetment,4.3,0.0,8.0,Accropode,m3,2.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,12.663,101.161
+440,Map Ta Phut,Phase 2,Thailand,Protection of reclaimed land,6000,10,0,1997,1999,0,,,,,Revetment,4.3,0.0,8.0,Accropode,m3,2.5,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,12.656,101.16
+473,Prachuap,,Thailand,,1400,11,0,1992,1994,0,,,,,Rubble Mound,5.5,0.0,12.0,Accropode,m3,5.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,11.202,99.583
+578,Calshot Port,Fishing port,Tristan da Cunha,New construction,110,0,0,0,1970,0,,,,,Rubble Mound,0.0,0.0,0.0,Dolos,ton,3.5,1:0,,,0.0,1:0,0.0,0.0,0.0,,-37.0635,-12.3133
+157,Bizerte Zarzouna fishing harbour,Main and lee breakwater,Tunisia,,0,7,0,1983,1984,0,,,,,,0.0,0.0,0.0,Accropode,m3,9.0,1:0,,,0.0,1:1.33,0.0,0.0,0.0,depth-limited waves,37.2683,9.89429
+158,Hammamet marina,Main breakwater,Tunisia,Extension,150,6,0,2006,2008,0,,,,,Rubble Mound,6.5,0.0,12.6,Accropode,m3,6.3,1:1.5,,,0.0,1:1.5,0.0,0.0,0.0,,36.3721,10.5483
+159,Monastir marina,,Tunisia,,0,4,0,1983,1983,0,,,,,,0.0,0.0,0.0,Accropode,m3,6.3,1:1.33,,,0.0,1:0,0.0,0.0,0.0,depth-limited waves,35.7784,10.836
+160,Monastir fishing harbour,,Tunisia,,0,6,0,1986,1989,0,,,,,,0.0,0.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,35.7575,10.8398
+391,Skhira,,Tunisia,,0,5,0,2009,0,0,,,,,Rubble Mound,3.0,0.0,10.0,Accropode,m3,1.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,in progress,34.286,10.096
+399,Bekalta,Main and secondary breakwater,Tunisia,Extension works,215,6,0,2007,2008,0,,,,,Rubble Mound,4.0,0.0,14.8,Accropode,m3,2.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,35.623,11.0494
+413,Sidi Mechreg,Main breakwater,Tunisia,Reinforcement,260,6,0,2000,2004,0,,,,,Rubble Mound,6.9,0.0,14.0,Accropode,m3,9.0,1:1.5,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,37.1688,9.126
+420,Rades,Intake canal,Tunisia,,0,4,0,1999,2001,0,,,,,Rubble Mound,3.7,0.0,11.0,Accropode,m3,1.5,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,36.805,10.304
+428,Hammamet marina,,Tunisia,,0,8,0,1998,2000,0,,,,,Rubble Mound,5.7,0.0,9.0,Accropode,m3,6.3,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,36.372,10.548
+429,La Goulette,North breakwater of commercial harbour,Tunisia,Reinforcement,0,7,0,1998,1998,0,,,,,Rubble Mound,4.0,0.0,12.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,36.807,10.306
+441,Beni Khiar fishing harbour,,Tunisia,Breakwater extension,0,8,0,1997,1998,0,,,,,Rubble Mound,4.7,0.0,10.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,36.4533,10.797
+442,El Haouaria fishing harbour,,Tunisia,,0,5,0,1997,1997,0,,,,,Rubble Mound,3.7,0.0,11.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,37.041,11.065
+448,La Chebba fishing harbour,,Tunisia,Breakwater extension,0,5,0,1996,1996,9,,,,,Rubble Mound,3.5,0.0,9.0,Accropode,m3,1.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,35.23,11.16
+449,Cap Zabib,,Tunisia,,0,7,0,1996,1996,0,,,,,Rubble Mound,5.0,0.0,9.0,Accropode,m3,4.0,1:1.33,Accropode,ton,0.0,1:0,0.0,0.0,0.0,,37.266,10.069
+458,Sousse,,Tunisia,Reinforcement of the roundhead,0,6,0,1994,1995,0,,,,,Rubble Mound,4.3,0.0,9.0,Accropode,m3,4.0,1:1.33,,m3,0.0,1:0,0.0,0.0,0.0,,35.826,10.649
+465,Ghar el Mehl fishing harbour,,Tunisia,Extension of main breakwater,0,7,0,1993,1994,0,,,,,Rubble Mound,4.7,0.0,8.0,Accropode,m3,4.0,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,37.151,10.23
+587,Haydarpasa Port,Haydarpasa western breakwater,Turkey,New Construction,0,13,0,0,0,0,,,,,Rubble Mound,0.0,0.0,0.0,rock,ton,3.0,1:1,rock,ton,1.5,1:2.5,2.5,0.0,0.0,,41.0014,29.0079
+25,Dubai,Palm Deira Shamal protection (Crown),UAE,land reclamation,12000,0,0,2008,0,0,Nakheel,Van Oord,Haskoning,SogreahLab,Revetment,5.5,0.0,0.0,Rock,ton,6.0,1:2.5,,ton,0.0,1:0,6.25,0.0,0.0,,25.333,55.3
+16,Dubai,World - Shamal protection reef,UAE,low crested breakwater,25000,0,3,2005,2007,0,Nakheel,Van Oord,Haskoning,Deltares,Rubble Mound,5.5,0.0,9.3,Rock,ton,4.0,1:0,Rock,ton,0.0,1:0,3.0,0.0,0.0,low crested breakwater with 30 m wide berm,25.233,55.155
+161,Dubai - Maritime City,,UAE,,2266,0,0,2003,2006,50,Nakheel,Archirodon,COWI,,Rubble Mound,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,"1. Work included demolition of old breakwater, 2. Total project costs are mentioned",25.2804,55.2735
+162,Dubai - Palm Jumeira,Outer face of crescent island,UAE,,12500,10,2,2001,2003,178,Dubai Palm Developers,Archirodon,Haskoning,,,0.0,0.0,0.0,Rock,,0.0,1:0,,,0.0,1:0,0.0,200.0,0.0,,25.1057,55.1118
+163,Dubai - Drydock,,UAE,,3267,14,0,1974,1979,0,,,,,,6.0,10.0,0.0,Stabit,ton,15.0,1:1.5,,,0.0,1:1.25,0.0,0.0,0.0,,25.2569,55.2513
+164,Dubai - Port Rashid,,UAE,Extension,4500,12,0,1974,1979,0,,,,,,6.0,10.0,0.0,Stabit,ton,15.0,1:1.5,,,0.0,1:1.25,0.0,0.0,0.0,,25.2768,55.2743
+165,Dubai - Jebel Ali,,UAE,,3600,8,0,1976,1979,0,,,,,,6.0,10.0,0.0,Stabit,ton,10.0,1:1.5,,,0.0,1:1.25,0.0,0.0,0.0,,25.012,55.0446
+166,Abu Dhabi - Khalifa Port,,UAE,offshore greenfield port,7400,12,0,2007,2012,0,Abu Dhabi Ports Company,Boskalis-Archirodon JV,Bechtel,Deltares-CSIR,Rubble Mound,4.3,0.0,9.0,Accropode,m3,2.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,ongoing,24.804,54.6927
+167,Khor Fhakkan,,UAE,,550,0,0,1976,1978,0,,,,,,6.4,10.0,0.0,Stabit,ton,10.0,1:1.5,,,0.0,1:1.25,0.0,0.0,0.0,,25.3564,56.3706
+209,Jumeirah,,UAE,Coastal zone restoration,0,0,2,1992,1994,21,Dubai Municipality,Archirodon,Nedeco,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Project in JV,25.2181,55.2458
+238,Fujairah,Dhadna Marina,UAE,Marina rehabilitation,500,0,0,2007,0,0,,,,,Rubble Mound,5.5,0.0,0.0,Xbloc,m3,5.0,1:0,,m3,0.0,1:0,0.0,0.0,0.0,,25.527,56.37
+290,Dubai - Palm Jumeira,Crescent breakwater,UAE,Reinforcement,0,0,0,2006,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,construction of retaining wall for overtopping reduction,25.115,55.14100000000001
+296,Dubai - World Shamal reef,low-crested breakwater,UAE,,16000,20,0,0,0,0,Nakheel,Van Oord,Haskoning,,Berm,5.5,0.0,0.0,Rock,ton,4.0,1:0,,ton,0.0,1:0,3.0,7.0,0.0,,25.23,55.132
+297,Dubai - Palm Jebel Ali,Outer face of crescent island,UAE,,15500,0,0,0,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,25.009,54.98699999999999
+328,Dubai - Maritime City,detached breakwater,UAE,,840,0,0,2003,2006,50,Nakheel,Archirodon,COWI,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Total project costs are mentioned,25.27,55.268
+329,Dubai - Maritime City,Sigmoid structure,UAE,,2050,0,0,2003,2006,50,Nakheel,Archirodon,COWI,,Revetment,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,Total project costs are mentioned,25.27,55.268
+333,Mirfa power & desalination plant,Sea walls for cooling water intake,UAE,,3500,3,1,1994,1995,0,Ministry of Public Works of UAE,Sainrapt Contracting Company,,,Rubble Mound,1.6,0.0,0.0,Rock,ton,2.0,1:1.5,Rock,ton,0.0,1:1.5,5.35,9.3,0.0,2 breakwaters 1500m and 2000m long,24.1308,53.4516
+515,Das Island,,UAE,Extension of gas facilities,400,0,0,2010,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,m3,1.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,25.14,52.881
+535,Hamriyah free zone harbour,,UAE,Protection of reclaimed land,1500,9,0,2006,2007,0,,,,,Revetment,4.5,0.0,11.2,Core-Loc,m3,2.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,25.464,55.477
+536,Layyah,,UAE,Protection of reclaimed land,500,7,0,2006,2007,0,,,,,Revetment,4.5,0.0,11.0,Core-Loc,m3,2.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,25.354,55.37
+552,Abu Dhabi - Khalifa Port,Environmental Breakwater,UAE,New construction,8000,0,0,0,0,220,Abu Dhabi Ports Company,,Halcrow,,Rubble Mound,6.0,0.0,8.0,Accropode,m3,1.5,1:1.33,Accropode,m3,1.5,1:1.33,4.2,5.5,0.0,The cross-section changes as the breakwater becomes less exposed. Here the outer most exposed cross-section is presented,24.8326,54.6756
+30,"Galveston, Texas",Port entrance jetties,USA,,11500,13,0,0,1933,0,,,,,Rubble Mound,0.0,0.0,0.0,Rock,ton,0.09,1:2,Rock,ton,0.09,1:2,1.22,2.44,0.0,,29.335,-94.7078
+173,Crescent City,,USA,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,41.7437,-124.187
+174,Humboldt Harbour,,USA,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,40.7639,-124.238
+175,Kahului Hawaii,,USA,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,20.8979,-156.472
+176,Manasquan inlet,,USA,Rehabilitation of existing rock armoured,0,0,0,1980,1982,0,,,,,Rubble Mound,0.0,0.0,0.0,Dolos,ton,16.0,1:0,,,0.0,1:0,0.0,0.0,0.0,Steel reinforced dolos,40.1018,-74.0328
+177,Manasquan inlet,,USA,repair,0,0,0,1997,1997,0,,,,,Rubble Mound,0.0,0.0,0.0,Core-Loc,ton,19.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,40.1018,-74.0328
+178,Santa Cruz,,USA,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,0.0,0.0,0.0,,36.9616,-122.002
+179,"St. Georg, Alaska",,USA,,9,0,0,0,1987,0,,,,DHI,Berm,6.4,0.0,18.0,Rock,ton,9.0,1:1.5,Rock,ton,9.0,1:1.5,26.0,16.8,0.0,,56.537,-169.561
+237,Guam,,USA,Shore protection,0,0,0,2009,2010,0,US Navy,IBC-TOA Corporation,Moffatt & Nichol,,Revetment,6.0,0.0,0.0,Xbloc,m3,8.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,13.42,144.8
+284,Buffalo,,USA,,0,9,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Cubes,ton,4.0,1:0,Rock,ton,0.0,1:0,3.8,0.0,0.0,,42.854,-78.872
+320,"Racine, Wisconsin",breakwater in Lake Michigan,USA,,0,8,0,0,1986,0,,,,,Berm,4.4,0.0,10.0,Rock,ton,3.6,1:1,Rock,ton,0.0,1:1,16.0,0.0,0.0,,42.735,-87.773
+337,"Richmond, CA",,USA,Shoreline improvement,0,0,0,0,1991,10,City of Richmond,,Ben C. Gerwick,,Revetment,1.5,0.0,0.0,Rock,ton,0.6,1:3,,ton,0.0,1:0,0.0,0.0,0.0,,37.88,-122.323
+338,San Francisco,,USA,Breakwater repair,0,0,0,0,2006,0,Port of San Francisco,,Ben C. Gerwick,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,special type of vertical breakwater,37.794,-122.389
+343,"Yaquina, OR",North jetty,USA,Rehabilitation,2200,0,0,1978,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Rock,ton,22.7,1:2,Rock,ton,0.0,1:2,0.0,0.8,0.0,,44.61199999999999,-124.072
+344,"Yaquina, OR",South jetty,USA,Rehabilitation,2200,0,0,1966,0,0,,,,,Rubble Mound,0.0,0.0,0.0,Rock,ton,0.0,1:0,Rock,ton,0.0,1:0,0.0,0.0,0.0,,44.613,-124.073
+538,New York Harbor,29th Street Pier Environmental Breakwate,USA,New construction,270,6,0,0,2011,0,,,,,Rubble Mound,0.0,0.0,0.0,rock,,0.0,1:1.5,rock,,0.0,1:1.5,0.8,1.0,0.0,Environmental set of breakwaters to provide protection for erosion and improve aquatic habitat,40.6632,-74.0101
+168,Alderney,,United Kingdom,,1433,0,17,1847,1864,0,The States of Guernsey,Thomas Jackson,,,,7.6,0.0,0.0,Rock,ton,4.0,1:1.7,,,0.0,1:1.25,12.1,12.0,0.0,,49.7272,-2.19933
+169,Douglas,,United Kingdom,,360,0,0,1981,0,0,,,,,,7.0,11.0,0.0,Stabit,ton,23.0,1:2,,,0.0,1:1.5,0.0,0.0,0.0,,54.1461,-4.46563
+170,Hartlepool West Harbour,Reconstruction,United Kingdom,,0,4,0,1991,1992,0,,,,,,4.0,10.0,0.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,54.6888,-1.19342
+171,Plymouth,,United Kingdom,,0,0,0,1812,0,0,,,,,Rubble Mound,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,6.0,0.0,0.0,Cross-section subject to multiple historical alterations,50.3343,-4.14721
+172,Port Talbot,,United Kingdom,,0,0,0,1966,1969,0,,,,,Rubble Mound,0.0,0.0,0.0,Rock,,0.0,1:0,Rock,,0.0,1:0,0.0,0.0,0.0,,51.5772,-3.81023
+249,Workington,,United Kingdom,South breakwater repairs,0,0,0,2006,2008,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,54.6516,-3.57733
+281,Alderney,,United Kingdom,,0,20,0,0,0,0,The States of Guernsey,,,,Rubble Mound,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,49.727,-2.197
+302,"Ventnor, Wight",2 new breakwaters,United Kingdom,,0,0,0,2002,2003,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,50.592,-1.204
+308,"Bruichladdich, Islay",,United Kingdom,Extension,0,0,0,0,0,0,,,Haskoning,,Rubble Mound,0.0,0.0,0.0,Rock,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,55.76600000000001,-6.359
+314,Mallaig,,United Kingdom,,300,0,0,0,0,0,,,Haskoning,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,57.008,-5.826000000000001
+316,Brighton marina,East breakwater,United Kingdom,,1220,0,0,0,0,0,,,Haskoning,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,50.81,-0.1
+317,Brighton marina,West breakwater,United Kingdom,,630,0,0,0,0,0,,,Haskoning,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,50.81,-0.1
+334,Watchet,,United Kingdom,,0,0,0,0,0,0,,,,,,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,51.1829,-3.32881
+348,Dover,,United Kingdom,,0,14,0,1847,0,0,,,,,Caisson,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,8.8,Special type of vertical breakwater,51.114,1.329
+349,"St. Catherine, Jersey",,United Kingdom,,650,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,15.0,0.0,,49.223,-2.015
+350,Peterhead,,United Kingdom,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,,ton,0.0,1:0,,ton,0.0,1:0,0.0,0.0,0.0,,57.496,-1.77371
+361,Holyhead,Wave-dissipating blocks,United Kingdom,,0,0,0,0,0,0,,,,,Composite,0.0,0.0,0.0,Cubes,ton,0.0,1:0,Cubes,ton,0.0,1:1.25,13.5,0.0,0.0,,53.325,-4.633
+405,Scarborough,Seawall protecting coastal road,United Kingdom,,0,6,0,2002,2004,0,,,,,Revetment,6.8,0.0,10.0,Accropode,m3,9.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,54.287,-0.383
+478,Hartlepool marina,South pier,United Kingdom,,400,2,0,1991,1992,0,,,,,Rubble Mound,4.0,0.0,10.0,Accropode,m3,4.0,1:1.5,,ton,0.0,1:0,0.0,0.0,0.0,,54.68600000000001,-1.194
+485,Tees & Hartlepool,,United Kingdom,Reconstruction of roundhead,0,0,0,1989,1989,0,,,,,Rubble Mound,0.0,0.0,0.0,Accropode,m3,2.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,54.688,-1.195
+494,Tees & Hartlepool,New breakwater,United Kingdom,,0,3,0,1988,1989,0,,,,,Rubble Mound,6.0,0.0,12.0,Accropode,m3,0.8,1:1.67,,ton,0.0,1:0,0.0,0.0,0.0,breaking waves,54.687,-1.195
+534,Newbiggin bay,Detached breakwater,United Kingdom,,200,9,0,2007,2007,0,,,,,Rubble Mound,5.7,0.0,12.0,Core-Loc,m3,3.9,1:1.5,Core-Loc,m3,3.9,1:1.5,4.8,0.0,0.0,,55.183,-1.505
+542,Aberdeen Harbour,Expansion,United Kingdom,,600,12,0,2016,0,350,Aberdeen Harbour,,HR Wallingford,HR Wallingford,Rubble Mound,8.2,0.0,14.3,Accropode II,m3,15.0,1:1.33,rock,ton,1.0,1:1.5,10.83,17.5,0.0,,57.1338,-2.04897
+544,Berwick Upon Tweed,Coastal Protection Breakwater,United Kingdom,New construction,700,3,0,1826,0,0,,,,,Caisson,0.0,0.0,0.0,,,0.0,1:0,,,0.0,1:0,6.3,8.0,1.7,,55.7641,-1.98757
+452,Piriapolis,,Uruguay,Breakwater extension,0,12,0,1995,1998,0,,,,,Rubble Mound,4.0,0.0,8.0,Accropode,m3,2.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-34.874,-55.282
+489,Punta Carretas,,Uruguay,,0,0,0,1988,1991,0,,,,,Revetment,3.6,0.0,0.0,Accropode,m3,2.5,1:1.33,,ton,0.0,1:0,0.0,0.0,0.0,,-34.929,-56.159
+180,Dung Quat,,Vietnam,,0,16,0,2001,0,0,,,,,Rubble Mound,7.3,0.0,13.8,Accropode,16,0.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,,15.4266,108.76
+181,Al Mukalla commercial port,,Yemen,,0,7,0,1983,1984,0,,,,,,0.0,0.0,0.0,Accropode,m3,6.0,1:1.5,,,0.0,1:0,0.0,0.0,0.0,,14.5303,49.1153
+182,Bal Haf LNG terminal,,Yemen,,0,19,0,2006,0,0,,,,,Rubble Mound,4.5,0.0,11.0,Accropode,m3,4.0,1:1.33,,,0.0,1:0,0.0,0.0,0.0,in progress,13.977,48.176
