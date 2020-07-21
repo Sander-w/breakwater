@@ -7,6 +7,7 @@
 # breakwater: a Python package for the conceptual design of breakwaters
 [![Documentation Status](https://readthedocs.org/projects/breakwater/badge/?version=latest)](https://breakwater.readthedocs.io/en/latest/?badge=latest)
 ![GitHub issues](https://img.shields.io/github/issues-raw/Sander-w/breakwater)
+![PyPI](https://img.shields.io/pypi/v/breakwater)
 
 <table class="tg">
   <tr>
@@ -96,6 +97,6 @@ A tutorial of **breakwater** can be found in [Chapter 3] of the documentation. T
 [documentation] also provides a full overview of the implemented failure mechanisms,
 and is thus a full overview of all features of **breakwater**.
 
-   [Python package index]: https://pypi.org/
+   [Python package index]: https://pypi.org/project/breakwater/
    [documentation]: https://breakwater.readthedocs.io/en/latest/index.html
    [Chapter 3]: https://breakwater.readthedocs.io/en/latest/tutorial.html
