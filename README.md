@@ -7,7 +7,7 @@
 # breakwater: a Python package for the conceptual design of breakwaters
 [![Documentation Status](https://readthedocs.org/projects/breakwater/badge/?version=latest)](https://breakwater.readthedocs.io/en/latest/?badge=latest)
 ![GitHub issues](https://img.shields.io/github/issues-raw/Sander-w/breakwater)
-![PyPI](https://img.shields.io/pypi/v/breakwater)
+[![PyPI](https://img.shields.io/pypi/v/breakwater)](https://pypi.org/project/breakwater/)
 
 <table class="tg">
   <tr>
