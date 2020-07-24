@@ -8,6 +8,7 @@
 [![Documentation Status](https://readthedocs.org/projects/breakwater/badge/?version=latest)](https://breakwater.readthedocs.io/en/latest/?badge=latest)
 ![GitHub issues](https://img.shields.io/github/issues-raw/Sander-w/breakwater)
 [![PyPI](https://img.shields.io/pypi/v/breakwater)](https://pypi.org/project/breakwater/)
+[![Licence](https://img.shields.io/badge/licence-CC%20BY--NC--SA%204.0-green)](https://raw.githubusercontent.com/Sander-w/breakwater/develop/LICENSE)
 
 <table class="tg">
   <tr>
