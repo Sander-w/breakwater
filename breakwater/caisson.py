@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from tabulate import tabulate
 
 from .utils.exceptions import InputError, user_warning, NotSupportedError, RockGradingError
+from .utils.helper import round_even
 from .core.goda import Goda
 from .core.overtopping import vertical
 from .core.toe import toe_berm_stability
@@ -732,7 +733,7 @@ class Caisson:
                 floatfmt=(f'.{decimals}f')))
             print('\n')
 
-    def plot(self, *variants, wlev=None, save_name=None):
+    def plot(self, *variants, wlev=None, save_name=None, show_wave=True):
         """ Plot the cross section of the specified breakwater(s)
 
         Parameters
@@ -749,6 +750,10 @@ class Caisson:
         save_name : str, optional, default: None
             if given the cross section is not shown but saved with the
             given name
+        show_wave : bool, optional, default: True
+            True if the a wave with wave height Hs must be plotted,
+            False if no wave height must be plotted. Note that if a
+            wave height is plotted the wave length is scaled.
 
         Raises
         ------
@@ -791,7 +796,7 @@ class Caisson:
 
             # plot lines
             for layer, lines in coordinates.items():
-                plt.plot(lines['x'], lines['y'], color='k')
+                plt.plot(lines['x'], lines['y'], color='k', zorder=2)
 
                 # check largest value for xlim
                 if np.max(lines['x']) >= xlim_max:
@@ -803,16 +808,36 @@ class Caisson:
                     # set min as xlim_min
                     xlim_min = np.min(lines['x'])
 
+            # check if a wave must be plotted
+            if show_wave:
+                # add sine wave to visualise the wave height Hs
+                # get the wave height, Hs
+                Hs = self._LimitStates[wlev].get_Hs('Hs')
+
+                # compute the wave length and round to the nearest
+                # even number to scale the wave
+                L = self._LimitStates[wlev].L('Tm')
+                k = round_even(L/(15*np.pi))
+
+                # create linspace for the x coordinates
+                x_wave = np.linspace(0, 2*k*np.pi, 100)
+
+                # plot the wave
+                plt.plot(
+                    x_wave+xlim_min,
+                    Hs*np.sin((1/k)*x_wave)+self._LimitStates[wlev].h,
+                    color='dodgerblue', lw=1)
+
             # plot bottom and wlev
             x_wlev_max = np.max(coordinates['caisson']['x'])
 
-            plt.axhline(y=0, color='k', linewidth=2)
+            plt.axhline(y=0, color='peru', lw=2, zorder=1)
             plt.hlines(
                 y=self._LimitStates[wlev].h, xmin=xlim_min*1.2,
-                xmax=-x_wlev_max, color='b')
+                xmax=-x_wlev_max, color='dodgerblue', lw=1.5)
             plt.hlines(
                 y=self._LimitStates[wlev].h, xmin=x_wlev_max,
-                xmax=xlim_max*1.2, color='b')
+                xmax=xlim_max*1.2, color='dodgerblue', lw=1.5)
 
             # set xlim and ylim
             ymax = np.max(coordinates['caisson']['y'])*1.2
