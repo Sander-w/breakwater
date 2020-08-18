@@ -25,7 +25,7 @@
   </tr>  
   <tr>
     <td class="tg-0pky">Master Thesis</td>
-    <td class="tg-0pky"><a href="https://repository.tudelft.nl/">Developing a design automation tool for the conceptual design of breakwaters</a></td>
+    <td class="tg-0pky"><a href="http://resolver.tudelft.nl/uuid:494fa652-2125-4352-aeba-041eebcefde9">Improving the breakwater design process by using a design automation tool</a></td>
   </tr>
   <tr>
     <td class="tg-0pky">Documentation</td>
