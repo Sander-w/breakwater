@@ -79,10 +79,10 @@ def gamma_f(
         If the armour layer is not in table 6.2 from EurOtop (2018)
     """
     table = {'Smooth': 1,
-             'Rock - 1 - permeable': 0.6,
-             'Rock - 1 - impermeable': 0.45,
-             'Rock - 2 - permeable': 0.55,
-             'Rock - 2 - impermeable': 0.40,
+             'Rock - 1 - impermeable': 0.6,
+             'Rock - 1 - permeable': 0.45,
+             'Rock - 2 - impermeable': 0.55,
+             'Rock - 2 - permeable': 0.4,
              'Cubes - 1 - flat': 0.49,
              'Cubes - 2 - random': 0.47,
              'Antifers': 0.5,
