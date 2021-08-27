@@ -1,6 +1,6 @@
 import setuptools
 
-__version__ = "v1.0.4a"
+__version__ = "v1.0.5"
 __author__ = "S. Winkel"
 
 
