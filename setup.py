@@ -5,11 +5,22 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 requires = [
-    'numpy',
-    'scipy',
+    'cycler',
+    'kiwisolver',
     'matplotlib',
+    'numpy',
     'pandas',
+    'Pillow',
+    'pyparsing',
+    'pyproj',
+    'pyshp',
+    'python-dateutil',
+    'pytz',
+    'six',
+    'scipy',
+    'tk',
     'tabulate',
+    'XlsxWriter'
     ]
 
 setuptools.setup(
