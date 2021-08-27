@@ -1,10 +1,6 @@
 """
 Breakwater Design with Python
 """
-
-__version__ = '1.0'
-__author__ = 'S. Winkel'
-
 # import hydraulic conditions
 from .core.battjes import BattjesGroenendijk
 from .core.goda import goda_wave_heights
