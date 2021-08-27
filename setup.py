@@ -32,7 +32,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/Sander-w/breakwater/',
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(include=['breakwater', 'breakwater.*']),
     classifiers=[
         'Programming Language :: Python :: 3',
         'Natural Language :: English',
