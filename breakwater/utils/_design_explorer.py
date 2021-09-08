@@ -122,7 +122,7 @@ def _DE_params(
         current row of the df
     concept : obj
         a breakwater concept
-    structure : {'RRM', 'CRM', 'RC', 'CC'}
+    structure : {'RRM', 'CRM', 'CRMR', 'RC', 'CC'}
         type of structure for export
     slopes : {angles, tuples}, optional, default: angles
         how the slopes must be exported. tuples will export the
@@ -145,7 +145,7 @@ def _DE_params(
     to_explorer = {}
 
     # get the valid parameters
-    if structure == 'RRM' or structure == 'CRM':
+    if structure == 'RRM' or structure == 'CRM' or structure == 'CRMR':
         vparams = _RM_vparams()
     elif structure == 'RC' or structure == 'CC':
         vparams = _C_vparams()

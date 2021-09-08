@@ -14,7 +14,7 @@ from .utils.cost import _process_cost, cost_influence
 from .caisson import Caisson
 from .conditions import LimitState
 from .material import read_grading, read_units
-from .rubble import RockRubbleMound, ConcreteRubbleMound
+from .rubble import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
 
 
 def read_configurations(
@@ -34,10 +34,11 @@ def read_configurations(
 
     Parameters
     ----------
-    structure : {'RRM', 'CRM', 'RC', 'CC'}
+    structure : {'RRM', 'CRM', 'CRMR', 'RC', 'CC'}
         structure for which conceptual designs must be generated. RRM
         for a rubble mound with rock as armour layer, CRM for a rubble
-        mound with concrete armour units as armour layer, RC for a
+        mound with concrete armour units as armour layer, CRMR for a rubble
+        mound revetment with concrete armour units as armour layer, RC for a
         vertical (composite) breakwater with rock as armour layer for
         the foundation and CC for a vertical (composite) breakwater with
         concrete armour units as armour layer for the foundation.
@@ -246,8 +247,9 @@ class Configurations:
 
     With this class a parametric design of one or more types of
     breakwaters. The types of structures included in the tool are: a
-    rubble mound breakwater with rock (RRM) or concrete armour units
-    (CRM) as armour layer and a vertical (composite) breakwater with
+    rubble mound breakwater with rock (RRM), concrete armour units
+    (CRM) as armour layer, concrete armour units as armour layer as 
+    part of a revetment  and a vertical (composite) breakwater with 
     rock (RC) or concrete armour units (CC) as armour layer of the
     foundation layer. Each structure has its own set of required
     (table 1) and optional (table 2) parameters.
@@ -266,41 +268,41 @@ class Configurations:
 
     Table 1: required parameters
 
-    +--------------------+-----+-----+-----+-----+
-    | Parameter          | RRM | CRM | RC  | CC  |
-    +====================+=====+=====+=====+=====+
-    | LimitState         |  x  |  x  |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | rho_w              |  x  |  x  |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | slope_foreshore    |  x  |  x  |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | Grading            |  x  |  x  |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | slope :sup:`1`     |  x  |  x  |     |     |
-    +--------------------+-----+-----+-----+-----+
-    | B :sup:`1`         |  x  |  x  |     |     |
-    +--------------------+-----+-----+-----+-----+
-    | Dn50_core :sup:`1` |  x  |  x  |     |     |
-    +--------------------+-----+-----+-----+-----+
-    | N                  |  x  |     |     |     |
-    +--------------------+-----+-----+-----+-----+
-    | ArmourUnit         |     |  x  |     |     |
-    +--------------------+-----+-----+-----+-----+
-    | Pc :sup:`1`        |     |     |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | rho_c              |     |     |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | rho_fill           |     |     |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | Bm :sup:`1`        |     |     |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | hb :sup:`1`        |     |     |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | mu                 |     |     |  x  |  x  |
-    +--------------------+-----+-----+-----+-----+
-    | BermMaterial       |     |     |     |  x  |
-    +--------------------+-----+-----+-----+-----+
+    +--------------------+-----+-----+-----+-----+-----+
+    | Parameter          | RRM | CRM | CRMR| RC  | CC  |
+    +====================+=====+=====+=====+=====+=====+
+    | LimitState         |  x  |  x  |  x  |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | rho_w              |  x  |  x  |  x  |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | slope_foreshore    |  x  |  x  |  x  |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | Grading            |  x  |  x  |  x  |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | slope :sup:`1`     |  x  |  x  |  x  |     |     |
+    +--------------------+-----+-----+-----+-----+-----+
+    | B :sup:`1`         |  x  |  x  |  x  |     |     |
+    +--------------------+-----+-----+-----+-----+-----+
+    | Dn50_core :sup:`1` |  x  |  x  |  x  |     |     |
+    +--------------------+-----+-----+-----+-----+-----+
+    | N                  |  x  |     |     |     |     |
+    +--------------------+-----+-----+-----+-----+-----+
+    | ArmourUnit         |     |  x  |  x  |     |     |
+    +--------------------+-----+-----+-----+-----+-----+
+    | Pc :sup:`1`        |     |     |     |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | rho_c              |     |     |     |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | rho_fill           |     |     |     |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | Bm :sup:`1`        |     |     |     |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | hb :sup:`1`        |     |     |     |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | mu                 |     |     |     |  x  |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
+    | BermMaterial       |     |     |     |     |  x  |
+    +--------------------+-----+-----+-----+-----+-----+
 
     :sup:`1` Parameter is allowed to vary, enter as a tuple with
     (min, max, num), where min and max are the minimum and maximum
@@ -308,41 +310,41 @@ class Configurations:
 
     Table 2: Optional parameters with default values
 
-    +---------------------------+---------+-----+-----+-----+-----+
-    | Parameter                 | Default | RRM | CRM | RC  | CC  |
-    +===========================+=========+=====+=====+=====+=====+
-    | safety                    |    1    |  o  |  o  |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | beta                      |    0    |  o  |  o  |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | Soil                      |  None   |  o  |  o  |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | slope_toe :sup:`1`        |  (2,3)  |  o  |  o  |     |     |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | phi                       |    40   |  o  |  o  |     |     |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | B_toe :sup:`1`            |  None   |  o  |  o  |     |     |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | vdm                       |   max   |  o  |     |     |     |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | layers_rock               |    2    |  o  |     |  o  |     |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | layers_units              |    1    |     |  o  |     |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | layers_underlayer         |    2    |  o  |  o  |     |     |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | filter_rule               |  None   |     |  o  |     |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | pe_max                    |   500   |     |     |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | SF_sliding                |   1.2   |     |     |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | SF_turning                |   1.2   |     |     |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | slope_foundation :sup:`1` |  (2,3)  |     |     |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
-    | \lambda_                  | [1,1,1] |     |     |  o  |  o  |
-    +---------------------------+---------+-----+-----+-----+-----+
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | Parameter                 | Default | RRM | CRM | CRMR| RC  | CC  |
+    +===========================+=========+=====+=====+=====+=====+=====+
+    | safety                    |    1    |  o  |  o  |  o  |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | beta                      |    0    |  o  |  o  |  o  |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | Soil                      |  None   |  o  |  o  |  o  |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | slope_toe :sup:`1`        |  (2,3)  |  o  |  o  |  o  |     |     |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | phi                       |    40   |  o  |  o  |  o  |     |     |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | B_toe :sup:`1`            |  None   |  o  |  o  |  o  |     |     |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | vdm                       |   max   |  o  |     |     |     |     |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | layers_rock               |    2    |  o  |     |     |  o  |     |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | layers_units              |    1    |     |  o  |  o  |     |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | layers_underlayer         |    2    |  o  |  o  |  o  |     |     |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | filter_rule               |  None   |     |  o  |  o  |     |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | pe_max                    |   500   |     |     |     |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | SF_sliding                |   1.2   |     |     |     |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | SF_turning                |   1.2   |     |     |     |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | slope_foundation :sup:`1` |  (2,3)  |     |     |     |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
+    | \lambda_                  | [1,1,1] |     |     |     |  o  |  o  |
+    +---------------------------+---------+-----+-----+-----+-----+-----+
 
 
     :sup:`1` Parameter is allowed to vary, enter as a tuple with
@@ -351,10 +353,11 @@ class Configurations:
 
     Parameters
     ----------
-    structure : {'RRM', 'CRM', 'RC', 'CC'}
+    structure : {'RRM', 'CRM', 'CRMR', 'RC', 'CC'}
         structure for which conceptual designs must be generated. RRM
         for a rubble mound with rock as armour layer, CRM for a rubble
-        mound with concrete armour units as armour layer, RC for a
+        mound with concrete armour units as armour layer, CRMR for a rubble
+        mound revetment with concrete armour units as armour layer. RC for a
         vertical (composite) breakwater with rock as armour layer for
         the foundation and CC for a vertical (composite) breakwater with
         concrete armour units as armour layer for the foundation.
@@ -514,6 +517,7 @@ class Configurations:
         if 'RRM' in structure and 'CRM' in structure:
             RRM_compute = True
             CRM_compute = True
+            CRMR_compute = False
 
             RM_vkwargs = _RM_vkwargs(type='both')
             RM_config = _process_kwargs(kwargs=kwargs, vkwargs=RM_vkwargs)
@@ -535,6 +539,7 @@ class Configurations:
         elif 'RRM' in structure:
             RRM_compute = True
             CRM_compute = False
+            CRMR_compute = False
 
             RM_vkwargs = _RM_vkwargs(type='Rock')
             RM_config = _process_kwargs(kwargs=kwargs, vkwargs=RM_vkwargs)
@@ -549,6 +554,7 @@ class Configurations:
         elif 'CRM' in structure:
             RRM_compute = False
             CRM_compute = True
+            CRMR_compute = False
 
             RM_vkwargs = _RM_vkwargs(type='ArmourUnit')
             RM_config = _process_kwargs(kwargs=kwargs, vkwargs=RM_vkwargs)
@@ -560,9 +566,25 @@ class Configurations:
             filter_rule = RM_config['filter_rule']
             phi = RM_config['phi']
 
-        elif 'RRM' not in structure and 'CRM' not in structure:
+        elif 'CRMR' in structure:
             RRM_compute = False
             CRM_compute = False
+            CRMR_compute = True
+
+            RM_vkwargs = _RM_vkwargs(type='ArmourUnit')
+            RM_config = _process_kwargs(kwargs=kwargs, vkwargs=RM_vkwargs)
+
+            # unpack constant arguments for CRM
+            beta = RM_config['beta']
+            ArmourUnit = RM_config['ArmourUnit']
+            layers_units = RM_config['layers_units']
+            filter_rule = RM_config['filter_rule']
+            phi = RM_config['phi']
+
+        elif 'RRM' not in structure and 'CRM' not in structure and 'CRMR' not in structure:
+            RRM_compute = False
+            CRM_compute = False
+            CRMR_compute = False
 
         # input for caisson in structure
         if 'RC' in structure and 'CC' in structure:
@@ -638,7 +660,7 @@ class Configurations:
             CC_compute = False
 
         # check if a computation must be made
-        if (not RRM_compute and not CRM_compute
+        if (not RRM_compute and not CRM_compute and not CRMR_compute
                 and not RC_compute and not CC_compute):
             # noting to compute, raise error
             raise NotSupportedError(
@@ -657,7 +679,7 @@ class Configurations:
             # in first iteration check if computation is needed
             # and unpack arguments if needed
             if i == 0:
-                if not RRM_compute and not CRM_compute:
+                if not RRM_compute and not CRM_compute and not CRMR_compute:
                     # break loop if computation is not needed
                     break
 
@@ -745,7 +767,35 @@ class Configurations:
                 self.df = self.df.append(temp_df, ignore_index=True, sort=True)
 
                 RM_bar.next()
+            if CRMR_compute:
+                try:
+                    with catch_warnings(record=True) as w:
+                        RM_units = ConcreteRubbleMoundRevetment(
+                            slope=slope, slope_foreshore=slope_foreshore, B=B,
+                            rho_w=rho_w, LimitState=LimitState, safety=safety,
+                            Grading=Grading, ArmourUnit=ArmourUnit, phi=phi,
+                            Dn50_core=Dn50_core, slope_toe=slope_toe,
+                            B_toe=B_toe, layers=layers_units, Soil=Soil, id=id,
+                            filter_rule=filter_rule)
 
+                except ArmourUnitsError:
+                    # if there is no class of armour unit that
+                    # can satisfy the computed Dn50 of the armour layer
+                    units_bw = None
+
+                # save the concept to a temporary df and append to df
+                temp_df = pd.DataFrame(data={'type': ['CRMR'],
+                                             'id': [id],
+                                             'concept': [RM_units],
+                                             'B': [B],
+                                             'Dn50_core': [Dn50_core],
+                                             'B_toe': [B_toe],
+                                             'slope': [slope],
+                                             'slope_toe': [slope_toe],
+                                             'warnings': [w]})
+                self.df = self.df.append(temp_df, ignore_index=True, sort=True)
+
+                RM_bar.next()
             if id == RM_num_combinations:
                 RM_bar.finish()
 
@@ -1044,6 +1094,12 @@ class Configurations:
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
+                elif row.type == 'CRMR':
+                    price = row.concept.cost(
+                        *row.concept.variantIDs, core_price=core_price,
+                        unit_price=unit_price, transport_cost=transport_cost,
+                        output='variant')
+
                 elif row.type == 'RC' or row.type == 'CC':
                     # check if investment cost must be added
                     if investment is not None and length is not None:
@@ -1169,7 +1225,7 @@ class Configurations:
 
         # check if RRM and CRM are in structure
         designed_structures = self.df.type.unique()
-        if 'CRM' and 'RRM' in designed_structures:
+        if 'CRM' and 'RRM' and 'CRMR' in designed_structures:
             format_class_as_string = True
         else:
             format_class_as_string = False

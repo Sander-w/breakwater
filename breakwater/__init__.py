@@ -12,7 +12,7 @@ from .material import RockGrading, Xbloc, XblocPlus, ConcreteArmour
 
 # import breakwaters
 from .design import Configurations
-from .rubble import RubbleMound, ConcreteRubbleMound, RockRubbleMound
+from .rubble import RubbleMound, ConcreteRubbleMound, RockRubbleMound, ConcreteRubbleMoundRevetment
 from .caisson import Caisson
 
 # file loader
