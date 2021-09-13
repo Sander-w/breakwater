@@ -2507,9 +2507,9 @@ class ConcreteRubbleMound(RubbleMound):
 
 class ConcreteRubbleMoundRevetment(RubbleMound):
 
-    """Design a breakwater with concrete armour units as armour layer
+    """Design a revetment with concrete armour units as armour layer
 
-    Makes a conceptual design for a conventional rubble mound breakwater
+    Makes a conceptual design for a conventional rubble mound revetment
     with armour units as the armour layer, for one or several limit
     states. The following computations are performed:
 
