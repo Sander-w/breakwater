@@ -7,7 +7,7 @@ from .utils.cost import _process_cost
 
 
 def interactive_design(
-        structure, LimitState, Grading, ArmourUnit=None, BermMaterial=None,
+        structure, type, LimitState, Grading, ArmourUnit=None, BermMaterial=None,
         cost=None, Soil=None, display_warnings=True):
     """ Interactive Design Application
 
@@ -29,6 +29,8 @@ def interactive_design(
         vertical (composite) breakwater with rock as armour layer for
         the foundation and CC for a vertical (composite) breakwater with
         concrete armour units as armour layer for the foundation.
+    type : {'Material', 'C02'}
+        Which type of cost analysis to do
     LimitState : :py:class:`LimitState` or list of :py:class:`LimitState`
         ULS, SLS or another limit state defined with
         :py:class:`LimitState`
@@ -149,7 +151,7 @@ def interactive_design(
             del vkwargs[parameter]
 
     # process the cost
-    cost = _process_cost(structure, cost, Grading, validate=False)
+    cost = _process_cost(structure, type, cost, Grading, validate=False)
 
     # start the app
     app = BreakwaterDesign(
