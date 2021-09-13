@@ -768,6 +768,7 @@ class Configurations:
                 self.df = self.df.append(temp_df, ignore_index=True, sort=True)
 
                 RM_bar.next()
+
             if CRMR_compute:
                 try:
                     with catch_warnings(record=True) as w:

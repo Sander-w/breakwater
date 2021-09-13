@@ -1,5 +1,5 @@
 import breakwater as bw
-
+from Cubipod import Cubipod
 """
 How to use the C02 Footprint functions for the Revetment at Energy Island
     Hydraulic conditions still need to be updated -> as well the gradings will probably be (Cupipod)
@@ -14,15 +14,16 @@ ULS = bw.LimitState(
     Sd= 5, Nod= 4, q= 10, label='ULS'
                     )
 
-NEN = bw.RockGrading(rho= 2650)
+NEN = bw.RockGrading(rho= 2650) #standard gradings
 
-xbloc = bw.Xbloc()
+cubipod = Cubipod()
 
-# design multiple configurations of RRM and CRM
+# Design the Energy Island case with Cubipods.
+
 configs = bw.Configurations(
     structure=['CRMR'], LimitState=ULS, rho_w=1025,
-    slope_foreshore=(1,100), Grading=NEN, slope=((1,3), (3,4), 4), B=(5, 8, 4),
-    Dn50_core=(0.2, 0.4, 3), N=2100, ArmourUnit=xbloc)
+    slope_foreshore=(1,100), Grading=NEN, slope=(1, 8), B=(5, 8, 4),
+    Dn50_core=(0.2, 0.4, 3), N=2100, ArmourUnit= cubipod, filter_rule = 'XblocPlus')
 
 material_cost = {'type': 'Material', 'price': {'LMA_5/40': 5000, 'LMA_10/60': 6000, 'LMA_40/200': 70000, 'LMA_15/300': 8000, 'LMA_60/300': 9000,
               'HMA_300/1000': 10000, 'HMA_1000/3000': 11000, 'HMA_3000/6000': 12000, 'HMA_6000/10000': 13000,
