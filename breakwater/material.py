@@ -269,17 +269,17 @@ class RockGrading:
         return self.grading[key]
 
     def add_cost(self, type, cost):
-        """ Add cost per m³ of each Rock Class either for the material or the C02 footprint
+        """ Add cost per m³ of each Rock Class either for the material or the CO2 footprint
 
-        Add the cost per m³ of each Rock Class either for the material or the C02 footprint to the :py:attr:`grading`
+        Add the cost per m³ of each Rock Class either for the material or the CO2 footprint to the :py:attr:`grading`
 
         Parameters
         ----------
         cost : dict
             cost of each Rock Class, keys must be identical to the name
             of the rock class
-        type: {'Material, 'C02'}
-            Indicate whether the costs are added for the material or the C02
+        type: {'Material, 'CO2'}
+            Indicate whether the costs are added for the material or the CO2
 
         Raises
         ------
@@ -292,17 +292,17 @@ class RockGrading:
         dictvar = None
 
         # self.grading['Material_cost'] = False
-        # self.grading['C02_cost'] = False
+        # self.grading['CO2_cost'] = False
 
-        # Is the cost computation for Material or C02 footprint. Set a new dictionary key in the grading dictionary
+        # Is the cost computation for Material or CO2 footprint. Set a new dictionary key in the grading dictionary
         if type == 'Material':
             dictvar = 'material_price'
             #self.grading['Material_cost'] = True
-        elif type == 'C02':
-            dictvar = 'c02_price'
-            #self.grading['C02_cost'] = True
+        elif type == 'CO2':
+            dictvar = 'CO2_price'
+            #self.grading['CO2_cost'] = True
         else:
-            raise KeyError('Give Material or C02 as input for the argument "type"')
+            raise KeyError('Give Material or CO2 as input for the argument "type"')
 
         rock_classes = list(self.grading.keys())
         # iterate over the prices in the given dict

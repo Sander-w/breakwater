@@ -1025,7 +1025,7 @@ class Configurations:
             self, type = None, core_price=None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
             length=None):
-        """ Compute the cost of each concept either C02 or material cost
+        """ Compute the cost of each concept either CO2 or material cost
 
         Compute the cost of each concept and add the cost to the
         :py:attr:`df`. The cost of the rocks must be specified in the
@@ -1044,7 +1044,7 @@ class Configurations:
 
         Parameters
         ----------
-        type: {'Material', 'C02'}
+        type: {'Material', 'CO2'}
             which cost type is added
         core_price : float, optional, default: None
             cost of the core material per m³, required for RRM and CRM
@@ -1099,6 +1099,7 @@ class Configurations:
                         output='variant')
 
                 elif row.type == 'CRMR':
+                    print(row.concept.get_class())
                     price = row.concept.cost(
                         *row.concept.variantIDs, type = type, core_price=core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
@@ -1121,11 +1122,11 @@ class Configurations:
                 #print(price == None)
                 computed_cost.append(price)
 
-        # add column to the df for either material or c02
+        # add column to the df for either material or CO2
         if type == 'Material':
             self.df['material_cost'] = computed_cost
-        if type == 'C02':
-            self.df['c02_cost'] = computed_cost
+        if type == 'CO2':
+            self.df['CO2_cost'] = computed_cost
 
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
@@ -1153,7 +1154,7 @@ class Configurations:
         +==========================+============+============+
         | material_cost            |     o      |     o      |
         +----------------------------------------------------+
-        | c02_cost                 |     o      |     o      |
+        | CO2_cost                 |     o      |     o      |
         +--------------------------+------------+------------+
         | B                        |     o      |     o      |
         +--------------------------+------------+------------+
@@ -1331,15 +1332,15 @@ class Configurations:
                             'Material cost have not been added, use add_cost to add '
                             'cost to the df')
 
-                # check if C02 cost must be included
-                if 'c02_cost' in params:
+                # check if CO2 cost must be included
+                if 'CO2_cost' in params:
                     # check if cost have been added
-                    if 'c02_cost' in self.df.columns:
+                    if 'CO2_cost' in self.df.columns:
                         # add cost to data
-                        data['c02_cost'] = row.c02_cost[id]
+                        data['CO2_cost'] = row.CO2_cost[id]
                     else:
                         raise KeyError(
-                            'C02 cost have not been added, use add_cost to add '
+                            'CO2 cost have not been added, use add_cost to add '
                             'cost to the df')
 
                 # add image to data
@@ -1537,7 +1538,7 @@ class Configurations:
         as a varying parameter the x-axis is normalised (from 0 to 1)
         so that all parameters can be plotted on the same axis.
 
-        type_: {'Material, 'C02'}
+        type_: {'Material, 'CO2'}
             which cost influence is analysed
 
         .. note::
@@ -1553,8 +1554,8 @@ class Configurations:
 
         if type_ == 'Material':
             cost_var = 'material_cost'
-        if type_ == 'C02':
-            cost_var = 'c02_cost'
+        if type_ == 'CO2':
+            cost_var = 'CO2_cost'
 
         # make dict to the line data for plotting
         lines = {}
@@ -1574,7 +1575,7 @@ class Configurations:
                             lambda x: np.round(np.arctan(x[0]/x[1])*180/np.pi, 2))
 
                 # check if not a cost parameter or in exclude
-                if parameter not in ['material_cost', 'c02_cost'] and parameter not in exclude:
+                if parameter not in ['material_cost', 'CO2_cost'] and parameter not in exclude:
                     # get the unique values
                     unique = df[parameter].unique()
                     # check if only 1 unique value in the column
@@ -1606,9 +1607,9 @@ class Configurations:
                             if type_ == 'Material' and row.material_cost != None:
                                 lines[parameter][cost_var].append(
                                     np.mean(list(row.material_cost.values())))
-                            if type_ == 'C02' and row.c02_cost != None:
+                            if type_ == 'CO2' and row.CO2_cost != None:
                                 lines[parameter][cost_var].append(
-                                    np.mean(list(row.c02_cost.values())))
+                                    np.mean(list(row.CO2_cost.values())))
 
         # generate the plot
 

@@ -1087,7 +1087,7 @@ class RubbleMound:
     def _cost(
         self, *variants, type, core_price, unit_price, transport_cost, output="variant"
     ):
-        """Compute the cost for either the material or C02 footprint per meter for each variant
+        """Compute the cost for either the material or CO2 footprint per meter for each variant
 
         Method to compute the cost of each generated variant, the cost
         is computed per meter
@@ -1098,8 +1098,8 @@ class RubbleMound:
             IDs of the variants to plot, see :py:attr:`variantIDs` for
             a list of all generated variants. If 'all' is in the
             arguments, all variants will be plotted.
-        type: {'Material, 'C02'}
-            Indicate whether the costs are calculated for the material or the C02
+        type: {'Material, 'CO2'}
+            Indicate whether the costs are calculated for the material or the CO2
         core_price : float
             cost of the core material per m³
         unit_price : float
@@ -1135,15 +1135,15 @@ class RubbleMound:
 
         dictvar = None
 
-        # Is the cost computation for Material or C02 footprint. Set a new dictionary key in the grading dictionary
+        # Is the cost computation for Material or CO2 footprint. Set a new dictionary key in the grading dictionary
         if type == 'Material':
             dictvar = 'material_price'
 
-        elif type == 'C02':
-            dictvar = 'c02_price'
+        elif type == 'CO2':
+            dictvar = 'CO2_price'
 
         else:
-            raise KeyError('Give Material or C02 as input for the argument "type"')
+            raise KeyError('Give Material or CO2 as input for the argument "type"')
 
         if dictvar in Grading[list(Grading.grading.keys())[0]]:
             # pricing has been added
@@ -1793,7 +1793,7 @@ class RockRubbleMound(RubbleMound):
         )
 
     def cost(self, *variants, type, core_price, transport_cost=None, output="variant"):
-        """Compute the cost for the material or the C02 footprint per meter for each variant
+        """Compute the cost for the material or the CO2 footprint per meter for each variant
 
         Method to compute the cost of each generated variant, the cost
         is computed per meter. The cost of the rocks must be specified
@@ -1807,8 +1807,8 @@ class RockRubbleMound(RubbleMound):
             IDs of the variants to plot, see :py:attr:`variantIDs` for
             a list of all generated variants. If 'all' is in the
             arguments, all variants will be plotted.
-        type: {'Material, 'C02'}
-            Indicate whether the costs are calculated for the material or the C02
+        type: {'Material, 'CO2'}
+            Indicate whether the costs are calculated for the material or the CO2
         core_price : float
             cost of the core material per m³
         transport_cost : float, optional, default: None
@@ -2448,7 +2448,7 @@ class ConcreteRubbleMound(RubbleMound):
     def cost(
         self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
     ):
-        """Compute the cost per meter for each variant for the materials or the C02 footprint
+        """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
         Method to compute the cost of each generated variant, the cost
         is computed per meter. The cost of the rocks in the substructure
@@ -2468,8 +2468,8 @@ class ConcreteRubbleMound(RubbleMound):
             IDs of the variants to plot, see :py:attr:`variantIDs` for
             a list of all generated variants. If 'all' is in the
             arguments, all variants will be plotted.
-        type: {'Material, 'C02'}
-            Indicate whether the costs are calculated for the material or the C02
+        type: {'Material, 'CO2'}
+            Indicate whether the costs are calculated for the material or the CO2
         core_price : float
             cost of the core material per m³
         unit_price : float
@@ -2829,7 +2829,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
     def cost(
         self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
     ):
-        """Compute the cost per meter for each variant for the materials or the C02 footprint
+        """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
         Method to compute the cost of each generated variant, the cost
         is computed per meter. The cost of the rocks in the substructure
@@ -2849,8 +2849,8 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             IDs of the variants to plot, see :py:attr:`variantIDs` for
             a list of all generated variants. If 'all' is in the
             arguments, all variants will be plotted.
-        type: {'Material, 'C02'}
-            Indicate whether the costs are calculated for the material or the C02
+        type: {'Material, 'CO2'}
+            Indicate whether the costs are calculated for the material or the CO2
         core_price : float
             cost of the core material per m³
         unit_price : float
