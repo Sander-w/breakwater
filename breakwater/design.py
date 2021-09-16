@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
@@ -767,6 +768,7 @@ class Configurations:
                 self.df = self.df.append(temp_df, ignore_index=True, sort=True)
 
                 RM_bar.next()
+
             if CRMR_compute:
                 try:
                     with catch_warnings(record=True) as w:
@@ -1020,10 +1022,10 @@ class Configurations:
         return configs, max_combinations
 
     def add_cost(
-            self, core_price=None, unit_price=None, concrete_price=None,
+            self, type = None, core_price=None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
             length=None):
-        """ Compute the cost of each concept
+        """ Compute the cost of each concept either CO2 or material cost
 
         Compute the cost of each concept and add the cost to the
         :py:attr:`df`. The cost of the rocks must be specified in the
@@ -1042,6 +1044,8 @@ class Configurations:
 
         Parameters
         ----------
+        type: {'Material', 'CO2'}
+            which cost type is added
         core_price : float, optional, default: None
             cost of the core material per m³, required for RRM and CRM
         unit_price : float, optional, default: None
@@ -1066,9 +1070,9 @@ class Configurations:
             'fill_price': fill_price}
 
         # check if all required cost have been given
-        for type in self.df.type.unique():
+        for structure in self.df.type.unique():
             # validate cost
-            _process_cost(type, cost, self._Grading)
+            _process_cost(structure, type, cost, self._Grading)
 
         # set list to store cost in
         computed_cost = []
@@ -1076,27 +1080,28 @@ class Configurations:
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
             # check if concept is not None
+            #print(row.concept)
             if row.concept is None:
                 # not a valid concept
-                computed_cost.append(None)
-
+                computed_cost.append(None) #Wat gebeurt hier. Dit zorgt voor een error bij cost_influence
             else:
                 # valid concept
                 # check types and compute price
                 if row.type == 'RRM':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, core_price=core_price,
+                        *row.concept.variantIDs, type = type, core_price=core_price,
                         transport_cost=transport_cost, output='variant')
 
                 elif row.type == 'CRM':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, core_price=core_price,
+                        *row.concept.variantIDs, type = type, core_price=core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
                 elif row.type == 'CRMR':
+                    print(row.concept.get_class())
                     price = row.concept.cost(
-                        *row.concept.variantIDs, core_price=core_price,
+                        *row.concept.variantIDs, type = type, core_price=core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
@@ -1107,17 +1112,21 @@ class Configurations:
                         row.concept.dry_dock(investment, length)
 
                     price = row.concept.cost(
-                        *row.concept.variantIDs, concrete_price=concrete_price,
+                        *row.concept.variantIDs, type = type, concrete_price=concrete_price,
                         fill_price=fill_price, unit_price=unit_price)
 
                 else:
                     raise NotSupportedError(f'{row.type} is not supported')
 
                 # add cost to list
+                #print(price == None)
                 computed_cost.append(price)
 
-        # add column to the df
-        self.df['cost'] = computed_cost
+        # add column to the df for either material or CO2
+        if type == 'Material':
+            self.df['material_cost'] = computed_cost
+        if type == 'CO2':
+            self.df['CO2_cost'] = computed_cost
 
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
@@ -1143,7 +1152,9 @@ class Configurations:
         +--------------------------+------------+------------+
         | Parameter                | RRM + CRM  |  RC + CC   |
         +==========================+============+============+
-        | cost                     |     o      |     o      |
+        | material_cost            |     o      |     o      |
+        +----------------------------------------------------+
+        | CO2_cost                 |     o      |     o      |
         +--------------------------+------------+------------+
         | B                        |     o      |     o      |
         +--------------------------+------------+------------+
@@ -1275,7 +1286,7 @@ class Configurations:
         # start the export
         for index, row in self.df.iterrows():
             # check if concept exists
-            if row.concept is None:
+            if row.concept is None: #Als het concept None is dan wordt het eruit gehaald
                 # go to next concept
                 bar.next()
                 all_CaseNo.append([CaseNo])
@@ -1310,15 +1321,26 @@ class Configurations:
                     change_CRM_class=format_class_as_string)
                 data.update(to_explorer)
 
-                # check if cost must be included
-                if 'cost' in params:
+                # check if material cost must be included
+                if 'material_cost' in params:
                     # check if cost have been added
-                    if 'cost' in self.df.columns:
+                    if 'material_cost' in self.df.columns:
                         # add cost to data
-                        data['cost'] = row.cost[id]
+                        data['material_cost'] = row.material_cost[id]
                     else:
                         raise KeyError(
-                            'Cost have not been added, use add_cost to add '
+                            'Material cost have not been added, use add_cost to add '
+                            'cost to the df')
+
+                # check if CO2 cost must be included
+                if 'CO2_cost' in params:
+                    # check if cost have been added
+                    if 'CO2_cost' in self.df.columns:
+                        # add cost to data
+                        data['CO2_cost'] = row.CO2_cost[id]
+                    else:
+                        raise KeyError(
+                            'CO2 cost have not been added, use add_cost to add '
                             'cost to the df')
 
                 # add image to data
@@ -1508,13 +1530,16 @@ class Configurations:
         table = [[key, count] for key, count in unique_warnings.items()]
         print(tabulate(table, headers=['Warning', 'Count'], tablefmt='github'))
 
-    def cost_influence(self):
+    def cost_influence(self, type_):
         """ Plot the influence of the varying parameters on the cost
 
         Method to see the influence of the varying parameters on the
         cost of a concept. If more than 1 parameter has been specified
         as a varying parameter the x-axis is normalised (from 0 to 1)
         so that all parameters can be plotted on the same axis.
+
+        type_: {'Material, 'CO2'}
+            which cost influence is analysed
 
         .. note::
            When more than one varying parameter is specified several
@@ -1525,6 +1550,13 @@ class Configurations:
         # headers to exclude
         exclude = ['concept', 'id', 'type', 'warnings']
 
+        cost_var = None
+
+        if type_ == 'Material':
+            cost_var = 'material_cost'
+        if type_ == 'CO2':
+            cost_var = 'CO2_cost'
+
         # make dict to the line data for plotting
         lines = {}
 
@@ -1532,7 +1564,6 @@ class Configurations:
             # make df where the type equals the current structure
             df = self.df[self.df.type == structure]
             df = df.drop(columns=exclude)
-
             # iterate over the columns of the df
             for parameter in df.columns:
                 # check if parameter is slope
@@ -1544,14 +1575,13 @@ class Configurations:
                             lambda x: np.round(np.arctan(x[0]/x[1])*180/np.pi, 2))
 
                 # check if not a cost parameter or in exclude
-                if parameter != 'cost' and parameter not in exclude:
+                if parameter not in ['material_cost', 'CO2_cost'] and parameter not in exclude:
                     # get the unique values
                     unique = df[parameter].unique()
-
                     # check if only 1 unique value in the column
                     if len(unique) > 1:
                         # varying parameter, add to lines dict
-                        lines[parameter] = {'values': [], 'cost': []}
+                        lines[parameter] = {'values': [], cost_var: []}
 
                         # get list of the values
                         values = list(df[parameter].values)
@@ -1573,8 +1603,15 @@ class Configurations:
                                 row[parameter])
 
                             # compute average cost and add to dict
-                            lines[parameter]['cost'].append(
-                                np.mean(list(row.cost.values())))
+                            #concept excluded so cost row.concept != None replaced by row.material_cost
+                            if type_ == 'Material' and row.material_cost != None:
+                                lines[parameter][cost_var].append(
+                                    np.mean(list(row.material_cost.values())))
+                            if type_ == 'CO2' and row.CO2_cost != None:
+                                lines[parameter][cost_var].append(
+                                    np.mean(list(row.CO2_cost.values())))
 
         # generate the plot
-        cost_influence(lines)
+
+        plot = cost_influence(type= type_, lines= lines)
+

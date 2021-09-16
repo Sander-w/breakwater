@@ -3,13 +3,15 @@ import matplotlib.pyplot as plt
 
 from .exceptions import InputError, RockGradingError
 
-def _process_cost(structure, cost, Grading, validate=True):
+def _process_cost(structure, type, cost, Grading, validate=True):
     """ Process cost input to a dict
 
     Parameters
     ----------
     structure : {'RRM', 'CRM', 'RC', 'CC'}
         structure for which the cost must be verified
+    type : {'Material', 'C02'}
+        Type of cost to process
     Grading : :py:class:`RockGrading`
         rock grading
     cost : dict
@@ -19,10 +21,21 @@ def _process_cost(structure, cost, Grading, validate=True):
         returned
     """
     # check if cost have been specified
+
+    dictvar = None
+
+    if type == 'Material':
+        dictvar = 'material_price'
+    elif type == 'C02':
+        dictvar = 'c02_price'
+
+    if dictvar == None:
+        raise KeyError('Give Material or C02 as input for the argument "type"')
+
     if cost is not None:
         # cost have been added
         # check if cost have been added to the grading
-        if 'price' in Grading[list(Grading.grading.keys())[0]]:
+        if dictvar in Grading[list(Grading.grading.keys())[0]]:
             # pricing has been added
             pass
         else:
@@ -70,16 +83,19 @@ def _process_cost(structure, cost, Grading, validate=True):
 
             return cost
 
-def cost_influence(lines):
+def cost_influence(type, lines):
     """ Plot influence of varying parameters
 
     Parameters
     ----------
+    type = {'Material', 'C02'}
+        Indicates whether the material or C02 costs are analysed
     lines : dict
         dictionary with the parameters as keys and a nested dict with
         the values and cost
     """
     # check if more than one parameter has been given
+
     if len(lines.keys()) > 1:
         # values must be normalised
         normalise = True
@@ -96,7 +112,7 @@ def cost_influence(lines):
         normalise = False
 
         # set title
-        title = 'Influence of the varying parameters on the cost'
+        title = f'Influence of the varying parameters on the {type} cost'
 
     # create the figure
     plt.figure()
@@ -130,13 +146,18 @@ def cost_influence(lines):
             # set xmax and xmax
             xmin, xmax = np.min(x), np.max(x)
 
+
         # plot data
-        plt.plot(x, data['cost'], label=label)
+        if type == 'Material':
+            plt.plot(x, data['material_cost'], label=label)
+        if type == 'C02':
+            plt.plot(x, data['c02_cost'], label=label)
 
     # style figure
+
     plt.xlim(xmin, xmax)
     plt.xlabel(xlabel)
-    plt.ylabel('Cost per m')
+    plt.ylabel(f'{type} cost per m')
     plt.title(title)
     plt.legend()
     plt.grid()
