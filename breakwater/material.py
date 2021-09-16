@@ -437,6 +437,25 @@ class RockGrading:
 
         return My
 
+
+    def non_standard_gradings(self, class_name):
+        """
+        class_name: HMA_1000/1200 or LMA_50/200 and so on
+        Definitions from Memll and Memul are from Rock Manual
+        """
+        self.grading[class_name] = {}
+
+        split = class_name.split('_')[-1].split('/')
+        NLL, NUL = float(split[0]), float(split[-1])
+
+        Memll = (0.8 * (NLL + NUL)) / 2 #Why is this value lower than NLL?
+        Memul = (NLL + NUL) / 2
+
+        self.grading[class_name]['M50'] = [Memll, Memul]
+
+        self.grading[class_name]['NLL'] = NLL
+        self.grading[class_name]['NUL'] = NUL
+
     def plot_rosin_rammler(self, class_):
         """ plot the Rosin-Rammler curve for an idealised gradings
 
