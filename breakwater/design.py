@@ -1022,7 +1022,7 @@ class Configurations:
         return configs, max_combinations
 
     def add_cost(
-            self, type = None, core_price=None, unit_price=None, concrete_price=None,
+            self, type = None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
             length=None):
         """ Compute the cost of each concept either CO2 or material cost
@@ -1046,8 +1046,6 @@ class Configurations:
         ----------
         type: {'Material', 'CO2'}
             which cost type is added
-        core_price : float, optional, default: None
-            cost of the core material per m³, required for RRM and CRM
         unit_price : float, optional, default: None
             the cost of an armour unit per m³, required for CRM and CC
         concrete_price : float, optional, default: None
@@ -1064,7 +1062,6 @@ class Configurations:
         """
         # make dict of the cost for validation
         cost = {
-            'core_price': core_price,
             'unit_price': unit_price,
             'concrete_price': concrete_price,
             'fill_price': fill_price}
@@ -1088,18 +1085,18 @@ class Configurations:
                 # check types and compute price
                 if row.type == 'RRM':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, core_price=core_price,
+                        *row.concept.variantIDs, type = type,
                         transport_cost=transport_cost, output='variant')
 
                 elif row.type == 'CRM':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, core_price=core_price,
+                        *row.concept.variantIDs, type = type,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
                 elif row.type == 'CRMR':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, core_price=core_price,
+                        *row.concept.variantIDs, type = type,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 

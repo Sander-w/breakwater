@@ -166,7 +166,8 @@ class RubbleMound:
         self.bishop = None
         self.F_norm = None
 
-
+        self.Dn50_core = Dn50_core
+        self.Grading = Grading
 
         # set input as private attribute
         self._input_arguments = {
@@ -1089,7 +1090,7 @@ class RubbleMound:
         return coordinates
 
     def _cost(
-        self, *variants, type, core_price, unit_price, transport_cost, installation_depth, output="variant"
+        self, *variants, type, unit_price, transport_cost, output="variant"
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1104,15 +1105,11 @@ class RubbleMound:
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float
             the cost to transport a m³ of rock from the quarry to the
             project location
-        installation_depth: float
-            dictionary at which water height the parts of the breakwater are being constructed
         output : {variant, layer, average}
             format of the output dict, variant returns the total cost
             of each variant, layer the cost of each layer for each
@@ -1171,7 +1168,10 @@ class RubbleMound:
             variant_price = {}
             for layer, area in areas.items():
                 if layer is "core":
-                    # core is not included in the structure dict
+                    # get the class of the core and then the price, error if no grading available
+                    core_class = self.Grading.get_class(self.Dn50_core)
+                    core_price = self.Grading.grading[core_class][dictvar]
+
                     price = (core_price + transport_cost) * self._input_arguments[
                         "Dn50_core"
                     ]
@@ -1182,10 +1182,10 @@ class RubbleMound:
                         rho_c = self.rho
                         armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
 
-                        # Or maybe better to create a function with calculates the area below a certain location
-                        V, H = self._input_arguments["slope"]
-                        y = self._layers(id)['armour']['y']
-                        depth = np.array(y) - installation_depth
+                        #  Or maybe better to create a function with calculates the area below a certain location
+                        # V, H = self._input_arguments["slope"]
+                        # y = self._layers(id)['armour']['y']
+                        # depth = np.array(y) - installation_depth
 
 
                         for key, value in unit_price.items():
@@ -1812,7 +1812,7 @@ class RockRubbleMound(RubbleMound):
             f"and variants: {self.variantIDs}"
         )
 
-    def cost(self, *variants, type, core_price, transport_cost=None, output="variant"):
+    def cost(self, *variants, type, transport_cost=None, output="variant"):
         """Compute the cost for the material or the CO2 footprint per meter for each variant
 
         Method to compute the cost of each generated variant, the cost
@@ -1829,8 +1829,6 @@ class RockRubbleMound(RubbleMound):
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         transport_cost : float, optional, default: None
             the cost to transport a m³ of rock from the quarry to the
             project location
@@ -1853,7 +1851,6 @@ class RockRubbleMound(RubbleMound):
         cost = self._cost(
             *variants,
             type= type,
-            core_price=core_price,
             unit_price=0,
             transport_cost=transport_cost,
             output=output,
@@ -2469,7 +2466,7 @@ class ConcreteRubbleMound(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
+        self, *variants, type, unit_price, transport_cost=None, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2493,8 +2490,6 @@ class ConcreteRubbleMound(RubbleMound):
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float, optional, default: None
@@ -2520,7 +2515,6 @@ class ConcreteRubbleMound(RubbleMound):
         cost = self._cost(
             type = type,
             *variants,
-            core_price=core_price,
             unit_price=unit_price,
             transport_cost=transport_cost,
             output=output,
@@ -2853,7 +2847,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, installation_depth, output="variant"
+        self, *variants, type,  unit_price, transport_cost=None, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2877,8 +2871,6 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float, optional, default: None
@@ -2904,10 +2896,8 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         cost = self._cost(
             *variants,
             type= type,
-            core_price=core_price,
             unit_price=unit_price,
             transport_cost=transport_cost,
-            installation_depth = installation_depth,
             output=output,
         )
 
