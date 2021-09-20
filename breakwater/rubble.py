@@ -166,6 +166,8 @@ class RubbleMound:
         self.bishop = None
         self.F_norm = None
 
+
+
         # set input as private attribute
         self._input_arguments = {
             "structure_type": structure_type,
@@ -499,6 +501,8 @@ class RubbleMound:
                     # update normative F and bishop object as attribute
                     self.F_norm = slip.circles[slip.normative].F
                     self.bishop = slip
+
+        self.rho = rho
 
     def _estimate_htoe(self, Dn50=0):
         """Method to estimate the height of the toe"""
@@ -1085,7 +1089,7 @@ class RubbleMound:
         return coordinates
 
     def _cost(
-        self, *variants, type, core_price, unit_price, transport_cost, output="variant"
+        self, *variants, type, core_price, unit_price, transport_cost, installation_depth, output="variant"
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1107,6 +1111,8 @@ class RubbleMound:
         transport_cost : float
             the cost to transport a m³ of rock from the quarry to the
             project location
+        installation_depth: float
+            dictionary at which water height the parts of the breakwater are being constructed
         output : {variant, layer, average}
             format of the output dict, variant returns the total cost
             of each variant, layer the cost of each layer for each
@@ -1173,11 +1179,25 @@ class RubbleMound:
                 elif (
                     self._input_arguments["armour"] is not "Rock" and layer is "armour"
                 ):
-                    # concrete armour units
-                    price = area * unit_price
+                        rho_c = self.rho
+                        armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
+
+                        # Or maybe better to create a function with calculates the area below a certain location
+                        V, H = self._input_arguments["slope"]
+                        y = self._layers(id)['armour']['y']
+                        depth = np.array(y) - installation_depth
+
+
+                        for key, value in unit_price.items():
+                            try:
+                                if armour_class == key.split('_')[1]:
+                                    price = area * value
+
+                            except:
+                                return NotSupportedError('Make sure the unit price dict looks as follows: code_mass : price (1140x22_22t: 50)')
 
                 else:
-                    # layer of the breakwater
+                    # layer of the breakwater![](../../../../AppData/Local/Temp/download.png)
                     rock_class = structure[layer]["class"]
 
                     # get the price per meter
@@ -2264,6 +2284,9 @@ class ConcreteRubbleMound(RubbleMound):
         self.logger = {"INFO": [], "WARNING": []}
         self.structure = {}
 
+        # Density
+        self.rho = ArmourUnit.rho
+
         # compute angles
         self.alpha = np.arctan(slope[0] / slope[1])
         slope_foreshore = np.arctan(slope_foreshore[0] / slope_foreshore[1])
@@ -2493,6 +2516,7 @@ class ConcreteRubbleMound(RubbleMound):
             if no pricing is included in the given RockGrading
         """
         # compute the cost of the concept
+        print(self.structure['Grading'].get)
         cost = self._cost(
             type = type,
             *variants,
@@ -2653,6 +2677,8 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         self.id = id
         self.variantIDs = ["a", "b", "c", "d"]
 
+        self.rho = ArmourUnit.rho
+
         # compute relative buoyant density
         delta_armour = (ArmourUnit.rho - rho_w) / rho_w
 
@@ -2827,7 +2853,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
+        self, *variants, type, core_price, unit_price, transport_cost=None, installation_depth, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2874,12 +2900,14 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             if no pricing is included in the given RockGrading
         """
         # compute the cost of the concept
+
         cost = self._cost(
             *variants,
             type= type,
             core_price=core_price,
             unit_price=unit_price,
             transport_cost=transport_cost,
+            installation_depth = installation_depth,
             output=output,
         )
 

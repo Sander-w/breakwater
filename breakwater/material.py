@@ -182,6 +182,7 @@ class RockGrading:
         self.rho = rho
         self.y_NLL = y_NLL
         self.y_NUL = y_NUL
+        self.grading = None
 
         if grading is not None:
             # check if format of rock grading is a valid format
@@ -291,16 +292,12 @@ class RockGrading:
 
         dictvar = None
 
-        # self.grading['Material_cost'] = False
-        # self.grading['CO2_cost'] = False
-
-        # Is the cost computation for Material or CO2 footprint. Set a new dictionary key in the grading dictionary
         if type == 'Material':
             dictvar = 'material_price'
-            #self.grading['Material_cost'] = True
+
         elif type == 'CO2':
             dictvar = 'CO2_price'
-            #self.grading['CO2_cost'] = True
+
         else:
             raise KeyError('Give Material or CO2 as input for the argument "type"')
 
@@ -308,6 +305,7 @@ class RockGrading:
         # iterate over the prices in the given dict
         for class_, price in cost.items():
             # check if the rock class is in the grading
+
             if class_ in self.grading.keys():
                 # class is in the grading so add price to the nested dict
                 self.grading[class_][dictvar] = price
@@ -321,11 +319,13 @@ class RockGrading:
                     (f'{class_} is not a rock class of the RockGrading, '
                      f'valid classes are {valid_classes}'))
 
-        # check if pricing has been added for all rock_classes
+        #check if pricing has been added for all rock_classes
         if any(rock_classes):
             # not all have been added, raise error
             no_pricing = ', '.join(rock_classes)
             raise InputError(f'No pricing has been given for {no_pricing}')
+
+
 
     def get_class(self, Dn50):
         """ Get the rock class for a given Dn50
@@ -437,12 +437,12 @@ class RockGrading:
 
         return My
 
-
     def non_standard_gradings(self, class_name):
         """
         class_name: HMA_1000/1200 or LMA_50/200 and so on
         Definitions from Memll and Memul are from Rock Manual
         """
+
         self.grading[class_name] = {}
 
         split = class_name.split('_')[-1].split('/')
