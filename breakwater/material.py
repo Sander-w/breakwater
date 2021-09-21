@@ -358,11 +358,16 @@ class RockGrading:
             max_class = list(self.grading.keys())[-1]
             max_mass = self.grading[max_class]['M50'][1]
             max_dn = np.round((max_mass/2650)**(1/3), 3)
-            raise RockGradingError(
-                f'Dn50 = {np.round(Dn50, 3)} is out of range for the specified'
-                f' rock grading, {max_dn} m is the maximum possible Dn50.')
-        else:
-            return rock_class
+            # raise RockGradingError(
+            #     f'Dn50 = {np.round(Dn50, 3)} is out of range for the specified'
+            #     f' rock grading, {max_dn} m is the maximum possible Dn50.')
+            rock_class = max_class
+            user_warning(f'Dn50 = {np.round(Dn50, 3)} is out of range for the specified'
+            f' rock grading, {max_dn} m is the maximum possible Dn50. {rock_class} is taken as '
+            f' the grading but does not apply to the filter rules.')
+
+
+        return rock_class
 
     def get_class_dn50(self, class_):
         """ Get the average Dn50 of a rock class
