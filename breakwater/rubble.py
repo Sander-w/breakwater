@@ -1,6 +1,11 @@
+import collections
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 from tabulate import tabulate
+import shapely
+from shapely.geometry import LineString, Point
 
 from .core import substructure
 from .core.bishop import Bishop
@@ -1083,6 +1088,59 @@ class RubbleMound:
             }
         # return the coordinates of the specified variants
         return coordinates
+
+    def divide_cross_section(self, variantID):
+
+
+        coordinates =  self._layers(variantID)
+        for layer, coord in coordinates.items():
+            # get the x and y coordinates
+
+            x_lst = coord["x"]
+            y_lst = coord["y"]
+
+
+            ax1 = plt.figure(figsize=(9, 3))
+            plt.plot(x_lst, y_lst, 'b', figure= ax1)
+            plt.title(f'{layer}')
+
+            n1, n2 = math.ceil(min(y_lst)), math.floor(max(y_lst)+1)
+
+            range_lst = list(range(n1, n2))
+
+            if len(range_lst) == 1:
+                range_lst = [n1, n1]
+
+
+            plt.plot(x_lst, y_lst, 'ro', figure = ax1)
+
+            def intersect(A, B, C, D):
+
+                try:
+                    line1 = LineString([Point(A), Point(B)])
+                    line2 = LineString([Point(C), Point(D)])
+
+                    int_pt = line1.intersection(line2)
+                    return int_pt.x, int_pt.y
+
+                except:
+                    return None
+
+
+
+            for i in range(len(y_lst)-1):
+                for j in range(len(range_lst) - 1):
+                    cor = intersect((x_lst[i], y_lst[i]),
+                                    (x_lst[i+1], y_lst[i+1]),
+                                    (min(x_lst), range_lst[j]),
+                                    (max(x_lst), range_lst[j+1]))
+
+                    if cor != None:
+                        x, y = cor
+
+                        plt.plot(x, y, 'ro', figure = ax1)
+
+            
 
     def _cost(
         self, *variants, type, core_price, unit_price, transport_cost, output="variant"
