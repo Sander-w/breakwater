@@ -3,9 +3,11 @@ import math
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from tabulate import tabulate
-import shapely
-from shapely.geometry import LineString, Point
+from functools import reduce
+import operator
+from shapely.geometry import LineString, Point, Polygon
 
 from .core import substructure
 from .core.bishop import Bishop
@@ -148,9 +150,10 @@ class RubbleMound:
     ):
         """See help(RubbleMound) for more info"""
         # if not from RockRubbleMound or ConcreteRubbleMound
-        if not isinstance(self, RockRubbleMound) and not isinstance(
-            self, ConcreteRubbleMound) and not isinstance(
-            self, ConcreteRubbleMoundRevetment
+        if (
+            not isinstance(self, RockRubbleMound)
+            and not isinstance(self, ConcreteRubbleMound)
+            and not isinstance(self, ConcreteRubbleMoundRevetment)
         ):
             # not called from a child class
             # therefore some attributes must be set
@@ -1089,61 +1092,151 @@ class RubbleMound:
         # return the coordinates of the specified variants
         return coordinates
 
+    @staticmethod
+    def intersect(A, B, C, D):
+        try:
+            line1 = LineString([Point(A), Point(B)])
+            line2 = LineString([Point(C), Point(D)])
+
+            int_pt = line1.intersection(line2)
+            return int_pt.x, int_pt.y
+
+        except:
+            return None
+
+    @staticmethod
+    def GaussianA(x, y):
+        A = 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+        return A
+
+    @staticmethod
+    def clockwise(x, y):
+        x = np.array(x)
+        y = np.array(y)
+        if any(x[x < 0]):
+            x += abs(min(x)) + 10
+        coords = list(zip(x, y))
+        center = tuple(
+            map(
+                operator.truediv,
+                reduce(lambda x, y: map(operator.add, x, y), coords),
+                [len(coords)] * 2,
+            )
+        )
+        xy_tup = sorted(
+            coords,
+            key=lambda coord: (
+                -135
+                - math.degrees(
+                    math.atan2(*tuple(map(operator.sub, coord, center))[::-1])
+                )
+            )
+            % 360,
+        )
+        x, y = list(zip(*xy_tup))
+        return x, y
+
     def divide_cross_section(self, variantID):
 
+        """
+        compute the area of a layer for all it's depth ranges
 
-        coordinates =  self._layers(variantID)
-        for layer, coord in coordinates.items():
-            # get the x and y coordinates
+        Parameters
+        ----------
+        variantID : str
+            identifier of the variant, see :py:attr:`variantIDs` for a
+            list of all generated variants.
+
+        Returns
+        -------
+        dict
+            coordinates of all layers and the area within certain depth ranges
+        """
+        depth_area = self._layers(variantID)
+        self._layers(variantID)
+
+        for layer, coord in depth_area.items():
+
+            depth_area[layer]["Area_yrange"] = {}
 
             x_lst = coord["x"]
             y_lst = coord["y"]
 
+            # Four maximum y. armour, underlayer and filter have a gap in the middle (where the core is) but not above ymax4
+            ymax4 = min(sorted(y_lst)[-4:])
 
-            ax1 = plt.figure(figsize=(9, 3))
-            plt.plot(x_lst, y_lst, 'b', figure= ax1)
-            plt.title(f'{layer}')
-
-            n1, n2 = math.ceil(min(y_lst)), math.floor(max(y_lst)+1)
-
+            # Create a range list in which we will search for the area's
+            n1, n2 = math.ceil(min(y_lst)), math.floor(max(y_lst) + 1)
             range_lst = list(range(n1, n2))
-
             if len(range_lst) == 1:
                 range_lst = [n1, n1]
 
-
-            plt.plot(x_lst, y_lst, 'ro', figure = ax1)
-
-            def intersect(A, B, C, D):
-
-                try:
-                    line1 = LineString([Point(A), Point(B)])
-                    line2 = LineString([Point(C), Point(D)])
-
-                    int_pt = line1.intersection(line2)
-                    return int_pt.x, int_pt.y
-
-                except:
-                    return None
-
-
-
-            for i in range(len(y_lst)-1):
-                for j in range(len(range_lst) - 1):
-                    cor = intersect((x_lst[i], y_lst[i]),
-                                    (x_lst[i+1], y_lst[i+1]),
-                                    (min(x_lst), range_lst[j]),
-                                    (max(x_lst), range_lst[j+1]))
-
+            xl = coord["x"].copy()
+            yl = coord["y"].copy()
+            k = 1
+            for i in range(len(y_lst) - 1):
+                for j in range(len(range_lst)):
+                    cor = self.intersect(
+                        (x_lst[i], y_lst[i]),
+                        (x_lst[i + 1], y_lst[i + 1]),
+                        (min(x_lst), range_lst[j]),
+                        (max(x_lst), range_lst[j]),
+                    )
+                    # if there is an intersection cor is not None
                     if cor != None:
                         x, y = cor
 
-                        plt.plot(x, y, 'ro', figure = ax1)
+                        xl.insert(i + k, x)
+                        yl.insert(i + k, y)
+                        k += 1
 
-            
+            # Create a range including the minimum and the maximum
+            y_set = list(set(yl))
+            y_set.remove(min(yl))
+            y_set.remove(max(yl))
+            y_set = list(set([np.round(item, 0) for item in y_set]))
+            y_set.insert(0, min(yl))
+            y_set.append(max(yl))
+            y_set = list(set(y_set))
+
+            xl, yl = np.array(xl), np.array(yl)
+
+            for i in range(len(y_set) - 1):
+                r1, r2 = y_set[i], y_set[i + 1]
+
+                # get only the x and y within an y range
+                yl2 = yl[(yl >= r1) & (yl <= r2)]
+                xl2 = xl[(yl >= r1) & (yl <= r2)]
+
+                A = 0
+                if layer == "armour" or layer == "underlayer" or layer == "filter":
+                    # See ymax4 variable why we do this. Split the area or not... (armour etc has an unfilled piece in the middle)
+                    if not any(yl2 >= ymax4):
+                        xl2l, xl2r = xl2[xl2 <= 0], xl2[xl2 > 0]
+                        yl2l, yl2r = yl2[xl2 <= 0], yl2[xl2 > 0]
+                        Al, Ar = 0, 0
+                        if len(xl2l) > 0:
+                            xl2l, yl2l = self.clockwise(xl2l, yl2l)
+                            Al = self.GaussianA(xl2l, yl2l)
+                        if len(xl2r) > 0:
+                            xl2r, yl2r = self.clockwise(xl2r, yl2r)
+                            Ar = self.GaussianA(xl2r, yl2r)
+                            A = Al + Ar
+                    else:
+                        if len(xl2) > 0:
+                            xl2, yl2 = self.clockwise(xl2, yl2)
+                            A = self.GaussianA(xl2, yl2)
+                else:
+                    if len(xl2) > 0:
+                        xl2, yl2 = self.clockwise(xl2, yl2)
+                        A = self.GaussianA(xl2, yl2)
+
+                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"] = A
+
+        return depth_area
 
     def _cost(
-        self, *variants, type, core_price, unit_price, transport_cost, output="variant"
+        self, *variants, type, equipment, core_price, unit_price, transport_cost, output="variant"
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1158,6 +1251,8 @@ class RubbleMound:
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
+        equipment: lst
+            list of equipment out of Equipment class
         core_price : float
             cost of the core material per m³
         unit_price : float
@@ -1191,14 +1286,16 @@ class RubbleMound:
         # get the grading, and check if the cost has been added
         Grading = self._input_arguments["Grading"]
 
+
+
         dictvar = None
 
         # Is the cost computation for Material or CO2 footprint. Set a new dictionary key in the grading dictionary
-        if type == 'Material':
-            dictvar = 'material_price'
+        if type == "Material":
+            dictvar = "material_price"
 
-        elif type == 'CO2':
-            dictvar = 'CO2_price'
+        elif type == "CO2":
+            dictvar = "CO2_price"
 
         else:
             raise KeyError('Give Material or CO2 as input for the argument "type"')
@@ -1218,6 +1315,7 @@ class RubbleMound:
             # get the areas and structure of the variants
             areas = self.area(id)
             structure = self.get_variant(id)
+            depth_area = self.divide_cross_section(id)
 
             # iterate over the layers to price each layer
             variant_price = {}
@@ -1299,6 +1397,7 @@ class RubbleMound:
         """
         variant = {"armour": {}, "underlayer": {}}
         VariantCount = len(self.variantIDs)
+
 
         if variantID in self.variantIDs:
             if variantID == "a":
@@ -1452,7 +1551,7 @@ class RubbleMound:
                 xmax=-x_wlev_max,
                 color="b",
             )
-            if not self._input_arguments["structure_type"] == 'revetment':
+            if not self._input_arguments["structure_type"] == "revetment":
                 plt.hlines(
                     y=self._LimitStates[wlev].h,
                     xmin=x_wlev_max,
@@ -1890,7 +1989,7 @@ class RockRubbleMound(RubbleMound):
         # compute the cost of the concept
         cost = self._cost(
             *variants,
-            type= type,
+            type=type,
             core_price=core_price,
             unit_price=0,
             transport_cost=transport_cost,
@@ -2504,7 +2603,13 @@ class ConcreteRubbleMound(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
+        self,
+        *variants,
+        type,
+        core_price,
+        unit_price,
+        transport_cost=None,
+        output="variant",
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2552,7 +2657,7 @@ class ConcreteRubbleMound(RubbleMound):
         """
         # compute the cost of the concept
         cost = self._cost(
-            type = type,
+            type=type,
             *variants,
             core_price=core_price,
             unit_price=unit_price,
@@ -2885,7 +2990,14 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
+        self,
+        *variants,
+        type,
+        equipment,
+        core_price,
+        unit_price,
+        transport_cost=None,
+        output="variant",
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2934,12 +3046,12 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         # compute the cost of the concept
         cost = self._cost(
             *variants,
-            type= type,
+            type=type,
+            equipment= equipment,
             core_price=core_price,
             unit_price=unit_price,
             transport_cost=transport_cost,
             output=output,
         )
-
 
         return cost
