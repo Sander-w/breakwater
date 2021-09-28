@@ -14,8 +14,9 @@ class Equipment:
         What is the shallowest and deepest part the equiment can reach
     """
 
-    def __init__(self, grading_limit, design_type, operation_type, reach):
+    def __init__(self, name, grading_limit, design_type, operation_type, reach):
 
+        self.name = name
         self.grading_limit = grading_limit
         self.design_type = design_type
         self.operation_type = operation_type
@@ -33,7 +34,7 @@ class Vessel(Equipment):
         which layers can the equipment design. e.g. ['core', 'filter','underlayer']
     operation_type: list of strings
         How is the material placed. e.g. ['bulk', 'individual']
-    reach: tuple
+    reach: tuple, ints (min, max)
         What is the shallowest and deepest part the equiment can reach
     draught: float
         Maximum draught of the vessel
@@ -41,12 +42,14 @@ class Vessel(Equipment):
         At which water depth is the vessel used
     """
 
-    def __init__(self, grading_limit, design_type, operation_type, reach, draught, installation_depth):
+    def __init__(self,name, grading_limit, design_type, operation_type, reach, draught, installation_depth):
 
-        super().__init__(grading_limit, design_type, operation_type, reach)
+        super().__init__(name, grading_limit, design_type, operation_type, reach)
         self.draught = draught
         self.installation_depth = installation_depth
         self.max_depth = installation_depth - draught
+        self.shallow_rech = installation_depth - reach[0]
+        self.deep_reach = installation_depth - reach[1]
 
 class Crane(Equipment):
 

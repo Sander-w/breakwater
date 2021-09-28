@@ -15,6 +15,9 @@ from .design import Configurations
 from .rubble import RubbleMound, ConcreteRubbleMound, RockRubbleMound, ConcreteRubbleMoundRevetment
 from .caisson import Caisson
 
+# import Equipment
+from .ConstructionMethod import Vessel, Crane
+
 # file loader
 from .design import read_breakwaters
 

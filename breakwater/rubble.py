@@ -1,14 +1,13 @@
-import collections
 import math
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from tabulate import tabulate
 from functools import reduce
 import operator
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import LineString, Point
 
+from .ConstructionMethod import Vessel, Crane
 from .core import substructure
 from .core.bishop import Bishop
 from .core.overtopping import rubble_mound
@@ -1320,27 +1319,33 @@ class RubbleMound:
             # iterate over the layers to price each layer
             variant_price = {}
             for layer, area in areas.items():
-                if layer is "core":
-                    # core is not included in the structure dict
-                    price = (core_price + transport_cost) * self._input_arguments[
-                        "Dn50_core"
-                    ]
+                for equip in equipment:
+                    if layer is "core" and 'core' in equip.design_type:
+                        # core is not included in the structure dict
+                        for key, value in depth_area.items():
+                            start_lay, end_lay = int(key.split('-')[0]), int(key.split('-')[0])
+                            if isinstance(equip, Vessel):
+                                if (equip.max_depth > end_lay) and (equip.shallow_rech <= end_lay <= equip.deep_reach):
+                                    # price = (core_price + transport_cost) * self._input_arguments[
+                                    #     "Dn50_core"
+                                    # ]
+                                    price = 0
 
-                elif (
-                    self._input_arguments["armour"] is not "Rock" and layer is "armour"
-                ):
-                    # concrete armour units
-                    price = area * unit_price
+                    elif (
+                        self._input_arguments["armour"] is not "Rock" and layer is "armour" and 'armour' in equip.design_type
+                    ):
+                        # concrete armour units
+                        price = area * unit_price
 
-                else:
-                    # layer of the breakwater
-                    rock_class = structure[layer]["class"]
+                    else:
+                        # layer of the breakwater
+                        rock_class = structure[layer]["class"]
 
-                    # get the price per meter
-                    price = (Grading[rock_class][dictvar] + transport_cost) * area
+                        # get the price per meter
+                        price = (Grading[rock_class][dictvar] + transport_cost) * area
 
-                # add to dict
-                variant_price[layer] = np.round(price, 2)
+                    # add to dict
+                    variant_price[layer] = np.round(price, 2)
 
             # add to cost dict
             if output is "variant" or output is "average":
