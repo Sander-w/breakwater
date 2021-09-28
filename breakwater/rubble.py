@@ -363,7 +363,7 @@ class RubbleMound:
             pass
         else:
             # get armour_layer
-            if armour_layer is "Rock":
+            if armour_layer == "Rock":
                 material = "armourstones"
             else:
                 material = "units"
@@ -647,7 +647,7 @@ class RubbleMound:
 
         # check structure type: breakwater or revetment.
         # breakwater is covered with armour on both sides
-        if self._input_arguments["structure_type"] is "breakwater":
+        if self._input_arguments["structure_type"] == "breakwater":
             # compute armour layer
             armour_y1 = t_filter + t_underlayer + t_scour
             armour_y2 = height
@@ -691,7 +691,7 @@ class RubbleMound:
 
             # check if armour layer is made out of rock
             # as there is a different toe structure for rock and armour units
-            if self._input_arguments["armour"] is "Rock":
+            if self._input_arguments["armour"] == "Rock":
                 # compute point where armour layer intersect with the toe
                 x = (abs(arm_under_x2 - armour_x1) * V_toe / H_toe) / (
                     V / H + V_toe / H_toe
@@ -872,7 +872,7 @@ class RubbleMound:
 
         # check structure type: breakwater or revetment. default is breakwater
         # revetment is covered with armour only on sea side
-        if self._input_arguments["structure_type"] is "revetment":
+        if self._input_arguments["structure_type"] == "revetment":
             # compute armour layer
             armour_y1 = t_filter + t_underlayer + t_scour
             armour_y2 = height
@@ -916,7 +916,7 @@ class RubbleMound:
 
             # check if armour layer is made out of rock
             # as there is a different toe structure for rock and armour units
-            if self._input_arguments["armour"] is "Rock":
+            if self._input_arguments["armour"] == "Rock":
                 # compute point where armour layer intersect with the toe
                 x = (abs(arm_under_x2 - armour_x1) * V_toe / H_toe) / (
                     V / H + V_toe / H_toe
@@ -1167,7 +1167,7 @@ class RubbleMound:
             # iterate over the layers to price each layer
             variant_price = {}
             for layer, area in areas.items():
-                if layer is "core":
+                if layer == "core":
                     # get the class of the core and then the price, error if no grading available
                     core_class = self.Grading.get_class(self.Dn50_core)
                     core_price = self.Grading.grading[core_class][dictvar]
@@ -1177,7 +1177,7 @@ class RubbleMound:
                     ]
 
                 elif (
-                    self._input_arguments["armour"] is not "Rock" and layer is "armour"
+                    self._input_arguments["armour"] != "Rock" and layer == "armour"
                 ):
                         rho_c = self.rho
                         armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
@@ -1207,10 +1207,10 @@ class RubbleMound:
                 variant_price[layer] = np.round(price, 2)
 
             # add to cost dict
-            if output is "variant" or output is "average":
+            if output == "variant" or output == "average":
                 # add total cost of all layers
                 cost[id] = np.round(np.sum(list(variant_price.values())), 2)
-            elif output is "layer":
+            elif output == "layer":
                 # add the cost of each layer
                 cost[id] = variant_price
             else:
@@ -1223,7 +1223,7 @@ class RubbleMound:
                 )
 
         # check if average must be computed
-        if output is "average":
+        if output == "average":
             # compute average cost
             cost = {"average": np.round(np.average(list(cost.values())), 2)}
 
