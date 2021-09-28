@@ -1240,8 +1240,7 @@ class RubbleMound:
         return depth_area
 
     def _cost(
-        self, *variants, type, equipment, core_price, unit_price, transport_cost, output="variant"
-        self, *variants, type, unit_price, transport_cost, output="variant"
+        self, *variants, type, equipment, unit_price, transport_cost, output="variant"
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1258,8 +1257,6 @@ class RubbleMound:
             Indicate whether the costs are calculated for the material or the CO2
         equipment: lst
             list of equipment out of Equipment class
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float
@@ -1379,8 +1376,8 @@ class RubbleMound:
                     # layer of the breakwater![](../../../../AppData/Local/Temp/download.png)
                     rock_class = structure[layer]["class"]
 
-                        # get the price per meter
-                        price = (Grading[rock_class][dictvar] + transport_cost) * area
+                    # get the price per meter
+                    price = (Grading[rock_class][dictvar] + transport_cost) * area
 
                     # add to dict
                     variant_price[layer] = np.round(price, 2)
@@ -1992,7 +1989,7 @@ class RockRubbleMound(RubbleMound):
             f"and variants: {self.variantIDs}"
         )
 
-    def cost(self, *variants, type, transport_cost=None, output="variant"):
+    def cost(self, *variants, type, equipment, unit_price, transport_cost=None, output="variant"):
         """Compute the cost for the material or the CO2 footprint per meter for each variant
 
         Method to compute the cost of each generated variant, the cost
@@ -2031,9 +2028,8 @@ class RockRubbleMound(RubbleMound):
         cost = self._cost(
             *variants,
             type=type,
-            core_price=core_price,
-            type= type,
-            unit_price=0,
+            equipment= equipment,
+            unit_price= unit_price,
             transport_cost=transport_cost,
             output=output,
         )
@@ -2648,13 +2644,6 @@ class ConcreteRubbleMound(RubbleMound):
         )
 
     def cost(
-        self,
-        *variants,
-        type,
-        core_price,
-        unit_price,
-        transport_cost=None,
-        output="variant",
         self, *variants, type, unit_price, transport_cost=None, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
@@ -3036,15 +3025,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         )
 
     def cost(
-        self,
-        *variants,
-        type,
-        equipment,
-        core_price,
-        unit_price,
-        transport_cost=None,
-        output="variant",
-        self, *variants, type,  unit_price, transport_cost=None, output="variant"
+        self, *variants, type, equipment,  unit_price, transport_cost=None, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -3094,8 +3075,6 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             *variants,
             type=type,
             equipment= equipment,
-            core_price=core_price,
-            type= type,
             unit_price=unit_price,
             transport_cost=transport_cost,
             output=output,
