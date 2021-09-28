@@ -1162,6 +1162,7 @@ class RubbleMound:
         for layer, coord in depth_area.items():
 
             depth_area[layer]["Area_yrange"] = {}
+            depth_area[layer]["Color"] = {}
 
             x_lst = coord["x"]
             y_lst = coord["y"]
@@ -1236,6 +1237,7 @@ class RubbleMound:
                         A = self.GaussianA(xl2, yl2)
 
                 depth_area[layer]["Area_yrange"][f"{r1}-{r2}"] = A
+                depth_area[layer]["Color"][f"{r1}-{r2}"] = 'r'
 
         return depth_area
 
@@ -1288,8 +1290,6 @@ class RubbleMound:
         # get the grading, and check if the cost has been added
         Grading = self._input_arguments["Grading"]
 
-
-
         dictvar = None
 
         # Is the cost computation for Material or CO2 footprint. Set a new dictionary key in the grading dictionary
@@ -1323,64 +1323,48 @@ class RubbleMound:
             variant_price = {}
             for layer, area in areas.items():
                 for equip in equipment:
-                    if layer is "core" and 'core' in equip.design_type:
-                        # core is not included in the structure dict
-                        for key, value in depth_area.items():
-                            start_lay, end_lay = int(key.split('-')[0]), int(key.split('-')[0])
-                            if isinstance(equip, Vessel):
-                                if (equip.max_depth > end_lay) and (equip.shallow_rech <= end_lay <= equip.deep_reach):
-                                    # price = (core_price + transport_cost) * self._input_arguments[
-                                    #     "Dn50_core"
-                                    # ]
-                                    price = 0
+                    for key, value in depth_area[layer]['Area_yrange'].items():
+                        if layer == "core" and 'core' in equip.design_type:
+                            # core is not included in the structure dict
+                                start_lay, end_lay = float(key.split('-')[0]), float(key.split('-')[0])
+                                if isinstance(equip, Vessel):
+                                    if (equip.max_depth > end_lay) and (equip.shallow_rech <= end_lay <= equip.deep_reach):
+                                        core_class = self.Grading.get_class(self.Dn50_core)
+                                        core_price = self.Grading.grading[core_class][dictvar]
 
-                    elif (
-                        self._input_arguments["armour"] is not "Rock" and layer is "armour" and 'armour' in equip.design_type
-                    ):
-                        # concrete armour units
-                        price = area * unit_price
-
-                    else:
-                        # layer of the breakwater
-                        rock_class = structure[layer]["class"]
-                if layer == "core":
-                    # get the class of the core and then the price, error if no grading available
-                    core_class = self.Grading.get_class(self.Dn50_core)
-                    core_price = self.Grading.grading[core_class][dictvar]
-
-                    price = (core_price + transport_cost) * self._input_arguments[
-                        "Dn50_core"
-                    ]
-
-                elif (
-                    self._input_arguments["armour"] != "Rock" and layer == "armour"
-                ):
-                        rho_c = self.rho
-                        armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
-
-                        #  Or maybe better to create a function with calculates the area below a certain location
-                        # V, H = self._input_arguments["slope"]
-                        # y = self._layers(id)['armour']['y']
-                        # depth = np.array(y) - installation_depth
+                                        price = (core_price + transport_cost) * self._input_arguments[
+                                            "Dn50_core"
+                                        ]
+                                        depth_area[layer]['Color'][key] = 'g'
 
 
-                        for key, value in unit_price.items():
+
+                        elif (
+                            self._input_arguments["armour"] != "Rock" and layer == "armour" and 'armour' in equip.design_type
+                        ):
+                            # concrete armour units
+                            rho_c = self.rho
+                            armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
+
                             try:
-                                if armour_class == key.split('_')[1]:
-                                    price = area * value
+                                for key, value in unit_price.items():
 
+                                    if armour_class == key.split('_')[1]:
+                                        print(armour_class)
+                                        price = area * value
+                                        print(price)
                             except:
                                 return NotSupportedError('Make sure the unit price dict looks as follows: code_mass : price (1140x22_22t: 50)')
 
-                else:
-                    # layer of the breakwater![](../../../../AppData/Local/Temp/download.png)
-                    rock_class = structure[layer]["class"]
+                        else:
+                            # layer of the breakwater
+                            rock_class = structure[layer]["class"]
 
-                    # get the price per meter
-                    price = (Grading[rock_class][dictvar] + transport_cost) * area
+                            # get the price per meter
+                            price = (Grading[rock_class][dictvar] + transport_cost) * area
 
                     # add to dict
-                    variant_price[layer] = np.round(price, 2)
+                variant_price[layer] = np.round(price, 2)
 
             # add to cost dict
             if output == "variant" or output == "average":
