@@ -182,6 +182,7 @@ class RockGrading:
         self.rho = rho
         self.y_NLL = y_NLL
         self.y_NUL = y_NUL
+        self.grading = None
 
         if grading is not None:
             # check if format of rock grading is a valid format
@@ -291,16 +292,12 @@ class RockGrading:
 
         dictvar = None
 
-        # self.grading['Material_cost'] = False
-        # self.grading['CO2_cost'] = False
-
-        # Is the cost computation for Material or CO2 footprint. Set a new dictionary key in the grading dictionary
         if type == 'Material':
             dictvar = 'material_price'
-            #self.grading['Material_cost'] = True
+
         elif type == 'CO2':
             dictvar = 'CO2_price'
-            #self.grading['CO2_cost'] = True
+
         else:
             raise KeyError('Give Material or CO2 as input for the argument "type"')
 
@@ -308,6 +305,7 @@ class RockGrading:
         # iterate over the prices in the given dict
         for class_, price in cost.items():
             # check if the rock class is in the grading
+
             if class_ in self.grading.keys():
                 # class is in the grading so add price to the nested dict
                 self.grading[class_][dictvar] = price
@@ -321,11 +319,13 @@ class RockGrading:
                     (f'{class_} is not a rock class of the RockGrading, '
                      f'valid classes are {valid_classes}'))
 
-        # check if pricing has been added for all rock_classes
+        #check if pricing has been added for all rock_classes
         if any(rock_classes):
             # not all have been added, raise error
             no_pricing = ', '.join(rock_classes)
             raise InputError(f'No pricing has been given for {no_pricing}')
+
+
 
     def get_class(self, Dn50):
         """ Get the rock class for a given Dn50
@@ -358,11 +358,16 @@ class RockGrading:
             max_class = list(self.grading.keys())[-1]
             max_mass = self.grading[max_class]['M50'][1]
             max_dn = np.round((max_mass/2650)**(1/3), 3)
-            raise RockGradingError(
-                f'Dn50 = {np.round(Dn50, 3)} is out of range for the specified'
-                f' rock grading, {max_dn} m is the maximum possible Dn50.')
-        else:
-            return rock_class
+            # raise RockGradingError(
+            #     f'Dn50 = {np.round(Dn50, 3)} is out of range for the specified'
+            #     f' rock grading, {max_dn} m is the maximum possible Dn50.')
+            rock_class = max_class
+            user_warning(f'Dn50 = {np.round(Dn50, 3)} is out of range for the specified'
+            f' rock grading, {max_dn} m is the maximum possible Dn50. {rock_class} is taken as '
+            f' the grading but does not apply to the filter rules.')
+
+
+        return rock_class
 
     def get_class_dn50(self, class_):
         """ Get the average Dn50 of a rock class
@@ -436,6 +441,25 @@ class RockGrading:
         My = M50 * (np.log(1- y)/np.log(0.5))**(1/n_RRM)
 
         return My
+
+    def non_standard_gradings(self, class_name):
+        """
+        class_name: HMA_1000/1200 or LMA_50/200 and so on
+        Definitions from Memll and Memul are from Rock Manual
+        """
+
+        self.grading[class_name] = {}
+
+        split = class_name.split('_')[-1].split('/')
+        NLL, NUL = float(split[0]), float(split[-1])
+
+        Memll = (0.8 * (NLL + NUL)) / 2 #Why is this value lower than NLL?
+        Memul = (NLL + NUL) / 2
+
+        self.grading[class_name]['M50'] = [Memll, Memul]
+
+        self.grading[class_name]['NLL'] = NLL
+        self.grading[class_name]['NUL'] = NUL
 
     def plot_rosin_rammler(self, class_):
         """ plot the Rosin-Rammler curve for an idealised gradings
