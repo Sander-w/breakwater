@@ -1242,7 +1242,7 @@ class RubbleMound:
         return depth_area
 
     def _cost(
-        self, *variants, type, equipment, unit_price, transport_cost, output="variant"
+        self, *variants, type, equipment, unit_price, transport_cost,  output="variant"
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1321,6 +1321,7 @@ class RubbleMound:
 
             # iterate over the layers to price each layer
             variant_price = {}
+            max_height = 0
             for layer, area in areas.items():
                 for equip in equipment:
                     for key, value in depth_area[layer]['Area_yrange'].items():
@@ -1328,7 +1329,20 @@ class RubbleMound:
                             # core is not included in the structure dict
                                 start_lay, end_lay = float(key.split('-')[0]), float(key.split('-')[0])
                                 if isinstance(equip, Vessel):
-                                    if (equip.max_depth > end_lay) and (equip.shallow_rech <= end_lay <= equip.deep_reach):
+                                    # Check wether
+                                    if (equip.min_depth >= end_lay):
+                                        core_class = self.Grading.get_class(self.Dn50_core)
+                                        core_price = self.Grading.grading[core_class][dictvar]
+
+                                        price = (core_price + transport_cost) * self._input_arguments[
+                                            "Dn50_core"
+                                        ]
+                                        depth_area[layer]['Color'][key] = 'g'
+                                        max_height = end_lay
+
+                                elif isinstance(equip, Crane):
+                                    if (equip.installation_depth <= start_lay) or (equip.installation_depth < max_height
+                                    and start_lay >= (max_height - equip.max_depth)):
                                         core_class = self.Grading.get_class(self.Dn50_core)
                                         core_price = self.Grading.grading[core_class][dictvar]
 
