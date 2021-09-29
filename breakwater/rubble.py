@@ -7,7 +7,7 @@ from functools import reduce
 import operator
 from shapely.geometry import LineString, Point
 
-from .ConstructionMethod import Vessel, Crane
+from .ConstructionMethod import Vessel, Crane, OffshoreCraneVessel
 from .core import substructure
 from .core.bishop import Bishop
 from .core.overtopping import rubble_mound
@@ -1116,9 +1116,15 @@ class RubbleMound:
     @staticmethod
     def clockwise(x, y):
         x = np.array(x)
+        xmin = min(x)
         y = np.array(y)
+        below_zero = False
+
+        # Transfrom negative values to positive ones
         if any(x[x < 0]):
-            x += abs(min(x)) + 10
+            x += abs(xmin) + 10
+            below_zero = True
+
         coords = list(zip(x, y))
         center = tuple(
             map(
@@ -1138,6 +1144,10 @@ class RubbleMound:
             % 360,
         )
         x, y = list(zip(*xy_tup))
+
+        #Transform back if needed
+        if below_zero:
+            x -= (abs(xmin) + 10)
         return x, y
 
     def divide_cross_section(self, variantID):
@@ -1208,7 +1218,8 @@ class RubbleMound:
 
             for i in range(len(y_set) - 1):
                 r1, r2 = y_set[i], y_set[i + 1]
-
+                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"] = {}
+                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]['coordinates'] = []
                 # get only the x and y within an y range
                 yl2 = yl[(yl >= r1) & (yl <= r2)]
                 xl2 = xl[(yl >= r1) & (yl <= r2)]
@@ -1222,21 +1233,27 @@ class RubbleMound:
                         Al, Ar = 0, 0
                         if len(xl2l) > 0:
                             xl2l, yl2l = self.clockwise(xl2l, yl2l)
+                            depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]['coordinates'].append([xl2l, yl2l])
                             Al = self.GaussianA(xl2l, yl2l)
                         if len(xl2r) > 0:
                             xl2r, yl2r = self.clockwise(xl2r, yl2r)
+                            depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]['coordinates'].append([xl2r, yl2r])
                             Ar = self.GaussianA(xl2r, yl2r)
                             A = Al + Ar
                     else:
                         if len(xl2) > 0:
                             xl2, yl2 = self.clockwise(xl2, yl2)
+                            depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]['coordinates'].append([xl2, yl2])
                             A = self.GaussianA(xl2, yl2)
                 else:
                     if len(xl2) > 0:
                         xl2, yl2 = self.clockwise(xl2, yl2)
+                        depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]['coordinates'].append([xl2, yl2])
                         A = self.GaussianA(xl2, yl2)
 
-                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"] = A
+
+                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]['area'] = A
+
                 depth_area[layer]["Color"][f"{r1}-{r2}"] = 'r'
 
         return depth_area
@@ -1311,6 +1328,7 @@ class RubbleMound:
 
         # set empty dict to store the output in
         cost = {}
+        slope = self._input_arguments["slope"]
 
         # iterate over the generated variants
         for id in variants:
@@ -1322,53 +1340,106 @@ class RubbleMound:
             # iterate over the layers to price each layer
             variant_price = {}
             max_height = 0
+            max_height_min_x = 0
             for layer, area in areas.items():
                 for equip in equipment:
                     for key, value in depth_area[layer]['Area_yrange'].items():
+
+                        start_lay, end_lay = float(key.split('-')[0]), float(key.split('-')[0])
+                        area = depth_area[layer]['Area_yrange'][key]['area']
+                        core_class = self.Grading.get_class(self.Dn50_core)
+                        core_price = self.Grading.grading[core_class][dictvar]
+
+                        coords = depth_area[layer]['Area_yrange'][key]['coordinates']
+                        xmin_layer = float('inf')
+                        xmax_layer = float('-inf')
+                        for c in coords:
+                            xmin = min(c[0])
+                            xmax = min(c[0])
+                            if xmin < xmin_layer:
+                                xmin_layer = xmin
+                            if xmax > xmax_layer:
+                                xmax_layer = xmax
+
                         if layer == "core" and 'core' in equip.design_type:
                             # core is not included in the structure dict
-                                start_lay, end_lay = float(key.split('-')[0]), float(key.split('-')[0])
                                 if isinstance(equip, Vessel):
                                     # Check wether
-                                    if (equip.min_depth >= end_lay):
-                                        core_class = self.Grading.get_class(self.Dn50_core)
-                                        core_price = self.Grading.grading[core_class][dictvar]
-
-                                        price = (core_price + transport_cost) * self._input_arguments[
-                                            "Dn50_core"
-                                        ]
+                                    if equip.install(end= end_lay):
+                                        price = equip.get_price(core_price, area)
                                         depth_area[layer]['Color'][key] = 'g'
-                                        max_height = end_lay
+
+                                        if end_lay > max_height:
+                                            max_height = end_lay
+                                            max_height_min_x = xmin_layer
 
                                 elif isinstance(equip, Crane):
-                                    if (equip.installation_depth <= start_lay) or (equip.installation_depth < max_height
-                                    and start_lay >= (max_height - equip.max_depth)):
-                                        core_class = self.Grading.get_class(self.Dn50_core)
-                                        core_price = self.Grading.grading[core_class][dictvar]
 
-                                        price = (core_price + transport_cost) * self._input_arguments[
-                                            "Dn50_core"
-                                        ]
+                                    if equip.install(start= start_lay, max_h= max_height, xbot= xmin_layer, xtop= max_height_min_x):
+                                        price = equip.get_price(core_price, area)
                                         depth_area[layer]['Color'][key] = 'g'
 
+                                        if end_lay > max_height:
+                                            max_height = end_lay
+                                            max_height_min_x = xmin_layer
 
+                                elif isinstance(equip, OffshoreCraneVessel):
+
+                                    if equip.install(start= start_lay, slope= slope, x_end= xmax_layer):
+                                        price = equip.get_price(core_price, area)
+                                        depth_area[layer]['Color'][key] = 'g'
+
+                                        if end_lay > max_height:
+                                            max_height = end_lay
+                                            max_height_min_x = xmin_layer
 
                         elif (
                             self._input_arguments["armour"] != "Rock" and layer == "armour" and 'armour' in equip.design_type
+                            and 'individual' in equip.operation_type
                         ):
                             # concrete armour units
                             rho_c = self.rho
                             armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
 
+                            armour_unit_price = None
+
                             try:
                                 for key, value in unit_price.items():
-
                                     if armour_class == key.split('_')[1]:
-                                        print(armour_class)
-                                        price = area * value
-                                        print(price)
+                                        price = value
                             except:
                                 return NotSupportedError('Make sure the unit price dict looks as follows: code_mass : price (1140x22_22t: 50)')
+
+                            if isinstance(equip, Vessel):
+                                    # Check wether
+                                    if equip.install(end= end_lay):
+                                        price = equip.get_price(armour_unit_price, area)
+                                        depth_area[layer]['Color'][key] = 'g'
+
+                                        if end_lay > max_height:
+                                            max_height = end_lay
+                                            max_height_min_x = xmin_layer
+
+                            elif isinstance(equip, Crane):
+
+                                if equip.install(start= start_lay, max_h= max_height, xbot= xmin_layer, xtop= max_height_min_x):
+                                    price = equip.get_price(armour_unit_price, area)
+                                    depth_area[layer]['Color'][key] = 'g'
+
+                                    if end_lay > max_height:
+                                        max_height = end_lay
+                                        max_height_min_x = xmin_layer
+
+                            elif isinstance(equip, OffshoreCraneVessel):
+
+                                if equip.install(start= start_lay, slope= slope, x_end= xmax_layer):
+                                    price = equip.get_price(armour_unit_price, area)
+                                    depth_area[layer]['Color'][key] = 'g'
+
+                                    if end_lay > max_height:
+                                        max_height = end_lay
+                                        max_height_min_x = xmin_layer
+
 
                         else:
                             # layer of the breakwater

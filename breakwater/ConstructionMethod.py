@@ -31,8 +31,8 @@ class Vessel(Equipment):
         which layers can the equipment design. e.g. ['core', 'filter','underlayer']
     operation_type: list of strings
         How is the material placed. e.g. ['bulk', 'individual']
-    reach_y: int
-        From how deep can the layer be placed
+    draught: int
+        draught of the vessel
     installation_depth: float
         At which water depth is the vessel used
     """
@@ -49,10 +49,13 @@ class Vessel(Equipment):
         else:
             return False
 
+    def get_price(self, price, area):
+        return price * area
+
 class Crane(Equipment):
 
     """
-    Vessel class (Land based equipment)
+    Crane class (Land based equipment)
 
     Parameters
     ----------
@@ -84,6 +87,9 @@ class Crane(Equipment):
         else:
             return False
 
+    def get_price(self, price, area):
+        return price * area
+
 class OffshoreCraneVessel(Equipment):
 
     """
@@ -99,6 +105,8 @@ class OffshoreCraneVessel(Equipment):
         How is the material placed. e.g. ['bulk', 'individual']
     reach_x: int
         What is the furthest the equipment can rach
+    draught: int
+        draught of the vessel
     installation_depth: float
         At which water depth is the crane used
     """
@@ -116,5 +124,8 @@ class OffshoreCraneVessel(Equipment):
             return True
         else:
             return False
+
+    def get_price(self, price, area):
+        return price * area
 
 
