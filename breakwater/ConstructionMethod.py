@@ -6,8 +6,8 @@ class Equipment:
     ----------
     grading_limit: str
         the maximum grading limit the equipment can handle
-    design_type: list of strings
-        which layers can the equipment design. e.g. ['core', 'filter','underlayer']
+    design_type: dict
+        Which layers can be designed with what grading at what cost, {layer: {grading: price}}
     operation_type: list of strings
         How is the material placed. e.g. ['bulk', 'individual']
     """
@@ -18,6 +18,9 @@ class Equipment:
         self.grading_limit = grading_limit
         self.design_type = design_type
         self.operation_type = operation_type
+
+    def get_price(self, layer, grading_layer):
+        return self.design_type[layer][grading_layer]
 
 class Vessel(Equipment):
     """
@@ -43,14 +46,14 @@ class Vessel(Equipment):
         self.draught = draught
         self.installation_depth = installation_depth
 
-    def install(self, end):
-        if (self.installation_depth - self.draught) >= end:
-            return True
-        else:
-            return False
+    def install(self, end, layer, grading_layer):
+        install = False
 
-    def get_price(self, price, area):
-        return price * area
+        if layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys():
+            if (self.installation_depth - self.draught) >= end:
+                install = True
+        return install
+
 
 class Crane(Equipment):
 
@@ -80,17 +83,15 @@ class Crane(Equipment):
         self.reach_y = reach_y
         self.reach_x = reach_x
 
-    def install(self, start, max_h, xbot, xtop):
-        if (start > self.installation_depth) or \
-            ((max_h - start) <= self.reach_y and abs(xbot - xtop) <= self.reach_x):
-            return True
-        else:
-            return False
+    def install(self, layer, grading_layer, start, max_h, xbot, xtop):
+        install = False
+        if layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys():
+            if (start > self.installation_depth) or \
+                ((max_h - start) <= self.reach_y and abs(xbot - xtop) <= self.reach_x):
+                install = True
+        return install
 
-    def get_price(self, price, area):
-        return price * area
-
-class OffshoreCraneVessel(Equipment):
+class CraneVessel(Equipment):
 
     """
     Vessel class (Land based equipment)
@@ -118,14 +119,12 @@ class OffshoreCraneVessel(Equipment):
         self.draught = draught
         self.installation_depth = installation_depth
 
-    def install(self, slope, start, x_end):
+    def install(self, layer, grading_layer, slope, start, x_end):
         V, H = slope
-        if self.reach_x - (self.draught * V / H + (start - self.installation_depth) * V / H) >= x_end:
-            return True
-        else:
-            return False
-
-    def get_price(self, price, area):
-        return price * area
+        install = False
+        if layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys():
+            if self.reach_x - (self.draught * V / H + (start - self.installation_depth) * V / H) >= x_end:
+                install = True
+        return install
 
 

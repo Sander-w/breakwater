@@ -1,4 +1,5 @@
 import warnings
+import matplotlib.pyplot as plt
 
 # define errors
 class InputError(Exception):
@@ -63,6 +64,25 @@ class LimitStateWarning(Warning):
 
     def __init__(self, msg):
         self.message = msg
+
+class EquipmentError(Warning):
+
+    def __init__(self, msg, other, id,  areas, depth_area):
+
+        self.message = msg
+
+        fig, ax = plt.subplots(figsize=(10,5))
+        coordinates = other._layers(id)
+
+        for layer, lines in coordinates.items():
+            plt.plot(lines["x"], lines["y"], color="k", linewidth= 3)
+
+        for layer, area in areas.items():
+            for key, value in depth_area[layer]['Area_yrange'].items():
+                coords = depth_area[layer]['Area_yrange'][key]['coordinates']
+                for c in coords:
+                    ax.plot(c[0], c[1], color= 'k', linewidth= 1)
+                    ax.fill(c[0], c[1], color= depth_area[layer]['Area_yrange'][key]['color'])
 
 
 # monkeypatch warning format
