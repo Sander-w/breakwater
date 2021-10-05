@@ -4,13 +4,14 @@ from tabulate import tabulate
 
 # define errors
 class InputError(Exception):
-    """ Exception raised for errors in the input
+    """Exception raised for errors in the input
 
     Attributes
     ----------
     message
         explanation of the error
     """
+
     __module__ = Exception.__module__
 
     def __init__(self, message):
@@ -18,13 +19,14 @@ class InputError(Exception):
 
 
 class NotSupportedError(Exception):
-    """ Exception raised when input is not supported
+    """Exception raised when input is not supported
 
     Attributes
     ----------
     message
         explanation of the error
     """
+
     __module__ = Exception.__module__
 
     def __init__(self, message):
@@ -32,13 +34,14 @@ class NotSupportedError(Exception):
 
 
 class RockGradingError(Exception):
-    """ Exception raised if there is an error in the Rock Grading
+    """Exception raised if there is an error in the Rock Grading
 
     Attributes
     ----------
     message
         explanation of the error
     """
+
     __module__ = Exception.__module__
 
     def __init__(self, message):
@@ -46,13 +49,14 @@ class RockGradingError(Exception):
 
 
 class ArmourUnitsError(Exception):
-    """ Exception raised if there is an error in the Armour Units
+    """Exception raised if there is an error in the Armour Units
 
     Attributes
     ----------
     message
         explanation of the error
     """
+
     __module__ = Exception.__module__
 
     def __init__(self, message):
@@ -61,29 +65,29 @@ class ArmourUnitsError(Exception):
 
 # define warnings
 class LimitStateWarning(Warning):
-    """ Warning in the LimitState """
+    """Warning in the LimitState"""
 
     def __init__(self, msg):
         self.message = msg
 
-class EquipmentError(Warning):
 
-    def __init__(self, msg, other, id,  areas, depth_area):
+class EquipmentError(Warning):
+    def __init__(self, msg, other, id, areas, depth_area):
 
         self.message = msg
 
-        fig, ax = plt.subplots(figsize=(15,7.5))
+        fig, ax = plt.subplots(figsize=(15, 7.5))
         coordinates = other._layers(id)
 
-        ymin = float('inf')
-        ymax = float('-inf')
+        ymin = float("inf")
+        ymax = float("-inf")
         for layer, area in areas.items():
-            for key, value in depth_area[layer]['Area_yrange'].items():
-                coords = depth_area[layer]['Area_yrange'][key]['coordinates']
+            for key, value in depth_area[layer]["Area_yrange"].items():
+                coords = depth_area[layer]["Area_yrange"][key]["coordinates"]
                 for c in coords:
                     x, y = c[0], c[1]
-                    ax.plot(x, y, color= 'grey', linewidth= 1)
-                    ax.fill(x, y, color= depth_area[layer]['Area_yrange'][key]['color'])
+                    ax.plot(x, y, color="grey", linewidth=1)
+                    ax.fill(x, y, color=depth_area[layer]["Area_yrange"][key]["color"])
 
                     if min(y) < ymin:
                         ymin = min(y)
@@ -91,7 +95,7 @@ class EquipmentError(Warning):
                         ymax = max(y)
 
         for layer, lines in coordinates.items():
-            plt.plot(lines["x"], lines["y"], color="k", linewidth= 3)
+            plt.plot(lines["x"], lines["y"], color="k", linewidth=3)
 
         plt.gca().set_aspect("equal", adjustable="box")
         plt.ylim(ymin - 2, ymax + 2)
@@ -100,21 +104,25 @@ class EquipmentError(Warning):
         df = other.inspect_equipment()
         print(df)
 
+
 # monkeypatch warning format
 def _custom_formatwarning(msg, category, *args, **kwargs):
     # ignore everything except the message
-    return f'{category.__name__}: {msg} \n'
+    return f"{category.__name__}: {msg} \n"
+
 
 def user_warning(msg):
-    """ show user warning """
+    """show user warning"""
     warnings.formatwarning = _custom_formatwarning
     warnings.warn(msg, category=UserWarning)
 
+
 def limitstate_warning(msg):
-    """ Show warning in the LimitState """
+    """Show warning in the LimitState"""
     warnings.formatwarning = _custom_formatwarning
     warnings.warn(msg, category=LimitStateWarning)
 
+
 def no_warnings():
-    """ ignore warnings """
-    warnings.filterwarnings('ignore')
+    """ignore warnings"""
+    warnings.filterwarnings("ignore")
