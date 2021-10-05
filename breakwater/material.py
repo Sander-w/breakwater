@@ -291,7 +291,6 @@ class RockGrading:
         """
 
         dictvar = None
-
         if type == 'Material':
             dictvar = 'material_price'
 

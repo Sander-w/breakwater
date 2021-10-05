@@ -26,11 +26,11 @@ def _process_cost(structure, type, cost, Grading, validate=True):
 
     if type == 'Material':
         dictvar = 'material_price'
-    elif type == 'C02':
-        dictvar = 'c02_price'
+    elif type == 'CO2':
+        dictvar = 'CO2_price'
 
     if dictvar == None:
-        raise KeyError('Give Material or C02 as input for the argument "type"')
+        raise KeyError('Give Material or CO2 as input for the argument "type"')
 
     if cost is not None:
         # cost have been added
@@ -131,13 +131,13 @@ def cost_influence(type, lines):
             for value in data['values']:
                 # normalise data and append to list
                 x.append((value - min)/(max - min))
-
             # add min and max to label
             label = f'{parameter} (min={min}, max={max})'
 
         else:
             # x equals the values
             x = data['values']
+
 
             # label is parameter
             label = parameter
@@ -150,8 +150,8 @@ def cost_influence(type, lines):
         # plot data
         if type == 'Material':
             plt.plot(x, data['material_cost'], label=label)
-        if type == 'C02':
-            plt.plot(x, data['c02_cost'], label=label)
+        if type == 'CO2':
+            plt.plot(x, data['CO2_cost'], label=label)
 
     # style figure
 

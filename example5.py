@@ -2,8 +2,7 @@ import breakwater as bw
 from Cubipod import Cubipod
 
 """
-How to use the C02 Footprint functions for the Revetment at Energy Island
-    Hydraulic conditions still need to be updated -> as well the gradings will probably be (Cupipod)
+How to use the C02 Footprint functions
 """
 Hm0_315, Tp_315, Tm_315 = 14.2, 17.6, 13.5  # 1/10.000 yrs from 315 degrees North
 Hm0_270, Tp_270, Tm_270 = 13.9, 16.4, 12.3  # 1/10.000 yrs from 270 degrees North
@@ -69,8 +68,8 @@ material_cost = {
     "length": None,
 }
 
-c02_cost = {
-    "type": "C02",
+cO2_cost = {
+    "type": "CO2",
     "price": {
         "LMA_5/40": 10,
         "LMA_10/60": 20,
@@ -92,12 +91,13 @@ c02_cost = {
     "length": None,
 }
 
-cost_dicts = [material_cost, c02_cost]
+cost_dicts = [material_cost, cO2_cost]
 
 for i in range(len(cost_dicts)):
     NEN.add_cost(type=cost_dicts[i]["type"], cost=cost_dicts[i]["price"])
     configs.add_cost(
         type=cost_dicts[i]["type"],
+        equipment= None,
         core_price=cost_dicts[i]["core_price"],
         unit_price=cost_dicts[i]["unit_price"],
         concrete_price=cost_dicts[i]["concrete_price"],
@@ -116,7 +116,7 @@ if save:
 
     # export concepts to the design explorer
     configs.to_design_explorer(
-        params=["c02_cost", "material_cost", "slope", "class armour", "B", "Rc"]
+        params=["cO2_cost", "material_cost", "slope", "class armour", "B", "Rc"]
     )
 
     # save the configs to a .breakwaters file

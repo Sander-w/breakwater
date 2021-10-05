@@ -1022,7 +1022,7 @@ class Configurations:
         return configs, max_combinations
 
     def add_cost(
-            self, type = None, unit_price=None, concrete_price=None,
+            self, type = 'Material', equipment= None, core_price=None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
             length=None):
         """ Compute the cost of each concept either CO2 or material cost
@@ -1046,6 +1046,10 @@ class Configurations:
         ----------
         type: {'Material', 'CO2'}
             which cost type is added
+        Equipment: lst
+            With equipment from Equipment Class
+        core_price : float, optional, default: None
+            cost of the core material per m³, required for RRM and CRM
         unit_price : float, optional, default: None
             the cost of an armour unit per m³, required for CRM and CC
         concrete_price : float, optional, default: None
@@ -1062,6 +1066,7 @@ class Configurations:
         """
         # make dict of the cost for validation
         cost = {
+            'core_price': core_price,
             'unit_price': unit_price,
             'concrete_price': concrete_price,
             'fill_price': fill_price}
@@ -1073,7 +1078,6 @@ class Configurations:
 
         # set list to store cost in
         computed_cost = []
-
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
             # check if concept is not None
@@ -1085,18 +1089,18 @@ class Configurations:
                 # check types and compute price
                 if row.type == 'RRM':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type,
+                        *row.concept.variantIDs, type = type, equipment = equipment, core_price= core_price,
                         transport_cost=transport_cost, output='variant')
 
                 elif row.type == 'CRM':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type,
+                        *row.concept.variantIDs, type = type, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
                 elif row.type == 'CRMR':
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type,
+                        *row.concept.variantIDs, type = type, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
@@ -1107,14 +1111,13 @@ class Configurations:
                         row.concept.dry_dock(investment, length)
 
                     price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, concrete_price=concrete_price,
+                        *row.concept.variantIDs, type = type, equipment = equipment,core_price= core_price, concrete_price=concrete_price,
                         fill_price=fill_price, unit_price=unit_price)
 
                 else:
                     raise NotSupportedError(f'{row.type} is not supported')
 
                 # add cost to list
-                #print(price == None)
                 computed_cost.append(price)
 
         # add column to the df for either material or CO2
