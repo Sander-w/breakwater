@@ -10,14 +10,17 @@ class Equipment:
         Which layers can be designed with what grading at what cost, {layer: {grading: price}}
     operation_type: list of strings
         How is the material placed. e.g. ['bulk', 'individual']
+    installation_depth: float
+        At which water depth is the vessel used
     """
 
-    def __init__(self, name, grading_limit, design_type, operation_type):
+    def __init__(self, name, grading_limit, design_type, operation_type, installation_depth):
 
         self.name = name
         self.grading_limit = grading_limit
         self.design_type = design_type
         self.operation_type = operation_type
+        self.installation_depth = installation_depth
 
     def get_price(self, layer, grading_layer):
         return self.design_type[layer][grading_layer]
@@ -36,15 +39,12 @@ class Vessel(Equipment):
         How is the material placed. e.g. ['bulk', 'individual']
     draught: int
         draught of the vessel
-    installation_depth: float
-        At which water depth is the vessel used
     """
 
-    def __init__(self,name, grading_limit, design_type, operation_type, draught, installation_depth):
+    def __init__(self, name, grading_limit, design_type, operation_type, installation_depth, draught):
 
-        super().__init__(name, grading_limit, design_type, operation_type)
+        super().__init__(name, grading_limit, design_type, operation_type, installation_depth)
         self.draught = draught
-        self.installation_depth = installation_depth
 
     def install(self, end, layer, grading_layer):
         install = False
@@ -71,15 +71,12 @@ class Crane(Equipment):
     reach_y: int
         What is the deepest part the equipment can reach
     reach_x: int
-        What is the furthest the equipment can rach
-    installation_depth: float
-        At which water depth is the crane used
+        What is the furthest the equipment can reach
     """
 
-    def __init__(self, name, grading_limit, design_type, operation_type, reach_y, reach_x, installation_depth):
+    def __init__(self, name, grading_limit, design_type, operation_type, installation_depth, reach_y, reach_x):
 
-        super().__init__(name, grading_limit, design_type, operation_type)
-        self.installation_depth = installation_depth
+        super().__init__(name, grading_limit, design_type, operation_type, installation_depth)
         self.reach_y = reach_y
         self.reach_x = reach_x
 
@@ -112,12 +109,11 @@ class CraneVessel(Equipment):
         At which water depth is the crane used
     """
 
-    def __init__(self, name, grading_limit, design_type, operation_type, reach_x, draught, installation_depth):
+    def __init__(self, name, grading_limit, design_type, operation_type, installation_depth, reach_x, draught):
 
-        super().__init__(name, grading_limit, design_type, operation_type)
+        super().__init__(name, grading_limit, design_type, operation_type, installation_depth)
         self.reach_x = reach_x
         self.draught = draught
-        self.installation_depth = installation_depth
 
     def install(self, layer, grading_layer, slope, start, x_end):
         V, H = slope

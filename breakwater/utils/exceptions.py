@@ -1,5 +1,6 @@
 import warnings
 import matplotlib.pyplot as plt
+from tabulate import tabulate
 
 # define errors
 class InputError(Exception):
@@ -71,19 +72,33 @@ class EquipmentError(Warning):
 
         self.message = msg
 
-        fig, ax = plt.subplots(figsize=(10,5))
+        fig, ax = plt.subplots(figsize=(15,7.5))
         coordinates = other._layers(id)
 
-        for layer, lines in coordinates.items():
-            plt.plot(lines["x"], lines["y"], color="k", linewidth= 3)
-
+        ymin = float('inf')
+        ymax = float('-inf')
         for layer, area in areas.items():
             for key, value in depth_area[layer]['Area_yrange'].items():
                 coords = depth_area[layer]['Area_yrange'][key]['coordinates']
                 for c in coords:
-                    ax.plot(c[0], c[1], color= 'k', linewidth= 1)
-                    ax.fill(c[0], c[1], color= depth_area[layer]['Area_yrange'][key]['color'])
+                    x, y = c[0], c[1]
+                    ax.plot(x, y, color= 'grey', linewidth= 1)
+                    ax.fill(x, y, color= depth_area[layer]['Area_yrange'][key]['color'])
 
+                    if min(y) < ymin:
+                        ymin = min(y)
+                    if max(y) > ymax:
+                        ymax = max(y)
+
+        for layer, lines in coordinates.items():
+            plt.plot(lines["x"], lines["y"], color="k", linewidth= 3)
+
+        plt.gca().set_aspect("equal", adjustable="box")
+        plt.ylim(ymin - 2, ymax + 2)
+        plt.grid()
+
+        df = other.inspect_equipment()
+        print(df)
 
 # monkeypatch warning format
 def _custom_formatwarning(msg, category, *args, **kwargs):
