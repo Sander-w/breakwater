@@ -1244,7 +1244,7 @@ class RubbleMound:
 
                 A = 0
                 # The layers below can be negative as well as positive with a section interrupted by e.g. the core
-                if layer == "armour" or layer == "underlayer" or layer == "filter":
+                if layer == "armour" or layer == "underlayer" or layer == "filter layer":
 
                     xl2l, xl2r = xl2[xl2 <= 0], xl2[xl2 > 0]
                     yl2l, yl2r = yl2[xl2 <= 0], yl2[xl2 > 0]
