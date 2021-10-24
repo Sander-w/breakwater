@@ -4,17 +4,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
-from functools import reduce
-import operator
-from shapely.geometry import LineString, Point
 
-from .ConstructionMethod import Vessel, Crane, CraneVessel
+
+from .Equipment import Truck, Vessel, Crawler, Crane, Barge
 from .core import substructure
 from .core.bishop import Bishop
 from .core.overtopping import rubble_mound
 from .core.scour import scour_protection
 from .core.stability import hudson, vandermeer
 from .core.toe import toe_stability
+from .utils.breakwater_divide import intersect, GaussianA, clockwise
 from .utils.exceptions import (
     InputError,
     NotSupportedError,
@@ -1099,83 +1098,9 @@ class RubbleMound:
         # return the coordinates of the specified variants
         return coordinates
 
-    @staticmethod
-    def intersect(A, B, C, D):
-        try:
-            line1 = LineString([Point(A), Point(B)])
-            line2 = LineString([Point(C), Point(D)])
 
-            int_pt = line1.intersection(line2)
-            return int_pt.x, int_pt.y
 
-        except:
-            return None
-
-    @staticmethod
-    def GaussianA(x, y):
-        A = 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
-        return A
-
-    @staticmethod
-    def clockwise(x, y, slope):
-        x = np.array(x)
-        xmin = min(x)
-        y = np.array(y)
-        below_zero = False
-
-        # Transfrom negative values to positive ones
-        if any(x[x < 0]):
-            x += abs(xmin) + 10
-            below_zero = True
-
-        # Get the centre of the coordinates
-        coords = list(zip(x, y))
-        xc, yc = tuple(
-            map(
-                operator.truediv,
-                reduce(lambda x, y: map(operator.add, x, y), coords),
-                [len(coords)] * 2,
-            )
-        )
-
-        xy_tup = sorted(
-            coords,
-            key=lambda coord: (
-                -135
-                - math.degrees(
-                    math.atan2(*tuple(map(operator.sub, coord, (xc, yc)))[::-1])
-                )
-            )
-            % 360,
-        )
-        x, y = list(zip(*xy_tup))
-
-        # Transform back if needed
-        if below_zero:
-            x -= abs(xmin) + 10
-
-        V, H = slope
-        x, y = list(x), list(y)
-
-        i = 0
-        # It happens that some y-coordinates are on same level but belong to the box below, then remove from the coordinates
-        while True:
-            if i + 1 == len(x):
-                break
-            else:
-                dy = abs(y[i + 1] - y[i])
-                dx = abs(x[i + 1] - x[i])
-                # If we move upwards but where not on the slope, remove the coordinates
-                if round(dx, 3) > round(dy * (H / V), 3) and dy != 0:
-                    y.pop(i)
-                    x.pop(i)
-                    i = 0
-                else:
-                    i += 1
-
-        return list(x), list(y)
-
-    def divide_cross_section(self, variantID):
+    def divide_cross_section(self, variantID, plot= False):
 
         """
         compute the area of a layer for all it's depth ranges
@@ -1194,11 +1119,16 @@ class RubbleMound:
         depth_area = self._layers(variantID)
         slope = self._input_arguments["slope"]
         self._layers(variantID)
+        if plot:
+            fig, ax = plt.subplots(figsize=(15, 7.5))
+        colorlst = ['g', 'b', 'y', 'r', 'orange']
+        p = 0
         for layer, coord in depth_area.items():
             depth_area[layer]["Area_yrange"] = {}
 
             x_lst = coord["x"]
             y_lst = coord["y"]
+
 
             # Create a range list in which we will search for the area's
             n1, n2 = math.ceil(min(y_lst)), math.floor(max(y_lst) + 1)
@@ -1216,7 +1146,7 @@ class RubbleMound:
             k = 1
             for i in range(len(y_lst) - 1):
                 for j in range(len(range_lst)):
-                    cor = self.intersect(
+                    cor = intersect(
                         (x_lst[i], y_lst[i]),
                         (x_lst[i + 1], y_lst[i + 1]),
                         (min(x_lst), range_lst[j]),
@@ -1234,6 +1164,12 @@ class RubbleMound:
             y_set = sorted(list(set(range_lst)))
 
             xl, yl = np.array(xl), np.array(yl)
+            if plot:
+                ax.plot(x_lst, y_lst, 'ko')
+                ax.fill(x_lst, y_lst, colorlst[p], label = f'{layer}')
+                plt.gca().set_aspect("equal", adjustable="box")
+                plt.grid()
+            p += 1
             for i in range(len(y_set) - 1):
                 r1, r2 = y_set[i], y_set[i + 1]
                 depth_area[layer]["Area_yrange"][f"{r1}-{r2}"] = {}
@@ -1242,7 +1178,10 @@ class RubbleMound:
                 yl2 = yl[(yl >= r1) & (yl <= r2)]
                 xl2 = xl[(yl >= r1) & (yl <= r2)]
 
-                A = 0
+
+                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
+                    "area"
+                ] = []  # Area of a section
                 # The layers below can be negative as well as positive with a section interrupted by e.g. the core
                 if layer == "armour" or layer == "underlayer" or layer == "filter layer":
 
@@ -1257,45 +1196,53 @@ class RubbleMound:
                     if not any(yl2 > y_below_max):
                         Al, Ar = 0, 0
                         if len(xl2l) > 0:
-                            xl2l, yl2l = self.clockwise(xl2l, yl2l, slope)
+                            xl2l, yl2l = clockwise(xl2l, yl2l, slope)
+                            if plot:
+                                ax.plot(xl2l, yl2l, color="k", linewidth=1)
                             xl2l.append(xl2l[0])
                             yl2l.append(yl2l[0])
                             depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
                                 "coordinates"
-                            ].append([xl2l, yl2l])
-                            Al = self.GaussianA(xl2l, yl2l)
+                            ].extend([xl2l, yl2l])
+                            Al = GaussianA(xl2l, yl2l)
+                            depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]["area"].append(Al)
                         if len(xl2r) > 0:
-                            xl2r, yl2r = self.clockwise(xl2r, yl2r, slope)
+                            xl2r, yl2r = clockwise(xl2r, yl2r, slope)
+                            if plot:
+                                ax.plot(xl2r, yl2r, color="k", linewidth=1)
                             xl2r.append(xl2r[0])
                             yl2r.append(yl2r[0])
                             depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
                                 "coordinates"
-                            ].append([xl2r, yl2r])
-                            Ar = self.GaussianA(xl2r, yl2r)
-                        A = Al + Ar
+                            ].extend([xl2r, yl2r])
+                            Ar = GaussianA(xl2r, yl2r)
+                            depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]["area"].append(Ar)
+
                     else:
                         if len(xl2) > 0:
-                            xl2, yl2 = self.clockwise(xl2, yl2, slope)
-
+                            xl2, yl2 = clockwise(xl2, yl2, slope)
+                            if plot:
+                                ax.plot(xl2, yl2, color="k", linewidth=1)
                             xl2.append(xl2[0])
                             yl2.append(yl2[0])
                             depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
                                 "coordinates"
-                            ].append([xl2, yl2])
-                            A = self.GaussianA(xl2, yl2)
+                            ].extend([xl2, yl2])
+                            A = GaussianA(xl2, yl2)
+                            depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]["area"].append(A)
                 else:
                     if len(xl2) > 0:
-                        xl2, yl2 = self.clockwise(xl2, yl2, slope)
+                        xl2, yl2 = clockwise(xl2, yl2, slope)
+                        if plot:
+                            ax.plot(xl2, yl2, color="k", linewidth=1)
                         xl2.append(xl2[0])
                         yl2.append(yl2[0])
                         depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
                             "coordinates"
-                        ].append([xl2, yl2])
-                        A = self.GaussianA(xl2, yl2)
+                        ].extend([xl2, yl2])
+                        A = GaussianA(xl2, yl2)
+                        depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]["area"].append(A)
 
-                depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
-                    "area"
-                ] = A  # Area of a section
                 depth_area[layer]["Area_yrange"][f"{r1}-{r2}"]["price"] = float(
                     "inf"
                 )  # Current price of a section
@@ -1304,9 +1251,143 @@ class RubbleMound:
                 ] = "r"  # The starting color of the fill of a section
                 depth_area[layer]["Area_yrange"][f"{r1}-{r2}"][
                     "equipment"
-                ] = None  # The used equipment for the section
+                ] = {}  # The used equipment for the section
+        if plot:
+            plt.legend()
 
         return depth_area
+
+    def install_all_equipments(self, coords, equip, layer, grading, mass, end_lay, area, key, max_height, max_height_xcorner, length_top):
+
+        slope = self._input_arguments["slope"]
+        xcorner_layer = max(coords)[0]
+        section_equip = {}
+
+        # Check to which class the equipment belongs and whether to install
+        if isinstance(equip, Truck):
+            if equip.install(layer = layer,
+                          grading_layer = grading,
+                          ymax = max_height,
+                          section_coords = coords):
+
+                price = (
+                        equip.get_price(layer=layer, grading_layer=grading)
+                        * area
+                    )
+                self.depth_area[layer]["Area_yrange"][key][
+                        "equipment"
+                    ][equip.name] = round(price, 2)
+                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
+                # Is the height of the layer higher than the current max layer? replace top and min_x values
+                if end_lay > max_height:
+                    max_height = end_lay
+                    max_height_xcorner = xcorner_layer
+                    length_top = length_top
+
+        elif isinstance(equip, Vessel):
+            if equip.install(
+                section_coords = coords, layer = layer, grading_layer = grading):
+                price = (
+                    equip.get_price(layer=layer, grading_layer=grading)
+                    * area
+                )
+
+                self.depth_area[layer]["Area_yrange"][key][
+                        "equipment"
+                    ][equip.name] = round(price, 2)
+                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
+
+                # Is the height of the layer higher than the current max layer? replace top and min_x values
+                if end_lay > max_height:
+                    max_height = end_lay
+                    max_height_xcorner = xcorner_layer
+                    length_top = length_top
+
+        elif isinstance(equip, Crawler):
+
+            if equip.install(
+                layer = layer,
+                grading_layer = grading,
+                ymax = max_height,
+                section_coords = coords,
+                xmax_top = max_height_xcorner,
+                mass = mass,
+                length_top = length_top
+            ):
+                price = (
+                    equip.get_price(layer=layer, grading_layer=grading)
+                    * area
+                )
+                self.depth_area[layer]["Area_yrange"][key][
+                        "equipment"
+                    ][equip.name] = round(price, 2)
+                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
+
+                if end_lay > max_height:
+                    max_height = end_lay
+                    max_height_xcorner = xcorner_layer
+                    length_top = length_top
+
+        elif isinstance(equip, Crane):
+            if equip.install(
+                layer= layer,
+                grading_layer= grading,
+                ymax= max_height,
+                xmax_top= max_height_xcorner,
+                section_coords = coords,
+                mass= mass
+            ):
+
+                price = (
+                    equip.get_price(layer=layer, grading_layer=grading)
+                    * area
+                )
+                self.depth_area[layer]["Area_yrange"][key][
+                        "equipment"
+                    ][equip.name] = round(price, 2)
+                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
+
+                if end_lay > max_height:
+                    max_height = end_lay
+                    max_height_xcorner = xcorner_layer
+                    length_top = length_top
+
+        elif isinstance(equip, Barge):
+
+            if equip.install(self,
+                             layer= layer,
+                             grading_layer= grading,
+                             ymax= max_height,
+                             slope= slope,
+                             section_coords = coords,
+                             xmax_top= max_height_xcorner,
+                             mass= mass):
+                price = (
+                    equip.get_price(layer=layer, grading_layer=grading)
+                    * area
+                )
+                self.depth_area[layer]["Area_yrange"][key][
+                        "equipment"
+                    ][equip.name] = round(price, 2)
+                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
+
+                if end_lay > max_height:
+                    max_height = end_lay
+                    max_height_xcorner = xcorner_layer
+                    length_top = length_top
+
+        return max_height, max_height_xcorner, length_top
+
+    @staticmethod
+    def maxDiff(a):
+        vmin = a[0]
+        dmax = 0
+        for i in range(len(a)):
+            if (a[i] < vmin):
+                vmin = a[i]
+            elif (a[i] - vmin > dmax):
+                dmax = a[i] - vmin
+        return dmax
 
     def equipment_cost(self, id, areas, equipment, structure):
         """
@@ -1330,10 +1411,14 @@ class RubbleMound:
             if the given equipment is not able to fill all the sections
         """
         self.depth_area = self.divide_cross_section(id)
-        slope = self._input_arguments["slope"]
+
         variant_price = {}
+
+        #Max height of already built sections and the corner coordinate
         max_height = 0
-        max_height_min_x = 0
+        max_height_xcorner = 0
+        length_top = 0
+
         for layer, area in areas.items():
             layer_price = 0
 
@@ -1341,125 +1426,59 @@ class RubbleMound:
             grading = None
             if layer == "core":
                 grading = self.Grading.get_class(self.Dn50_core)
+                mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
             # use armour units
             elif layer == "armour" and self._input_arguments["armour"] != "Rock":
                 rho_c = self.rho
+                mass = int(self.structure["armour"]["class"] * rho_c / 1000)
                 grading = (
-                    str(int(self.structure["armour"]["class"] * rho_c / 1000)) + "t"
+                    str(mass) + "t"
                 )
+
             else:
                 grading = structure[layer]["class"]
+                mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
 
             for key, value in self.depth_area[layer]["Area_yrange"].items():
+                # Find the start and the end y-coordinate of the layer and the area of this section
+                start_lay, end_lay = float(key.split("-")[0]), float(
+                    key.split("-")[1]
+                )
+                area = self.depth_area[layer]["Area_yrange"][key]["area"]
+                coords = self.depth_area[layer]["Area_yrange"][key]["coordinates"]
+                x, y = np.array(coords[0]), np.array(coords[1])
+                length_top = self.maxDiff(x[np.where(y == max(y))])
+
                 for equip in equipment:
+                    for p in range(0, len(coords), 2):
+                        # Left and right of the breakwater are not entirely symmetric
+                        x = coords[p]
+                        y = coords[p+1]
+                        if p == 0 and area[0] != 0:
+                            area1 = area[0]
+                        else:
+                            area1 = area[1]
 
-                    # Find the start and the end y-coordinate of the layer and the area of this section
-                    start_lay, end_lay = float(key.split("-")[0]), float(
-                        key.split("-")[0]
-                    )
-                    area = self.depth_area[layer]["Area_yrange"][key]["area"]
 
-                    # Find the xmin and xmax of the layer
-                    coords = self.depth_area[layer]["Area_yrange"][key]["coordinates"]
-                    xmin_layer = float("inf")
-                    xmax_layer = float("-inf")
-                    for c in coords:
-                        xmin = min(c[0])
-                        xmax = min(c[0])
-                        if xmin < xmin_layer:
-                            xmin_layer = xmin
-                        if xmax > xmax_layer:
-                            xmax_layer = xmax
-                    # Check to which class the equipment belongs and whether to install
-                    if isinstance(equip, Vessel):
+                        section_coords = list(zip(x, y))
+                        max_height, max_height_xcorner, length_top = self.install_all_equipments(coords= section_coords,
+                                                                                   equip= equip, 
+                                                                                   layer= layer, 
+                                                                                   grading= grading,
+                                                                                   mass= mass,
+                                                                                   end_lay= end_lay, 
+                                                                                   area= area1,
+                                                                                   key= key, 
+                                                                                   max_height= max_height, 
+                                                                                   max_height_xcorner = max_height_xcorner,
+                                                                                   length_top= length_top)
 
-                        if equip.install(
-                            layer=layer, grading_layer=grading, end=end_lay
-                        ):
-                            price = (
-                                equip.get_price(layer=layer, grading_layer=grading)
-                                * area
-                            )
-                            if (
-                                price
-                                < self.depth_area[layer]["Area_yrange"][key]["price"]
-                            ):
-                                self.depth_area[layer]["Area_yrange"][key][
-                                    "price"
-                                ] = price
-                                self.depth_area[layer]["Area_yrange"][key][
-                                    "equipment"
-                                ] = equip.name
-                            self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-                            # Is the height of the layer higher than the current max layer? replace top and min_x values
-                            if end_lay > max_height:
-                                max_height = end_lay
-                                max_height_min_x = xmin_layer
 
-                    elif isinstance(equip, Crane):
-
-                        if equip.install(
-                            layer=layer,
-                            grading_layer=grading,
-                            start=start_lay,
-                            max_h=max_height,
-                            xbot=xmin_layer,
-                            xtop=max_height_min_x,
-                        ):
-                            price = (
-                                equip.get_price(layer=layer, grading_layer=grading)
-                                * area
-                            )
-                            if (
-                                price
-                                < self.depth_area[layer]["Area_yrange"][key]["price"]
-                            ):
-                                self.depth_area[layer]["Area_yrange"][key][
-                                    "price"
-                                ] = price
-                                self.depth_area[layer]["Area_yrange"][key][
-                                    "equipment"
-                                ] = equip.name
-                            self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-
-                            if end_lay > max_height:
-                                max_height = end_lay
-                                max_height_min_x = xmin_layer
-
-                    elif isinstance(equip, CraneVessel):
-
-                        if equip.install(
-                            layer=layer,
-                            grading_layer=grading,
-                            start=start_lay,
-                            slope=slope,
-                            x_end=xmax_layer,
-                        ):
-                            price = (
-                                equip.get_price(layer=layer, grading_layer=grading)
-                                * area
-                            )
-                            if (
-                                price
-                                < self.depth_area[layer]["Area_yrange"][key]["price"]
-                            ):
-                                self.depth_area[layer]["Area_yrange"][key][
-                                    "price"
-                                ] = price
-                                self.depth_area[layer]["Area_yrange"][key][
-                                    "equipment"
-                                ] = equip.name
-                            self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-
-                            if end_lay > max_height:
-                                max_height = end_lay
-                                max_height_min_x = xmin_layer
                 # Add minimum price of the section to the total layer price
                 layer_price += self.depth_area[layer]["Area_yrange"][key]["price"]
 
             # add to dict
             variant_price[layer] = np.round(layer_price, 2)
-
         # This means that one of the sections is not filled
         if float("inf") in variant_price.values():
             raise EquipmentError(
@@ -1535,6 +1554,8 @@ class RubbleMound:
             # add to dict
             variant_price[layer] = np.round(layer_price, 2)
 
+        return variant_price
+
     def _cost(
         self,
         *variants,
@@ -1542,7 +1563,7 @@ class RubbleMound:
         equipment=None,
         core_price=None,
         unit_price=None,
-        transport_cost,
+        transport_cost= None,
         output="variant",
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
@@ -1666,6 +1687,9 @@ class RubbleMound:
 
         return cost
 
+    def optimal_equipment_set(self, transport_cost, unit_rate):
+        pass
+
     def inspect_equipment(self):
 
         if self.depth_area != None:
@@ -1684,11 +1708,11 @@ class RubbleMound:
 
             mux = pd.MultiIndex.from_tuples(d2.keys())
             df = pd.DataFrame(list(d2.values()), index=mux)
-            df = df[["area", "price", "equipment"]]
+            df = df[["area", "equipment"]]
+            df['area'] = df['area'].apply(lambda x: sum(x))
             df["area"] = df["area"].round(2)
-            df["price"] = df["price"].round(2)
             df.rename(
-                columns={"area": "area [m2]", "price": "price [EUR/m]"}, inplace=True
+                columns={"area": "area [m2]", "equipment": "Price/m per equipment"}, inplace=True
             )
             return df
 
@@ -2031,7 +2055,7 @@ class RubbleMound:
             y = coord["y"]
 
             # use Gauss's area formula
-            A = self.GaussianA(x, y)
+            A = GaussianA(x, y)
 
             # add to area dict
             area[layer] = A
@@ -2273,7 +2297,6 @@ class RockRubbleMound(RubbleMound):
         type,
         equipment=None,
         core_price=None,
-        unit_price=None,
         transport_cost,
         output="variant",
     ):
@@ -2317,7 +2340,7 @@ class RockRubbleMound(RubbleMound):
             type=type,
             equipment=equipment,
             core_price=core_price,
-            unit_price=unit_price,
+            unit_price= 0,
             transport_cost=transport_cost,
             output=output,
         )

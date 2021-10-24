@@ -656,6 +656,7 @@ class Xbloc(ConcreteArmour):
                  16: {'D': 3.63, 'h': 3.5, 'Vc': 1.46},
                  18: {'D': 3.78, 'h': 3.7, 'Vc': 1.52},
                  20: {'D': 3.91, 'h': 3.8, 'Vc': 1.57}}
+
         super().__init__(kd=16, units=units, rho=rho)
 
     def correction_factor(

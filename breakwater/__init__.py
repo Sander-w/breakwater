@@ -16,7 +16,7 @@ from .rubble import RubbleMound, ConcreteRubbleMound, RockRubbleMound, ConcreteR
 from .caisson import Caisson
 
 # import Equipment
-from .ConstructionMethod import Vessel, Crane
+from .Equipment import Truck, Vessel, Crane, Crawler, Barge, HITACHI_EX1900
 
 # file loader
 from .design import read_breakwaters

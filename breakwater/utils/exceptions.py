@@ -84,8 +84,9 @@ class EquipmentError(Warning):
         for layer, area in areas.items():
             for key, value in depth_area[layer]["Area_yrange"].items():
                 coords = depth_area[layer]["Area_yrange"][key]["coordinates"]
-                for c in coords:
-                    x, y = c[0], c[1]
+                for p in range(0, len(coords), 2):
+                    x = coords[p]
+                    y = coords[p+1]
                     ax.plot(x, y, color="grey", linewidth=1)
                     ax.fill(x, y, color=depth_area[layer]["Area_yrange"][key]["color"])
 
