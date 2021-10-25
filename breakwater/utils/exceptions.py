@@ -86,7 +86,7 @@ class EquipmentError(Warning):
                 coords = depth_area[layer]["Area_yrange"][key]["coordinates"]
                 for p in range(0, len(coords), 2):
                     x = coords[p]
-                    y = coords[p+1]
+                    y = coords[p + 1]
                     ax.plot(x, y, color="grey", linewidth=1)
                     ax.fill(x, y, color=depth_area[layer]["Area_yrange"][key]["color"])
 
