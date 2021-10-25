@@ -102,8 +102,8 @@ class EquipmentError(Warning):
         plt.ylim(ymin - 2, ymax + 2)
         plt.grid()
 
-        df = other.inspect_equipment()
-        print(df)
+        # df = other.inspect_equipment()
+        # print(df)
 
 
 # monkeypatch warning format

@@ -11,19 +11,27 @@ class Equipment:
     name: str
         name of the equipment
     design_type: dict
-        Which layers can be designed with what grading at what cost, {layer: {grading: price}}
+        Which layers can be designed with what grading at what cost and at what speed,
+        {layer: {grading: {price: ..., production_capacity: ...}}}
     operation_type: list of strings
         How is the material placed. e.g. ['bulk', 'individual']
+    mobilisation_cost: float
+        Cost of transportation to site
+    use_cost: float
+        What is the cost of usage of the equipment per hour
     waterlvl: float
         At which water depth is the equipment used
     """
 
-    def __init__(self, name, design_type, operation_type, waterlvl):
+    def __init__(self, name, design_type, operation_type, transport_cost, use_cost, waterlvl):
 
         self.name = name
         self.design_type = design_type
         self.operation_type = operation_type
+        self.transport_cost = transport_cost
+        self.use_cost = use_cost
         self.waterlvl = waterlvl
+
 
     def location_equipment(self, *args, xpoint, section_coords, equip, y_draught = 0, height = 0, ymax = 0):
 
@@ -81,7 +89,7 @@ class Equipment:
 
     def get_price(self, layer, grading_layer):
         """
-        What is the price to construct the section for a given equipment and grading
+        What is the price per cubic meter to construct the section for a given equipment and grading
 
         Parameters
         ----------
@@ -93,7 +101,25 @@ class Equipment:
         -------
         float
         """
-        return self.design_type[layer][grading_layer]
+        return self.design_type[layer][grading_layer]['price']
+
+    def get_installation_rate(self, layer, grading_layer):
+
+        """
+        What is the time [hrs] per cubic meter to construct the section for a given equipment and grading
+
+        Parameters
+        ----------
+        layer: str
+            name of the layer which is build
+        grading_layer: str
+            grading of the layer which is build
+        Returns
+        -------
+        float
+        """
+
+        return self.design_type[layer][grading_layer]['installation_rate']
 
 class Truck(Equipment):
     """
@@ -114,9 +140,9 @@ class Truck(Equipment):
         Margin which account for wave overtopping so the equipment is not damaged.
     """
     
-    def __init__(self, name, design_type, operation_type, waterlvl, h_dry):
+    def __init__(self, name, design_type, operation_type, transport_cost, use_cost, waterlvl, h_dry):
         
-        super().__init__(name, design_type, operation_type, waterlvl)
+        super().__init__(name, design_type, operation_type, transport_cost, use_cost, waterlvl)
         self.h_dry = h_dry
 
     def install(self, layer, grading_layer, ymax, section_coords, plot = False):
@@ -205,9 +231,9 @@ class Crawler(Equipment):
         Margin from the edge at which the equipment is placed. 3 meter by default
     """
 
-    def __init__(self, name, design_type, operation_type, waterlvl, loading_chart, h_dry, offset= 3):
+    def __init__(self, name, design_type, operation_type, transport_cost, use_cost, waterlvl, loading_chart, h_dry, offset= 3):
 
-        super().__init__(name, design_type, operation_type, waterlvl)
+        super().__init__(name, design_type, operation_type, transport_cost, use_cost, waterlvl)
         self.loading_chart = loading_chart
         self.h_dry = h_dry
         self.offset = offset
@@ -432,7 +458,7 @@ class Crawler(Equipment):
 
 class HITACHI_EX1900(Crawler):
 
-    def __init__(self, name, design_type, operation_type, waterlvl, h_dry, offset= 3):
+    def __init__(self, name, design_type, operation_type, transport_cost, use_cost, waterlvl, h_dry, offset= 3):
         lchart = {
             10: {'x': [30], 'w': [16.8]},
             8: {'x': [28, 32], 'w': [21.1, 13.3]},
@@ -452,7 +478,8 @@ class HITACHI_EX1900(Crawler):
         }
 
 
-        super().__init__(name= name, design_type= design_type, operation_type= operation_type, waterlvl= waterlvl, h_dry=h_dry, offset= offset, loading_chart= lchart)
+        super().__init__(name= name, design_type= design_type, operation_type= operation_type, transport_cost= transport_cost,
+                         use_cost= use_cost, waterlvl= waterlvl, h_dry=h_dry, offset= offset, loading_chart= lchart)
 
 class Crane(Equipment):
     """
@@ -474,9 +501,9 @@ class Crane(Equipment):
     offset: int
         Margin from the edge at which the equipment is placed. 3 meter by default
     """
-    def __init__(self, name, design_type, operation_type, waterlvl, loading_chart, h_dry, offset= 3):
+    def __init__(self, name, design_type, operation_type, transport_cost, use_cost, waterlvl, loading_chart, h_dry, offset= 3):
 
-        super().__init__(name, design_type, operation_type, waterlvl)
+        super().__init__(name, design_type, operation_type, transport_cost, use_cost, waterlvl)
         self.waterlvl = waterlvl
         self.loading_chart = loading_chart
         self.h_dry = h_dry
@@ -594,9 +621,9 @@ class Vessel(Equipment):
         margin to ensure safe navigability
     """
 
-    def __init__(self, name, design_type, operation_type, waterlvl, draught, margin = 1):
+    def __init__(self, name, design_type, operation_type, transport_cost, use_cost, waterlvl, draught, margin = 1):
 
-        super().__init__(name, design_type, operation_type, waterlvl)
+        super().__init__(name, design_type, operation_type, transport_cost, use_cost, waterlvl)
         self.draught = draught
         self.margin = margin
 
@@ -662,11 +689,13 @@ class Barge(Equipment):
 
     """
 
-    def __init__(self,  name, waterlvl, other, draught, height,margin_y, margin_x= 2, design_type= None, operation_type= None):
+    def __init__(self,  name, transport_cost, use_cost, waterlvl, other, draught, height,margin_y, margin_x= 2, design_type= None, operation_type= None):
 
-        super().__init__(name, design_type, operation_type, waterlvl)
+        super().__init__(name, design_type, operation_type, transport_cost, use_cost, waterlvl)
         # Inherit either from Standard_Excavator or Dragline_Excavator
         self.instance = other
+        self.transport_cost = self.transport_cost + self.instance.transport_cost
+        self.use_cost = self.use_cost + self.instance.use_cost
         self.waterlvl = waterlvl
         self.draught = draught
         self.height = height
@@ -705,40 +734,41 @@ class Barge(Equipment):
         V, H = slope
         y_draught = self.waterlvl - self.draught
         # It is possible that the barge hit's the construction and we need to keep an extra offset
-        if y_end >= y_draught - self.margin_y:
-            if isinstance(self.instance, Crane):
-                xequip, yequip, flip = self.location_equipment((y_end - y_draught) * H/V, self.margin_x, self.instance.offset,
-                                                               xpoint = xtop, section_coords = section_coords,
-                                                               equip = self, y_draught= y_draught, height= self.height)
-                self.instance.waterlvl = self.waterlvl
-                self.instance.h_dry = 0
-                install = self.instance.install(layer= layer, grading_layer= grading_layer, ymax= ymax, section_coords=section_coords,
-                                                xmax_top=xmax_top, mass= mass, xloc_equip= xequip, yloc_equip= yequip, plot= plot)
-            elif isinstance(self.instance, Crawler):
-                # This is the location closest to the section but not always the optimal location
-                xequip, yequip, flip = self.location_equipment((y_end - y_draught) * H/V, self.margin_x, self.instance.offset,
-                                                               xpoint = xtop, section_coords = section_coords,
-                                                               equip = self, y_draught= y_draught, height= self.height)
-                self.instance.waterlvl = self.waterlvl
-                self.instance.h_dry = 0
-                install = self.instance.install(layer= layer, grading_layer= grading_layer, ymax= ymax, section_coords=section_coords,
-                                                xmax_top=xmax_top, mass= mass, length_top= float('inf'), xloc_equip= xequip, yloc_equip= yequip, plot= plot)
+        if layer in self.instance.design_type.keys() and grading_layer in self.instance.design_type[layer].keys():
+            if y_end >= y_draught - self.margin_y:
+                if isinstance(self.instance, Crane):
+                    xequip, yequip, flip = self.location_equipment((y_end - y_draught) * H/V, self.margin_x, self.instance.offset,
+                                                                   xpoint = xtop, section_coords = section_coords,
+                                                                   equip = self, y_draught= y_draught, height= self.height)
+                    self.instance.waterlvl = self.waterlvl
+                    self.instance.h_dry = 0
+                    install = self.instance.install(layer= layer, grading_layer= grading_layer, ymax= ymax, section_coords=section_coords,
+                                                    xmax_top=xmax_top, mass= mass, xloc_equip= xequip, yloc_equip= yequip, plot= plot)
+                elif isinstance(self.instance, Crawler):
+                    # This is the location closest to the section but not always the optimal location
+                    xequip, yequip, flip = self.location_equipment((y_end - y_draught) * H/V, self.margin_x, self.instance.offset,
+                                                                   xpoint = xtop, section_coords = section_coords,
+                                                                   equip = self, y_draught= y_draught, height= self.height)
+                    self.instance.waterlvl = self.waterlvl
+                    self.instance.h_dry = 0
+                    install = self.instance.install(layer= layer, grading_layer= grading_layer, ymax= ymax, section_coords=section_coords,
+                                                    xmax_top=xmax_top, mass= mass, length_top= float('inf'), xloc_equip= xequip, yloc_equip= yequip, plot= plot)
 
-        else:
-            if isinstance(self.instance, Crane):
-                # In this case we can always install as we can freely manouevre the vessel and the crane can reach everywhere
-                install = True
-                self.instance.install(layer= layer, grading_layer= grading_layer, ymax= ymax, section_coords=section_coords,
-                                                xmax_top=xmax_top, mass= mass, xloc_equip= (min(x_section) + max(x_section)) /2,
-                                                yloc_equip= y_draught + self.height, plot= plot)
-            elif isinstance(self.instance, Crawler):
-                yequip = y_draught + self.height
-                xequip = max(x_section)
-                self.instance.waterlvl = self.waterlvl
-                self.instance.h_dry = 0
-                install = self.instance.install(layer= layer, grading_layer= grading_layer, ymax= yequip, section_coords=section_coords,
-                                                xmax_top=xmax_top, mass= mass, length_top= float('inf'), xloc_equip= xequip, yloc_equip= yequip,
-                                                plot= plot)
+            else:
+                if isinstance(self.instance, Crane):
+                    # In this case we can always install as we can freely manouevre the vessel and the crane can reach everywhere
+                    install = True
+                    self.instance.install(layer= layer, grading_layer= grading_layer, ymax= ymax, section_coords=section_coords,
+                                                    xmax_top=xmax_top, mass= mass, xloc_equip= (min(x_section) + max(x_section)) /2,
+                                                    yloc_equip= y_draught + self.height, plot= plot)
+                elif isinstance(self.instance, Crawler):
+                    yequip = y_draught + self.height
+                    xequip = max(x_section)
+                    self.instance.waterlvl = self.waterlvl
+                    self.instance.h_dry = 0
+                    install = self.instance.install(layer= layer, grading_layer= grading_layer, ymax= yequip, section_coords=section_coords,
+                                                    xmax_top=xmax_top, mass= mass, length_top= float('inf'), xloc_equip= xequip, yloc_equip= yequip,
+                                                    plot= plot)
         return install
 
 

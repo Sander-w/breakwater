@@ -1271,12 +1271,17 @@ class RubbleMound:
                           section_coords = coords):
 
                 price = (
-                        equip.get_price(layer=layer, grading_layer=grading)
-                        * area
-                    )
+                    equip.get_price(layer=layer, grading_layer=grading)
+                    * area
+                )
+
+                time = (equip.get_installation_rate(layer= layer, grading_layer= grading)
+                    * area)
+
                 self.depth_area[layer]["Area_yrange"][key][
                         "equipment"
-                    ][equip.name] = round(price, 2)
+                    ][equip.name] = {'cost' : round(price, 2), 'time': round(time, 2)}
+
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
                 # Is the height of the layer higher than the current max layer? replace top and min_x values
                 if end_lay > max_height:
@@ -1292,9 +1297,17 @@ class RubbleMound:
                     * area
                 )
 
+                price = (
+                    equip.get_price(layer=layer, grading_layer=grading)
+                    * area
+                )
+
+                time = (equip.get_installation_rate(layer= layer, grading_layer= grading)
+                    * area)
+
                 self.depth_area[layer]["Area_yrange"][key][
                         "equipment"
-                    ][equip.name] = round(price, 2)
+                    ][equip.name] = {'cost' : round(price, 2), 'time': round(time, 2)}
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
                 # Is the height of the layer higher than the current max layer? replace top and min_x values
@@ -1318,9 +1331,13 @@ class RubbleMound:
                     equip.get_price(layer=layer, grading_layer=grading)
                     * area
                 )
+
+                time = (equip.get_installation_rate(layer= layer, grading_layer= grading)
+                    * area)
+
                 self.depth_area[layer]["Area_yrange"][key][
                         "equipment"
-                    ][equip.name] = round(price, 2)
+                    ][equip.name] = {'cost' : round(price, 2), 'time': round(time, 2)}
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
                 if end_lay > max_height:
@@ -1342,9 +1359,13 @@ class RubbleMound:
                     equip.get_price(layer=layer, grading_layer=grading)
                     * area
                 )
+
+                time = (equip.get_installation_rate(layer= layer, grading_layer= grading)
+                    * area)
+
                 self.depth_area[layer]["Area_yrange"][key][
                         "equipment"
-                    ][equip.name] = round(price, 2)
+                    ][equip.name] = {'cost' : round(price, 2), 'time': round(time, 2)}
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
                 if end_lay > max_height:
@@ -1354,7 +1375,7 @@ class RubbleMound:
 
         elif isinstance(equip, Barge):
 
-            if equip.install(self,
+            if equip.install(
                              layer= layer,
                              grading_layer= grading,
                              ymax= max_height,
@@ -1363,12 +1384,17 @@ class RubbleMound:
                              xmax_top= max_height_xcorner,
                              mass= mass):
                 price = (
-                    equip.get_price(layer=layer, grading_layer=grading)
+                    equip.instance.get_price(layer=layer, grading_layer=grading)
                     * area
                 )
+
+                time = (equip.instance.get_installation_rate(layer= layer, grading_layer= grading)
+                    * area)
+
                 self.depth_area[layer]["Area_yrange"][key][
                         "equipment"
-                    ][equip.name] = round(price, 2)
+                    ][equip.name] = {'cost' : round(price, 2), 'time': round(time, 2)}
+
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
                 if end_lay > max_height:
@@ -1459,8 +1485,8 @@ class RubbleMound:
                         else:
                             area1 = area[1]
 
-
                         section_coords = list(zip(x, y))
+
                         max_height, max_height_xcorner, length_top = self.install_all_equipments(coords= section_coords,
                                                                                    equip= equip, 
                                                                                    layer= layer, 
@@ -1687,8 +1713,63 @@ class RubbleMound:
 
         return cost
 
-    def optimal_equipment_set(self, transport_cost, unit_rate):
-        pass
+    def optimal_equipment_set(self, equipment, sort_by = 'cost'):
+
+        df = self.inspect_equipment()
+        data = {}
+        layers_dict = {}
+        areatot = 0
+        set = 1
+
+        for equip_1 in equipment:
+            data[f'set {set}'] = {}
+            data[f'set {set}']['equipment'] = []
+            data[f'set {set}']['cost'] = 0
+            data[f'set {set}']['area'] = 0
+            data[f'set {set}']['time'] = 0
+            layers_dict[f'set {set}'] = []
+
+            for i in range(len(df)):
+                layer = df.index[i]
+                areatot += df['area [m2]'].iloc[i]
+                if equip_1.name in df['Price/m per equipment'].iloc[i].keys():
+
+                    if equip_1.name not in data[f'set {set}']['equipment']:
+                        data[f'set {set}']['equipment'].append(equip_1.name)
+
+                    data[f'set {set}']['cost'] += df['Price/m per equipment'].iloc[i][equip_1.name]['cost']
+                    data[f'set {set}']['time'] += df['Price/m per equipment'].iloc[i][equip_1.name]['time']
+                    data[f'set {set}']['area'] += df['area [m2]'].iloc[i]
+                    layers_dict[f'set {set}'].append(layer)
+
+                data[f'set {set}']['cost'] += equip_1.transport_cost
+                data[f'set {set}']['cost'] += equip_1.use_cost * data[f'set {set}']['time']
+
+            for equip_2 in equipment:
+                for i in range(len(df)):
+                    layer = df.index[i]
+                    if (equip_2.name in df['Price/m per equipment'].iloc[i].keys()) and (layer not in layers_dict[f'set {set}']):
+
+                        if equip_2.name not in data[f'set {set}']['equipment']:
+                            data[f'set {set}']['equipment'].append(equip_2.name)
+
+                        data[f'set {set}']['cost'] += df['Price/m per equipment'].iloc[i][equip_2.name]['cost']
+                        data[f'set {set}']['time'] += df['Price/m per equipment'].iloc[i][equip_2.name]['time']
+                        data[f'set {set}']['area'] += df['area [m2]'].iloc[i]
+                        layers_dict[f'set {set}'].append(layer)
+
+                    data[f'set {set}']['cost'] += equip_2.transport_cost
+                    data[f'set {set}']['cost'] += equip_2.use_cost * data[f'set {set}']['time']
+                #data[f'set {set}']['equipment'] = list(np.unique(data[f'set {set}']['equipment']))
+
+            set += 1
+
+        df_optimal = pd.DataFrame.from_dict(data, orient= 'index')
+        df_optimal = df_optimal[['equipment', 'area', 'cost', 'time']]
+        df_optimal.sort_values(by= sort_by, inplace= True)
+        df_optimal = df_optimal.round(2)
+
+        return df_optimal
 
     def inspect_equipment(self):
 
@@ -2254,6 +2335,7 @@ class RockRubbleMound(RubbleMound):
 
         class_Dn50 = Grading.get_class_dn50(class_armour)
         self.structure["armour"] = {
+            "computed Dn50": Dn50,
             "computed Dn50": Dn50,
             "class": class_armour,
             "class Dn50": class_Dn50,
