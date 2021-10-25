@@ -1277,10 +1277,41 @@ class RubbleMound:
         max_height_xcorner,
         length_top,
     ):
+        """
+        Function which updates the depth_area dict based on if an equipment can install a section
+        Parameters
+        ----------
+        coords: list
+            coordinates of the section
+        equip: object
+            An equipment object
+        layer: str
+            Which layer are we installing (e.g. core)
+        grading: str
+            What is the grading of the layer
+        mass: float
+            The mass of the material of the layer
+        end_lay: float
+            Upper y-coordinate of the section
+        area: float
+            Area of the section
+        key: str
+            the range of the section (e.g. '0.0-1.0')
+        max_height: float
+            Maximum height of already build layer
+        max_height_xcorner: float
+            Corner of heightest build layer
+        length_top: float
+            Length of highest build layer at max_height
 
+        Returns
+        -------
+        tuple
+        """
+        x, y = list(zip * (coords))
         slope = self._input_arguments["slope"]
         xcorner_layer = max(coords)[0]
-        section_equip = {}
+        length_top_sec = self.maxDiff(x[np.where(y == max(y))])
 
         # Check to which class the equipment belongs and whether to install
         if isinstance(equip, Truck):
@@ -1308,7 +1339,7 @@ class RubbleMound:
                 if end_lay > max_height:
                     max_height = end_lay
                     max_height_xcorner = xcorner_layer
-                    length_top = length_top
+                    length_top = length_top_sec
 
         elif isinstance(equip, Vessel):
             if equip.install(section_coords=coords, layer=layer, grading_layer=grading):
@@ -1331,7 +1362,7 @@ class RubbleMound:
                 if end_lay > max_height:
                     max_height = end_lay
                     max_height_xcorner = xcorner_layer
-                    length_top = length_top
+                    length_top = length_top_sec
 
         elif isinstance(equip, Crawler):
 
@@ -1360,7 +1391,7 @@ class RubbleMound:
                 if end_lay > max_height:
                     max_height = end_lay
                     max_height_xcorner = xcorner_layer
-                    length_top = length_top
+                    length_top = length_top_sec
 
         elif isinstance(equip, Crane):
             if equip.install(
@@ -1388,7 +1419,7 @@ class RubbleMound:
                 if end_lay > max_height:
                     max_height = end_lay
                     max_height_xcorner = xcorner_layer
-                    length_top = length_top
+                    length_top = length_top_sec
 
         elif isinstance(equip, Barge):
 
@@ -1422,12 +1453,23 @@ class RubbleMound:
                 if end_lay > max_height:
                     max_height = end_lay
                     max_height_xcorner = xcorner_layer
-                    length_top = length_top
+                    length_top = length_top_sec
 
         return max_height, max_height_xcorner, length_top
 
     @staticmethod
     def maxDiff(a):
+        """
+        Get the maximum difference between values in an array
+        Parameters
+        ----------
+        a: list
+
+        Returns
+        -------
+        float
+        """
+
         vmin = a[0]
         dmax = 0
         for i in range(len(a)):
@@ -1490,12 +1532,10 @@ class RubbleMound:
                 start_lay, end_lay = float(key.split("-")[0]), float(key.split("-")[1])
                 area = self.depth_area[layer]["Area_yrange"][key]["area"]
                 coords = self.depth_area[layer]["Area_yrange"][key]["coordinates"]
-                x, y = np.array(coords[0]), np.array(coords[1])
-                length_top = self.maxDiff(x[np.where(y == max(y))])
 
                 for equip in equipment:
                     for p in range(0, len(coords), 2):
-                        # Left and right of the breakwater are not entirely symmetric
+                        # Left and right of the breakwater are not entirely symmetric so install seperate
                         x = coords[p]
                         y = coords[p + 1]
                         if p == 0 and area[0] != 0:
@@ -1544,7 +1584,7 @@ class RubbleMound:
         self, dictvar, Grading, areas, core_price, transport_cost, unit_price, structure
     ):
         """
-        Rough cost estimation without use of equipment. Is also used for CO2 footprint
+        Rough cost estimation without use of equipment.
         Parameters
         ----------
         dictvar: str
