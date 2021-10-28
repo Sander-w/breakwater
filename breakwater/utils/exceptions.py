@@ -1,6 +1,5 @@
 import warnings
 import matplotlib.pyplot as plt
-from tabulate import tabulate
 
 # define errors
 class InputError(Exception):
@@ -81,6 +80,8 @@ class EquipmentError(Warning):
 
         ymin = float("inf")
         ymax = float("-inf")
+        add_label_green, add_label_red = True, True
+
         for layer, area in areas.items():
             for key, value in depth_area[layer]["Area_yrange"].items():
                 coords = depth_area[layer]["Area_yrange"][key]["coordinates"]
@@ -88,7 +89,17 @@ class EquipmentError(Warning):
                     x = coords[p]
                     y = coords[p + 1]
                     ax.plot(x, y, color="grey", linewidth=1)
-                    ax.fill(x, y, color=depth_area[layer]["Area_yrange"][key]["color"])
+
+                    if depth_area[layer]["Area_yrange"][key]["color"] == 'g' and add_label_green:
+                        label = 'installed section'
+                        add_label_green = False
+                        ax.fill(x, y, color= 'g', label = label)
+                    elif depth_area[layer]["Area_yrange"][key]["color"] == 'g' and add_label_red:
+                        label = 'not installed section'
+                        add_label_red = False
+                        ax.fill(x, y, color= 'r', label = label)
+                    else:
+                        ax.fill(x, y, color= depth_area[layer]["Area_yrange"][key]["color"])
 
                     if min(y) < ymin:
                         ymin = min(y)
@@ -101,9 +112,7 @@ class EquipmentError(Warning):
         plt.gca().set_aspect("equal", adjustable="box")
         plt.ylim(ymin - 2, ymax + 2)
         plt.grid()
-
-        # df = other.inspect_equipment()
-        # print(df)
+        plt.legend()
 
 
 # monkeypatch warning format

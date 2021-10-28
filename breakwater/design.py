@@ -1078,6 +1078,7 @@ class Configurations:
 
         # set list to store cost in
         computed_cost = []
+        computed_CO2 = []
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
             # check if concept is not None
@@ -1088,19 +1089,19 @@ class Configurations:
                 # valid concept
                 # check types and compute price
                 if row.type == 'RRM':
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, equipment = equipment, core_price= core_price,
+                    cost_material, CO2_material = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         transport_cost=transport_cost, output='variant')
 
                 elif row.type == 'CRM':
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, equipment = equipment, core_price= core_price,
+                    cost_material, CO2_material = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
                 elif row.type == 'CRMR':
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, equipment = equipment, core_price= core_price,
+                    cost_material, CO2_material = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
                         output='variant')
 
@@ -1110,21 +1111,22 @@ class Configurations:
                         # add investment cost
                         row.concept.dry_dock(investment, length)
 
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, equipment = equipment,core_price= core_price, concrete_price=concrete_price,
+                    cost_material, CO2_material = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment,core_price= core_price, concrete_price=concrete_price,
                         fill_price=fill_price, unit_price=unit_price)
 
                 else:
                     raise NotSupportedError(f'{row.type} is not supported')
 
                 # add cost to list
-                computed_cost.append(price)
+                computed_cost.append(cost_material)
+                computed_CO2.append(CO2_material)
 
         # add column to the df for either material or CO2
-        if type == 'Material':
+        if len([c for c in computed_cost if c != 0]) != 0:
             self.df['material_cost'] = computed_cost
-        if type == 'CO2':
-            self.df['CO2_cost'] = computed_cost
+        if len([c for c in computed_CO2 if c != 0]):
+            self.df['material_CO2'] = computed_CO2
 
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
@@ -1152,7 +1154,7 @@ class Configurations:
         +==========================+============+============+
         | material_cost            |     o      |     o      |
         +----------------------------------------------------+
-        | CO2_cost                 |     o      |     o      |
+        | material_CO2             |     o      |     o      |
         +--------------------------+------------+------------+
         | B                        |     o      |     o      |
         +--------------------------+------------+------------+
@@ -1280,7 +1282,6 @@ class Configurations:
 
         # add list to store all CaseNo in
         all_CaseNo = []
-
         # start the export
         for index, row in self.df.iterrows():
             # check if concept exists
@@ -1325,21 +1326,23 @@ class Configurations:
                     if 'material_cost' in self.df.columns:
                         # add cost to data
                         data['material_cost'] = row.material_cost[id]
+
                     else:
                         raise KeyError(
                             'Material cost have not been added, use add_cost to add '
-                            'cost to the df')
+                            'EUR cost to the df')
 
-                # check if CO2 cost must be included
-                if 'CO2_cost' in params:
-                    # check if cost have been added
-                    if 'CO2_cost' in self.df.columns:
+                if 'material_CO2' in params:
+                    if 'material_CO2' in self.df.columns:
                         # add cost to data
-                        data['CO2_cost'] = row.CO2_cost[id]
+
+                        data['material_cost'] = row.material_cost[id]
+
                     else:
                         raise KeyError(
-                            'CO2 cost have not been added, use add_cost to add '
+                            'Material CO2 have not been added, use add_cost to add CO2'
                             'cost to the df')
+
 
                 # add image to data
                 data['img'] = [f'{file_name}.png']

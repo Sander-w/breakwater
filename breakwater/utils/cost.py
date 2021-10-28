@@ -24,18 +24,11 @@ def _process_cost(structure, type, cost, Grading, validate=True):
 
     dictvar = None
 
-    if type == 'Material':
-        dictvar = 'material_price'
-    elif type == 'CO2':
-        dictvar = 'CO2_price'
-
-    if dictvar == None:
-        raise KeyError('Give Material or CO2 as input for the argument "type"')
 
     if cost is not None:
         # cost have been added
         # check if cost have been added to the grading
-        if dictvar in Grading[list(Grading.grading.keys())[0]]:
+        if 'cost' in Grading[list(Grading.grading.keys())[0]]:
             # pricing has been added
             pass
         else:

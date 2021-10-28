@@ -267,7 +267,7 @@ class RockGrading:
     def __getitem__(self, key):
         return self.grading[key]
 
-    def add_cost(self, type, cost):
+    def add_cost(self, cost):
         """Add cost per m³ of each Rock Class either for the material or the CO2 footprint
 
         Add the cost per m³ of each Rock Class either for the material or the CO2 footprint to the :py:attr:`grading`
@@ -276,9 +276,10 @@ class RockGrading:
         ----------
         cost : dict
             cost of each Rock Class, keys must be identical to the name
-            of the rock class
-        type: {'Material, 'CO2'}
-            Indicate whether the costs are added for the material or the CO2
+            of the rock class. If not interested in either cost or CO2
+            give None as a value
+
+            {class: {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}}
 
         Raises
         ------
@@ -288,24 +289,21 @@ class RockGrading:
             if a rock class of the :py:attr:`grading` has no price
         """
 
-        dictvar = None
-        if type == "Material":
-            dictvar = "material_price"
-
-        elif type == "CO2":
-            dictvar = "CO2_price"
-
-        else:
-            raise KeyError('Give Material or CO2 as input for the argument "type"')
 
         rock_classes = list(self.grading.keys())
         # iterate over the prices in the given dict
-        for class_, price in cost.items():
+        for class_, cost_dict in cost.items():
             # check if the rock class is in the grading
+            if type(cost_dict) != dict:
+                raise KeyError('The cost argument should be a dictionary, formatted as:  {class: {"cost: val[EUR/m3], "CO2": val[kg/m3]}')
+
+            elif 'cost' not in cost_dict.keys() or 'CO2' not in cost_dict.keys():
+                raise KeyError('The keys of the dictionary in a class should be "cost" and "CO2"')
 
             if class_ in self.grading.keys():
                 # class is in the grading so add price to the nested dict
-                self.grading[class_][dictvar] = price
+                self.grading[class_]['cost'] = cost_dict['cost']
+                self.grading[class_]['CO2'] = cost_dict['CO2']
 
                 # delete from rock_classes to validate if all have a price
                 rock_classes.remove(class_)
