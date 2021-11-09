@@ -1,13 +1,10 @@
-import itertools
-from itertools import combinations_with_replacement
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
 
 
-from .Equipment import Truck, Vessel, Crawler, Crane, Barge
+from breakwater.equipment.equipment import Truck, Vessel, Excavator, Crane, Barge, PlateFeeder
 from .core import substructure
 from .core.bishop import Bishop
 from .core.overtopping import rubble_mound
@@ -22,7 +19,6 @@ from .utils.exceptions import (
     user_warning,
     EquipmentError,
 )
-
 
 class RubbleMound:
     """General Rubble Mound breakwater class
@@ -43,8 +39,8 @@ class RubbleMound:
     ----------
     Dn50 : float
         Dn50 of the armour [m]
-    Dn50_core : float
-        nominal diameter for the stones in the core of the breakwater [m]
+    core_material : dict
+        {class: str, Dn50: float}
     rho : float
         density of the material of the armour layer [kg/m³]
     rho_w : float
@@ -128,7 +124,7 @@ class RubbleMound:
     def __init__(
         self,
         Dn50,
-        Dn50_core,
+        core_material,
         rho,
         rho_w,
         armour_layer,
@@ -175,7 +171,7 @@ class RubbleMound:
         self.bishop = None
         self.F_norm = None
 
-        self.Dn50_core = Dn50_core
+        Dn50_core = core_material['Dn50']
         self.Grading = Grading
         self.depth_area = None
 
@@ -187,7 +183,8 @@ class RubbleMound:
             "B": B,
             "armour": armour_layer,
             "Grading": Grading,
-            "Dn50_core": Dn50_core,
+            "core_class": core_material['class'],
+            "Dn50_core": core_material['Dn50'],
         }
 
         # check for supported armour layers, and if filter_rule is set
@@ -1186,6 +1183,33 @@ class RubbleMound:
                     max_height_xcorner = xcorner_layer
                     length_top = length_top_sec
 
+        elif isinstance(equip, PlateFeeder):
+
+            if equip.install(
+                layer=layer,
+                grading_layer=grading,
+                ymax=max_height,
+                section_coords=coords,
+            ):
+
+                time = (
+                    area / equip.get_production_rate(layer=layer, grading_layer=grading)
+
+                )
+
+                price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
+
+
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+
+                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
+                # Is the height of the layer higher than the current max layer? replace top and min_x values
+                if end_lay > max_height:
+                    max_height = end_lay
+                    max_height_xcorner = xcorner_layer
+                    length_top = length_top_sec
+
         elif isinstance(equip, Vessel):
 
             if equip.install(section_coords=coords, layer=layer, grading_layer=grading):
@@ -1207,7 +1231,7 @@ class RubbleMound:
                     max_height_xcorner = xcorner_layer
                     length_top = length_top_sec
 
-        elif isinstance(equip, Crawler):
+        elif isinstance(equip, Excavator):
 
             if equip.install(
                 layer=layer,
@@ -1278,11 +1302,11 @@ class RubbleMound:
                     equip.instance.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
                 )
 
-                time = (
+                time = area / (
                     equip.instance.get_production_rate(
                         layer=layer, grading_layer=grading
                     )
-                    * area
+
                 )
 
                 self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
@@ -1323,13 +1347,12 @@ class RubbleMound:
         df = df.applymap(lambda x: None if x == {} else x)
         return df
 
-    def optimal_equipment_set(self, dataframe, areas, id, optimize_on ="cost"):
+    def optimal_equipment_set(self, dataframe, optimize_on ="cost"):
 
         """
 
         Parameters
         ----------
-        equipment
         dataframe
         optimize_on
 
@@ -1340,18 +1363,76 @@ class RubbleMound:
 
         df = dataframe
         df.index = np.arange(0, len(df))
-        equipment = [c for c in df.columns if c != 'area']
-        install_layer = {}
 
+        # All the sections
+        all_sections = df.index
+        # All the equipment
+        equipment = [c for c in df.columns if c != 'area']
+        equipment_layers = {}
+        # Which equipment can install which sections
         for i in range(len(equipment)):
-            install_layer[equipment[i]] = []
+            equipment_layers[equipment[i]] = []
             for index, row in df.iterrows():
                 if bool(row[equipment[i]]):
-                        install_layer[equipment[i]].append(index)
+                        equipment_layers[equipment[i]].append(index)
 
+        combinations_dict = []
+        combinations_lst = []
 
+        for equip in equipment:
+            i = 0
+            installed = equipment_layers[equip].copy()
+            equips_dict = {}
+            equips_dict[equip] = installed.copy()
 
+            equips_lst = [equip]
+            # can't install a single layer
+            if len(installed) != 0:
+                while list(installed) != list(all_sections) and i < len(equipment):
 
+                    rest_equip = sorted(equipment_layers.keys(),
+                                        key=lambda k: len(set(equipment_layers[k]).difference(set(installed))),
+                                        reverse= True)
+
+                    most_new = rest_equip[0]
+
+                    newlayers = [l for l in equipment_layers[most_new] if l not in installed]
+                    installed.extend(newlayers)
+                    equips_dict[rest_equip[0]] = newlayers
+                    equips_lst.append(rest_equip[0])
+                    installed = sorted(installed)
+                    i += 1
+
+                if list(installed) == list(all_sections):
+                    equips_lst = sorted(equips_lst)
+                    if equips_lst not in combinations_dict:
+                        combinations_dict.append(equips_dict)
+                        combinations_lst.append(equips_lst)
+
+        cost_combinations = {}
+
+        for combi in combinations_dict:
+            s = ''
+            cost = 0
+            CO2 = 0
+            time = 0
+            for key, value in combi.items():
+                s += (key + ' + ')
+                for section in value:
+                    d = df[key].iloc[section]
+                    if 'cost' in d:
+                        cost += d['cost']
+                    if 'CO2' in d:
+                        CO2 += d['CO2']
+                    if 'time' in d:
+                        time += d['time']
+
+            cost_combinations[s[:-2]] = {'cost': cost, 'CO2': CO2, 'time': time}
+
+        df_optimal = pd.DataFrame.from_dict(cost_combinations, orient='index')
+        df_optimal.sort_values(by= optimize_on, inplace= True)
+
+        return df_optimal
 
     def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on):
         """
@@ -1395,6 +1476,7 @@ class RubbleMound:
 
         variants = self._validate_variant(variants)
 
+        optimal_equipment = {}
 
         for id in variants:
             depth_area = self._layers(id)
@@ -1413,17 +1495,18 @@ class RubbleMound:
                     # What is the grading of the layer?
                     grading = None
                     if layer == "core":
-                        grading = self.Grading.get_class(self.Dn50_core)
-                        mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
+                        grading = self._input_arguments['core_class']
+                        mass = self.rho * (self._input_arguments['Dn50_core'])**3
                     # use armour units
                     elif layer == "armour" and self._input_arguments["armour"] != "Rock":
-                        rho_c = self.rho
-                        mass = int(self.structure["armour"]["class"] * rho_c / 1000)
-                        grading = str(mass) + "t"
+                        grading = self.structure['armour']['Mass']
+                        mass = int(self.structure["armour"]["class"] * 2400 / 1000)
 
                     else:
                         grading = structure[layer]["class"]
                         mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
+                        if grading == '8-12t':
+                            print(mass)
 
                     for key, value in self.depth_area[layer]["Area_yrange"].items():
                         # Find the start and the end y-coordinate of the layer and the area of this section
@@ -1467,7 +1550,6 @@ class RubbleMound:
             df2 = df_variants[id][cols].dropna(how= 'all')
 
             # #if one row contains (exception of area column) only None the section can't be installed
-            print(len(df_variants[id]), len(df2))
             if len(df2) != len(df_variants[id]):
                 raise EquipmentError( f"variant '{id}' can't be installed completely",
                                       other = self,
@@ -1475,21 +1557,18 @@ class RubbleMound:
                                       areas = areas,
                                       depth_area = self.depth_area)
             else:
-
-                optimal_equipment = self.optimal_equipment_set(dataframe= df_variants[id],
-                                                           id = id,
-                                                           areas= areas,
-                                                           optimize_on = optimize_on)
+                optimal_equipment[id] = self.optimal_equipment_set(dataframe= df_variants[id],
+                                                                   optimize_on = optimize_on)
 
         return optimal_equipment
 
 
-    def cost_CO2_or_money(self, variants, core_price, transport_cost, unit_price, output, key):
+    def cost_CO2_or_money(self, *variants, core_price, transport_cost, unit_price, output, key):
         """
 
         Parameters
         ----------
-                *variants : str
+            *variants : str
             IDs of the variants to plot, see :py:attr:`variantIDs` for
             a list of all generated variants. If 'all' is in the
             arguments, all variants will be plotted.
@@ -1548,12 +1627,15 @@ class RubbleMound:
                               * area)
 
                 # add to dict
-                variant_price[layer] = np.round(price, 2)
+                variant_price[layer] = price
 
             # add to cost dict
             if output is 'variant' or output is 'average':
                 # add total cost of all layers
-                cost[id] = np.round(np.sum(list(variant_price.values())), 2)
+                if key == 'cost':
+                    cost[id] = np.round(np.sum(list(variant_price.values())), 2)
+                else:
+                    cost[id] = np.round(np.sum(list(variant_price.values())), 4)
             elif output is 'layer':
                 # add the cost of each layer
                 cost[id] = variant_price
@@ -1636,7 +1718,7 @@ class RubbleMound:
         
         if core_price['cost'] != None:
             
-            cost_material = self.cost_CO2_or_money(variants = variants, core_price = core_price, transport_cost = transport_cost, 
+            cost_material = self.cost_CO2_or_money(*variants, core_price = core_price, transport_cost = transport_cost,
                                                    unit_price = unit_price, output = output, key = 'cost')
             # check if average must be computed
             if output is 'average':
@@ -1653,12 +1735,12 @@ class RubbleMound:
                     
         if core_price['CO2'] != None:
             
-            CO2_material = self.cost_CO2_or_money(variants = variants, core_price = core_price, transport_cost = transport_cost,
+            CO2_material = self.cost_CO2_or_money(*variants, core_price = core_price, transport_cost = transport_cost,
                                                    unit_price = unit_price, output = output, key = 'CO2')
             # check if average must be computed
             if output is 'average':
                 # compute average cost
-                CO2_material = {'average': np.round(np.average(list(CO2_material.values())), 2)}
+                CO2_material = {'average': np.round(np.average(list(CO2_material.values())), 4)}
     
                 # check if the cost have only been computed for 1 variant
                 if len(variants) == 1:
@@ -1673,10 +1755,10 @@ class RubbleMound:
     def total_cost(
         self,
         *variants,
-        equipment=None,
         core_price,
         unit_price,
-        transport_cost,
+        equipment=None,
+        transport_cost= None,
         output="variant",
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
@@ -1720,6 +1802,9 @@ class RubbleMound:
             if the given equipment is not able to fill all the sections
         """
         # validate variants
+        if transport_cost == None:
+            transport_cost = {'cost': 0, 'CO2': 0}
+
         cost = {}
 
         variants = self._validate_variant(variants)
@@ -1727,7 +1812,7 @@ class RubbleMound:
         cost_material, CO2_material = self.material_cost(*variants, core_price= core_price, unit_price= unit_price,
                                                          transport_cost= transport_cost, output= output)
 
-            
+
         # cost_equipment_df, CO2_equipment_df = None, None
 
         # We want to know the monetary value
@@ -1737,7 +1822,7 @@ class RubbleMound:
         #         structure = self.get_variant(id)
         #         #cost_equipment = self.equipment_cost(id= id, areas= areas, equipment= equipment, structure= structure, cost_key= 'cost')
         #     cost_equipment_df = self.optimal_equipment_set(equipment, sort_by="cost")
-        # 
+        #
         # # We want to know the CO2 emission
         # elif CO2_material != 0:
         #     for id in variants:
@@ -1745,21 +1830,19 @@ class RubbleMound:
         #         structure = self.get_variant(id)
         #         #CO2_equipment = self.equipment_cost(id= id, areas= areas, equipment= equipment, structure= structure, cost_key= 'CO2')
         #     CO2_equipment_df = self.optimal_equipment_set(equipment, sort_by="cost")
-        # 
+        #
         # if cost_equipment_df != None and CO2_equipment_df == None:
         #     cost_equipment_df['cost'] = cost_equipment_df['cost'] + cost_material
-        # 
+        #
         # elif cost_equipment_df == None and CO2_equipment_df != None:
         #     cost_equipment_df['cost'] = cost_equipment_df['cost'] + CO2_material
-        # 
+        #
         # else:
         #     total_cost_df = cost_equipment_df.merge(CO2_equipment_df, by= 'area')
         #     #Add the costs
         
         
         return cost_material, CO2_material
-
-
 
 
 
@@ -2160,8 +2243,8 @@ class RockRubbleMound(RubbleMound):
     Grading : :py:class:`RockGrading`
         standard rock grading defined in the NEN-EN 13383-1 or a user
         defined rock grading
-    Dn50_core : float
-        nominal diameter for the stones in the core of the breakwater [m]
+    core_material : dict
+        core_class and Dn50
     safety : float, optional, default: 1
         safety factor of design (number of standard deviations from the
         mean)
@@ -2223,7 +2306,7 @@ class RockRubbleMound(RubbleMound):
         N,
         LimitState,
         Grading,
-        Dn50_core,
+        core_material,
         safety=1,
         slope_toe=(2, 3),
         structure_type="breakwater",
@@ -2309,7 +2392,7 @@ class RockRubbleMound(RubbleMound):
         # design underlayer, filter layer and crest height
         super().__init__(
             Dn50=class_Dn50,
-            Dn50_core=Dn50_core,
+            core_material=core_material,
             rho=Grading.rho,
             rho_w=rho_w,
             armour_layer="Rock",
@@ -2339,7 +2422,6 @@ class RockRubbleMound(RubbleMound):
     def cost(
         self,
         *variants,
-        type,
         equipment=None,
         core_price=None,
         transport_cost,
@@ -2731,8 +2813,8 @@ class ConcreteRubbleMound(RubbleMound):
     Grading : :py:class:`RockGrading`
         standard rock grading defined in the NEN-EN 13383-1 or a user
         defined rock grading
-    Dn50_core : float
-        nominal diameter for the stones in the core of the breakwater [m]
+    core_material : dict
+        core_class and Dn50
     safety : float, optional, default: 1
         safety factor of design (number of standard deviations from the
         mean)
@@ -2795,7 +2877,7 @@ class ConcreteRubbleMound(RubbleMound):
         LimitState,
         ArmourUnit,
         Grading,
-        Dn50_core,
+        core_material,
         safety=1,
         slope_toe=(2, 3),
         structure_type="breakwater",
@@ -2879,12 +2961,13 @@ class ConcreteRubbleMound(RubbleMound):
             "class Dn50": V_required ** (1 / 3),
             "state": state,
             "layers": layers,
+            'Mass': ArmourUnit.units[V_required]['M']
         }
 
         # design underlayer, filter layer and crest height
         super().__init__(
             Dn50=V_required ** (1 / 3),
-            Dn50_core=Dn50_core,
+            core_material=core_material,
             rho=ArmourUnit.rho,
             rho_w=rho_w,
             armour_layer=armour_layer,
@@ -2950,6 +3033,7 @@ class ConcreteRubbleMound(RubbleMound):
                 "class Dn50": new_class ** (1 / 3),
                 "state": state,
                 "layers": layers,
+                'Mass': ArmourUnit.units[V_required]['M']
             }
 
             # check if the class of the units has changed
@@ -2963,7 +3047,7 @@ class ConcreteRubbleMound(RubbleMound):
                 # and filter layer must be changed as well
                 super().__init__(
                     Dn50=new_class ** (1 / 3),
-                    Dn50_core=Dn50_core,
+                    core_material=core_material,
                     rho=ArmourUnit.rho,
                     rho_w=rho_w,
                     armour_layer=armour_layer,
@@ -3001,7 +3085,6 @@ class ConcreteRubbleMound(RubbleMound):
     def cost(
         self,
         *variants,
-        type,
         equipment=None,
         core_price=None,
         unit_price=None,
@@ -3120,8 +3203,8 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
     Grading : :py:class:`RockGrading`
         standard rock grading defined in the NEN-EN 13383-1 or a user
         defined rock grading
-    Dn50_core : float
-        nominal diameter for the stones in the core of the breakwater [m]
+    core_material : dict
+        core_class and Dn50
     safety : float, optional, default: 1
         safety factor of design (number of standard deviations from the
         mean)
@@ -3184,7 +3267,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         LimitState,
         ArmourUnit,
         Grading,
-        Dn50_core,
+        core_material,
         safety=1,
         slope_toe=(2, 3),
         structure_type="revetment",
@@ -3267,12 +3350,13 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             "class Dn50": V_required ** (1 / 3),
             "state": state,
             "layers": layers,
+            'Mass': ArmourUnit.units[V_required]['M']
         }
 
         # design underlayer, filter layer and crest height
         super().__init__(
             Dn50=V_required ** (1 / 3),
-            Dn50_core=Dn50_core,
+            core_material=core_material,
             rho=ArmourUnit.rho,
             rho_w=rho_w,
             armour_layer=armour_layer,
@@ -3338,6 +3422,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
                 "class Dn50": new_class ** (1 / 3),
                 "state": state,
                 "layers": layers,
+                'Mass': ArmourUnit.units[V_required]['M']
             }
 
             # check if the class of the units has changed
@@ -3351,7 +3436,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
                 # and filter layer must be changed as well
                 super().__init__(
                     Dn50=new_class ** (1 / 3),
-                    Dn50_core=Dn50_core,
+                    core_material= core_material,
                     rho=ArmourUnit.rho,
                     rho_w=rho_w,
                     armour_layer=armour_layer,
@@ -3389,11 +3474,10 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
     def cost(
         self,
         *variants,
-        type,
         equipment=None,
         core_price=None,
         unit_price=None,
-        transport_cost,
+        transport_cost= None,
         output="variant",
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint

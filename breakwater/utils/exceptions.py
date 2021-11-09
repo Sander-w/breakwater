@@ -94,7 +94,7 @@ class EquipmentError(Warning):
                         label = 'installed section'
                         add_label_green = False
                         ax.fill(x, y, color= 'g', label = label)
-                    elif depth_area[layer]["Area_yrange"][key]["color"] == 'g' and add_label_red:
+                    elif depth_area[layer]["Area_yrange"][key]["color"] == 'r' and add_label_red:
                         label = 'not installed section'
                         add_label_red = False
                         ax.fill(x, y, color= 'r', label = label)
