@@ -147,8 +147,10 @@ def _DE_params(
     # get the valid parameters
     if structure == 'RRM' or structure == 'CRM' or structure == 'CRMR':
         vparams = _RM_vparams()
+
     elif structure == 'RC' or structure == 'CC':
         vparams = _C_vparams()
+
     else:
         raise NotImplementedError(f'{structure} is not supported')
 

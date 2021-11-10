@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from .exceptions import InputError, RockGradingError
 
-def _process_cost(structure, type, cost, Grading, validate=True):
+def _process_cost(structure, cost, Grading, validate=True):
     """ Process cost input to a dict
 
     Parameters
@@ -21,9 +21,6 @@ def _process_cost(structure, type, cost, Grading, validate=True):
         returned
     """
     # check if cost have been specified
-
-    dictvar = None
-
 
     if cost is not None:
         # cost have been added

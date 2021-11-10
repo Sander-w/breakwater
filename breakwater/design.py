@@ -284,7 +284,7 @@ class Configurations:
     +--------------------+-----+-----+-----+-----+-----+
     | B :sup:`1`         |  x  |  x  |  x  |     |     |
     +--------------------+-----+-----+-----+-----+-----+
-    | Dn50_core :sup:`1` |  x  |  x  |  x  |     |     |
+    | core_material :sup:`1` |  x  |  x  |  x  |     |     |
     +--------------------+-----+-----+-----+-----+-----+
     | N                  |  x  |     |     |     |     |
     +--------------------+-----+-----+-----+-----+-----+
@@ -384,9 +384,8 @@ class Configurations:
         is defined as (3,4). Required for RRM and CRM.
     B : float
         Crest width [m], required for RRM and CRM
-    Dn50_core : float
-        nominal diameter for the stones in the core of the breakwater [m],
-        required for RRM and CRM
+    core_material : dict
+        core_class and Dn50
     N : int
         Number of incident waves at the toe of the structure [-],
         required for RRM
@@ -700,10 +699,9 @@ class Configurations:
 
             # get the current concept
             concept = self._get_concept_set(configs=RM_varying, id=id)
-
             # unpack varying arguments same for RRM and CRM
             B = concept['B']
-            Dn50_core = concept['Dn50_core']
+            core_material = concept['core_material']
             B_toe = concept['B_toe']
             slope = concept['slope']
             slope_toe = concept['slope_toe']
@@ -715,7 +713,7 @@ class Configurations:
                         RM_rock = RockRubbleMound(
                             slope=slope, slope_foreshore=slope_foreshore,
                             rho_w=rho_w, B=B, N=N, LimitState=LimitState,
-                            Grading=Grading, Dn50_core=Dn50_core,
+                            Grading=Grading, core_material= core_material,
                             safety=safety, slope_toe=slope_toe, B_toe=B_toe,
                             layers=layers_rock, vdm=vdm, Soil=Soil, phi=phi,
                             id=id)
@@ -730,7 +728,7 @@ class Configurations:
                                              'id': [id],
                                              'concept': [RM_rock],
                                              'B': [B],
-                                             'Dn50_core': [Dn50_core],
+                                             'Dn50_core': [core_material['Dn50']],
                                              'B_toe': [B_toe],
                                              'slope': [slope],
                                              'slope_toe': [slope_toe],
@@ -746,7 +744,7 @@ class Configurations:
                             slope=slope, slope_foreshore=slope_foreshore, B=B,
                             rho_w=rho_w, LimitState=LimitState, safety=safety,
                             Grading=Grading, ArmourUnit=ArmourUnit, phi=phi,
-                            Dn50_core=Dn50_core, slope_toe=slope_toe,
+                            core_material= core_material, slope_toe=slope_toe,
                             B_toe=B_toe, layers=layers_units, Soil=Soil, id=id,
                             filter_rule=filter_rule)
 
@@ -760,7 +758,7 @@ class Configurations:
                                              'id': [id],
                                              'concept': [RM_units],
                                              'B': [B],
-                                             'Dn50_core': [Dn50_core],
+                                             'Dn50_core': [core_material['Dn50']],
                                              'B_toe': [B_toe],
                                              'slope': [slope],
                                              'slope_toe': [slope_toe],
@@ -776,7 +774,7 @@ class Configurations:
                             slope=slope, slope_foreshore=slope_foreshore, B=B,
                             rho_w=rho_w, LimitState=LimitState, safety=safety,
                             Grading=Grading, ArmourUnit=ArmourUnit, phi=phi,
-                            Dn50_core=Dn50_core, slope_toe=slope_toe,
+                            core_material= core_material, slope_toe=slope_toe,
                             B_toe=B_toe, layers=layers_units, Soil=Soil, id=id,
                             filter_rule=filter_rule)
 
@@ -790,7 +788,7 @@ class Configurations:
                                              'id': [id],
                                              'concept': [RM_units],
                                              'B': [B],
-                                             'Dn50_core': [Dn50_core],
+                                             'Dn50_core': [core_material['Dn50']],
                                              'B_toe': [B_toe],
                                              'slope': [slope],
                                              'slope_toe': [slope_toe],
@@ -915,7 +913,6 @@ class Configurations:
         index = id - 1
 
         unique_set = {}
-
         for param, val in configs.items():
             unique_set[param] = val[index]
 
@@ -1022,9 +1019,9 @@ class Configurations:
         return configs, max_combinations
 
     def add_cost(
-            self, type = 'Material', equipment= None, core_price=None, unit_price=None, concrete_price=None,
+            self, equipment= None, core_price=None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
-            length=None):
+            length=None, optimize_on = ['cost', 'time']):
         """ Compute the cost of each concept either CO2 or material cost
 
         Compute the cost of each concept and add the cost to the
@@ -1044,8 +1041,6 @@ class Configurations:
 
         Parameters
         ----------
-        type: {'Material', 'CO2'}
-            which cost type is added
         Equipment: lst
             With equipment from Equipment Class
         core_price : float, optional, default: None
@@ -1063,6 +1058,8 @@ class Configurations:
             the investment required to rent a dry dock
         length : float
             length of the breakwater [m]
+        optimize_on: str/list
+            On what to optimize
         """
         # make dict of the cost for validation
         cost = {
@@ -1074,11 +1071,14 @@ class Configurations:
         # check if all required cost have been given
         for structure in self.df.type.unique():
             # validate cost
-            _process_cost(structure, type, cost, self._Grading)
+            _process_cost(structure, cost, self._Grading)
 
         # set list to store cost in
         computed_cost = []
         computed_CO2 = []
+        all_durations = []
+        optimal_equipments = []
+
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
             # check if concept is not None
@@ -1088,22 +1088,24 @@ class Configurations:
             else:
                 # valid concept
                 # check types and compute price
+
                 if row.type == 'RRM':
-                    cost_material, CO2_material = row.concept.total_cost(
+                    total_cost, total_CO2, duration, opt_equip = row.concept.total_cost(
                         *row.concept.variantIDs, equipment = equipment, core_price= core_price,
-                        transport_cost=transport_cost, output='variant')
+                        transport_cost=transport_cost, output='variant', plot_error= False,
+                        optimize_on= optimize_on)
 
                 elif row.type == 'CRM':
-                    cost_material, CO2_material = row.concept.total_cost(
+                    total_cost, total_CO2, duration, opt_equip  = row.concept.total_cost(
                         *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
-                        output='variant')
+                        output='variant', plot_error= False, optimize_on= optimize_on)
 
                 elif row.type == 'CRMR':
-                    cost_material, CO2_material = row.concept.total_cost(
+                    total_cost, total_CO2, duration, opt_equip  = row.concept.total_cost(
                         *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
-                        output='variant')
+                        output='variant', plot_error= False, optimize_on= optimize_on)
 
                 elif row.type == 'RC' or row.type == 'CC':
                     # check if investment cost must be added
@@ -1111,22 +1113,38 @@ class Configurations:
                         # add investment cost
                         row.concept.dry_dock(investment, length)
 
-                    cost_material, CO2_material = row.concept.total_cost(
-                        *row.concept.variantIDs, equipment = equipment,core_price= core_price, concrete_price=concrete_price,
-                        fill_price=fill_price, unit_price=unit_price)
+                    total_cost, total_CO2, duration, opt_equip  = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment,core_price= core_price,
+                        concrete_price=concrete_price, fill_price=fill_price, unit_price=unit_price,
+                        plot_error= False, optimize_on= optimize_on)
 
                 else:
                     raise NotSupportedError(f'{row.type} is not supported')
 
-                # add cost to list
-                computed_cost.append(cost_material)
-                computed_CO2.append(CO2_material)
+                # add cost to list if dict is empty none of variants can't be installed
+                self.df.concept.iloc[i].variantIDs = list(total_cost.keys())
+
+                if bool(total_cost):
+                    computed_cost.append(total_cost)
+                    computed_CO2.append(total_CO2)
+                    all_durations.append(duration)
+                    optimal_equipments.append(opt_equip)
+
+                else:
+                    computed_cost.append(None)
+                    computed_CO2.append(None)
+                    all_durations.append(None)
+                    optimal_equipments.append(None)
+
 
         # add column to the df for either material or CO2
-        if len([c for c in computed_cost if c != 0]) != 0:
-            self.df['material_cost'] = computed_cost
-        if len([c for c in computed_CO2 if c != 0]):
-            self.df['material_CO2'] = computed_CO2
+        self.df['cost'] = computed_cost
+        self.df['CO2'] = computed_CO2
+        self.df['install_duration'] = all_durations
+        self.df['optimal_equipment'] = optimal_equipments
+
+        # drop row without any installation
+        self.df = self.df[self.df['cost'].notna()]
 
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
@@ -1152,9 +1170,11 @@ class Configurations:
         +--------------------------+------------+------------+
         | Parameter                | RRM + CRM  |  RC + CC   |
         +==========================+============+============+
-        | material_cost            |     o      |     o      |
+        | cost                     |     o      |     o      |
         +----------------------------------------------------+
-        | material_CO2             |     o      |     o      |
+        | CO2                      |     o      |     o      |
+        +----------------------------------------------------+
+        | install_duration         |     o      |     o      |
         +--------------------------+------------+------------+
         | B                        |     o      |     o      |
         +--------------------------+------------+------------+
@@ -1320,32 +1340,44 @@ class Configurations:
                     change_CRM_class=format_class_as_string)
                 data.update(to_explorer)
 
-                # check if material cost must be included
-                if 'material_cost' in params:
+                # check if cost must be included
+                if 'cost' in params:
                     # check if cost have been added
-                    if 'material_cost' in self.df.columns:
+                    if 'cost' in self.df.columns:
                         # add cost to data
-                        data['material_cost'] = row.material_cost[id]
+                        if id in row.cost:
+                            data['cost'] = row.cost[id]
 
                     else:
                         raise KeyError(
-                            'Material cost have not been added, use add_cost to add '
+                            'cost have not been added, use add_cost to add '
                             'EUR cost to the df')
 
-                if 'material_CO2' in params:
-                    if 'material_CO2' in self.df.columns:
+                if 'CO2' in params:
+                    if 'CO2' in self.df.columns:
                         # add cost to data
-
-                        data['material_cost'] = row.material_cost[id]
+                        if id in row.CO2:
+                            data['CO2'] = row.CO2[id]
 
                     else:
                         raise KeyError(
-                            'Material CO2 have not been added, use add_cost to add CO2'
+                            'CO2 have not been added, use add_cost to add CO2'
                             'cost to the df')
 
+                if 'install_duration' in params:
+                    if 'install_duration' in self.df.columns:
+                        # add cost to data
+                        if id in row.install_duration:
+                            data['install_duration'] = row.install_duration[id]
+
+                    else:
+                        raise KeyError(
+                            'equipment have not been added, thus no installation rates are provided')
 
                 # add image to data
                 data['img'] = [f'{file_name}.png']
+                # add equipment to data
+                data['equipment'] = row.optimal_equipment[id]
 
                 # create a df of data and add to the df to_export
                 export_row = pd.DataFrame(data=data)
@@ -1391,6 +1423,7 @@ class Configurations:
         # and make img the right most column_names
         column_names[0:0] = ['CaseNo', 'type']
         column_names.insert(len(column_names), 'img')
+        column_names.insert(len(column_names), 'equipment')
 
         # restructure df with order of column_names
         to_export = to_export.loc[:, column_names]

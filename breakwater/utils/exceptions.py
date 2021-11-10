@@ -71,48 +71,51 @@ class LimitStateWarning(Warning):
 
 
 class EquipmentError(Warning):
-    def __init__(self, msg, other, id, areas, depth_area):
+    def __init__(self, msg, other, id, areas, depth_area, plot_error):
+
 
         self.message = msg
 
-        fig, ax = plt.subplots(figsize=(15, 7.5))
-        coordinates = other._layers(id)
+        if plot_error:
+            fig, ax = plt.subplots(figsize=(15, 7.5))
+            coordinates = other._layers(id)
 
-        ymin = float("inf")
-        ymax = float("-inf")
-        add_label_green, add_label_red = True, True
+            ymin = float("inf")
+            ymax = float("-inf")
+            add_label_green, add_label_red = True, True
 
-        for layer, area in areas.items():
-            for key, value in depth_area[layer]["Area_yrange"].items():
-                coords = depth_area[layer]["Area_yrange"][key]["coordinates"]
-                for p in range(0, len(coords), 2):
-                    x = coords[p]
-                    y = coords[p + 1]
-                    ax.plot(x, y, color="grey", linewidth=1)
+            for layer, area in areas.items():
+                for key, value in depth_area[layer]["Area_yrange"].items():
+                    coords = depth_area[layer]["Area_yrange"][key]["coordinates"]
+                    for p in range(0, len(coords), 2):
+                        x = coords[p]
+                        y = coords[p + 1]
+                        ax.plot(x, y, color="grey", linewidth=1)
 
-                    if depth_area[layer]["Area_yrange"][key]["color"] == 'g' and add_label_green:
-                        label = 'installed section'
-                        add_label_green = False
-                        ax.fill(x, y, color= 'g', label = label)
-                    elif depth_area[layer]["Area_yrange"][key]["color"] == 'r' and add_label_red:
-                        label = 'not installed section'
-                        add_label_red = False
-                        ax.fill(x, y, color= 'r', label = label)
-                    else:
-                        ax.fill(x, y, color= depth_area[layer]["Area_yrange"][key]["color"])
+                        if depth_area[layer]["Area_yrange"][key]["color"] == 'g' and add_label_green:
+                            label = 'installed section'
+                            add_label_green = False
+                            ax.fill(x, y, color= 'g', label = label)
+                        elif depth_area[layer]["Area_yrange"][key]["color"] == 'r' and add_label_red:
+                            label = 'not installed section'
+                            add_label_red = False
+                            ax.fill(x, y, color= 'r', label = label)
+                        else:
+                            ax.fill(x, y, color= depth_area[layer]["Area_yrange"][key]["color"])
 
-                    if min(y) < ymin:
-                        ymin = min(y)
-                    if max(y) > ymax:
-                        ymax = max(y)
+                        if min(y) < ymin:
+                            ymin = min(y)
+                        if max(y) > ymax:
+                            ymax = max(y)
 
-        for layer, lines in coordinates.items():
-            plt.plot(lines["x"], lines["y"], color="k", linewidth=3)
+            for layer, lines in coordinates.items():
+                plt.plot(lines["x"], lines["y"], color="k", linewidth=3)
 
-        plt.gca().set_aspect("equal", adjustable="box")
-        plt.ylim(ymin - 2, ymax + 2)
-        plt.grid()
-        plt.legend()
+            plt.gca().set_aspect("equal", adjustable="box")
+            plt.title(msg)
+            plt.ylim(ymin - 2, ymax + 2)
+            plt.grid()
+            plt.legend()
 
 
 # monkeypatch warning format

@@ -1151,6 +1151,7 @@ class RubbleMound:
         xcorner_layer = max(coords)[0]
         length_top_sec = maxDiff(x[np.where(y == max(y))])
 
+
         # If the equipment is not yet evaluated create a dict, else continue with the already present dict created earlier
         if equip.name not in self.depth_area[layer]["Area_yrange"][key]["equipment"].keys():
             self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name] = {}
@@ -1173,8 +1174,8 @@ class RubbleMound:
                 price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
                 # Is the height of the layer higher than the current max layer? replace top and min_x values
@@ -1200,8 +1201,8 @@ class RubbleMound:
                 price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
                 # Is the height of the layer higher than the current max layer? replace top and min_x values
@@ -1220,8 +1221,8 @@ class RubbleMound:
                 price = equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1250,8 +1251,8 @@ class RubbleMound:
 
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1278,8 +1279,8 @@ class RubbleMound:
 
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1298,6 +1299,7 @@ class RubbleMound:
                 xmax_top=max_height_xcorner,
                 mass=mass,
             ):
+
                 price = (
                     equip.instance.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
                 )
@@ -1309,8 +1311,8 @@ class RubbleMound:
 
                 )
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = round(price, 2)
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = round(time, 2)
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1354,7 +1356,8 @@ class RubbleMound:
         Parameters
         ----------
         dataframe
-        optimize_on
+        optimize_on: str or list
+            one or more of 'CO2', 'cost' or 'time'
 
         Returns
         -------
@@ -1380,6 +1383,7 @@ class RubbleMound:
         combinations_lst = []
 
         for equip in equipment:
+
             i = 0
             installed = equipment_layers[equip].copy()
             equips_dict = {}
@@ -1395,6 +1399,7 @@ class RubbleMound:
                                         reverse= True)
 
                     most_new = rest_equip[0]
+
 
                     newlayers = [l for l in equipment_layers[most_new] if l not in installed]
                     installed.extend(newlayers)
@@ -1430,11 +1435,14 @@ class RubbleMound:
             cost_combinations[s[:-2]] = {'cost': cost, 'CO2': CO2, 'time': time}
 
         df_optimal = pd.DataFrame.from_dict(cost_combinations, orient='index')
-        df_optimal.sort_values(by= optimize_on, inplace= True)
+        df_optimal = df_optimal.sort_values(by= optimize_on)
+        df_optimal['cost'] = df_optimal['cost'].round(2)
+        df_optimal['CO2'] = df_optimal['CO2'].round(5)
+        df_optimal['time'] = df_optimal['time'].round(5)
 
         return df_optimal
 
-    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on):
+    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, plot_error = True):
         """
         Compute the cost of the breakwater sections using equipment
         Parameters
@@ -1451,8 +1459,8 @@ class RubbleMound:
             calculate the cost
         CO2: bool
             calculate the CO2 emission
-        optimize_on: str
-            Either one of 'CO2', 'cost' or 'time'
+        optimize_on: str or list
+            one or more of 'CO2', 'cost' or 'time'
         Returns
         -------
             dictionary with the prices per layer
@@ -1462,8 +1470,14 @@ class RubbleMound:
             if the given equipment is not able to fill all the sections
         """
 
-        if optimize_on not in ['CO2', 'cost', 'time']:
-            raise KeyError('The optimize_on argument should be one of CO2, cost or time')
+        if type(optimize_on) == str:
+            if optimize_on not in ['CO2', 'cost', 'time']:
+                raise KeyError('The optimize_on argument should be one of CO2, cost or time')
+        elif type(optimize_on) == list:
+            if not set(optimize_on).issubset(['CO2', 'cost', 'time']):
+                raise KeyError('The optimize_on argument should be one of CO2, cost or time')
+        else:
+            raise KeyError('The argument optimize_on should be either list or string')
 
         cost_variables = []
 
@@ -1490,60 +1504,59 @@ class RubbleMound:
                 max_height_xcorner = 0
                 length_top = 0
 
-                for layer, area in areas.items():
+                build_order = ['core', 'filter layer', 'underlayer', 'toe', 'armour']
+                for layer in build_order:
+                    if layer in areas.keys():
+                        # What is the grading of the layer?
+                        grading = None
+                        if layer == "core":
+                            grading = self._input_arguments['core_class']
+                            mass = self.rho * (self._input_arguments['Dn50_core'])**3
+                        # use armour units
+                        elif layer == "armour" and self._input_arguments["armour"] != "Rock":
+                            grading = self.structure['armour']['Mass']
+                            mass = int(self.structure["armour"]["class"] * 2400 / 1000)
 
-                    # What is the grading of the layer?
-                    grading = None
-                    if layer == "core":
-                        grading = self._input_arguments['core_class']
-                        mass = self.rho * (self._input_arguments['Dn50_core'])**3
-                    # use armour units
-                    elif layer == "armour" and self._input_arguments["armour"] != "Rock":
-                        grading = self.structure['armour']['Mass']
-                        mass = int(self.structure["armour"]["class"] * 2400 / 1000)
+                        else:
+                            grading = structure[layer]["class"]
+                            mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
 
-                    else:
-                        grading = structure[layer]["class"]
-                        mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
-                        if grading == '8-12t':
-                            print(mass)
+                        for key, value in self.depth_area[layer]["Area_yrange"].items():
+                            # Find the start and the end y-coordinate of the layer and the area of this section
+                            start_lay, end_lay = float(key.split("-")[0]), float(key.split("-")[1])
+                            area = self.depth_area[layer]["Area_yrange"][key]["area"]
+                            coords = self.depth_area[layer]["Area_yrange"][key]["coordinates"]
 
-                    for key, value in self.depth_area[layer]["Area_yrange"].items():
-                        # Find the start and the end y-coordinate of the layer and the area of this section
-                        start_lay, end_lay = float(key.split("-")[0]), float(key.split("-")[1])
-                        area = self.depth_area[layer]["Area_yrange"][key]["area"]
-                        coords = self.depth_area[layer]["Area_yrange"][key]["coordinates"]
+                            for equip in equipment:
+                                for p in range(0, len(coords), 2):
+                                    # Left and right of the breakwater are not entirely symmetric so install seperate
+                                    x = coords[p]
+                                    y = coords[p + 1]
+                                    if p == 0 and area[0] != 0:
+                                        area1 = area[0]
+                                    else:
+                                        area1 = area[1]
 
-                        for equip in equipment:
-                            for p in range(0, len(coords), 2):
-                                # Left and right of the breakwater are not entirely symmetric so install seperate
-                                x = coords[p]
-                                y = coords[p + 1]
-                                if p == 0 and area[0] != 0:
-                                    area1 = area[0]
-                                else:
-                                    area1 = area[1]
+                                    section_coords = list(zip(x, y))
 
-                                section_coords = list(zip(x, y))
-
-                                (
-                                    max_height,
-                                    max_height_xcorner,
-                                    length_top,
-                                ) = self.install_all_equipments(
-                                    coords=section_coords,
-                                    equip=equip,
-                                    layer=layer,
-                                    grading=grading,
-                                    mass=mass,
-                                    end_lay=end_lay,
-                                    area=area1,
-                                    key=key,
-                                    max_height=max_height,
-                                    max_height_xcorner=max_height_xcorner,
-                                    length_top=length_top,
-                                    cost_key= cost_var
-                                )
+                                    (
+                                        max_height,
+                                        max_height_xcorner,
+                                        length_top,
+                                    ) = self.install_all_equipments(
+                                        coords=section_coords,
+                                        equip=equip,
+                                        layer=layer,
+                                        grading=grading,
+                                        mass=mass,
+                                        end_lay=end_lay,
+                                        area=area1,
+                                        key=key,
+                                        max_height=max_height,
+                                        max_height_xcorner=max_height_xcorner,
+                                        length_top=length_top,
+                                        cost_key= cost_var
+                                    )
 
             df_variants[id] = self.equipment_dataframe()
             cols = [c for c in df_variants[id].columns if c != 'area']
@@ -1555,7 +1568,8 @@ class RubbleMound:
                                       other = self,
                                       id = id,
                                       areas = areas,
-                                      depth_area = self.depth_area)
+                                      depth_area = self.depth_area,
+                                      plot_error = plot_error)
             else:
                 optimal_equipment[id] = self.optimal_equipment_set(dataframe= df_variants[id],
                                                                    optimize_on = optimize_on)
@@ -1713,8 +1727,11 @@ class RubbleMound:
                 raise KeyError('The keys for core_price, unit_price and transport_cost should be "cost" and "CO2"')
 
 
-        
-        cost_material, CO2_material = 0, 0
+        cost_material, CO2_material = {}, {}
+
+        for id in variants:
+            cost_material[id] = 0
+            CO2_material[id] = 0
         
         if core_price['cost'] != None:
             
@@ -1759,7 +1776,9 @@ class RubbleMound:
         unit_price,
         equipment=None,
         transport_cost= None,
+        optimize_on = ['cost', 'time'],
         output="variant",
+        plot_error = True,
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1791,7 +1810,7 @@ class RubbleMound:
 
         Returns
         -------
-        dict
+        tuple
             the cost
 
         Raises
@@ -1804,46 +1823,79 @@ class RubbleMound:
         # validate variants
         if transport_cost == None:
             transport_cost = {'cost': 0, 'CO2': 0}
-
-        cost = {}
+            
+        if type(optimize_on) == str:
+            if optimize_on not in ['CO2', 'cost', 'time']:
+                raise KeyError('The optimize_on argument should be one of CO2, cost or time')
+        elif type(optimize_on) == list:
+            if not set(optimize_on).issubset(['CO2', 'cost', 'time']):
+                raise KeyError('The optimize_on argument should be one of CO2, cost or time')
+        else:
+            raise KeyError('The argument optimize_on should be either list or string')
 
         variants = self._validate_variant(variants)
-        
+        total_cost = {}
+        total_CO2 = {}
+        total_duration = {}
+        opt_equipment = {}
+
         cost_material, CO2_material = self.material_cost(*variants, core_price= core_price, unit_price= unit_price,
                                                          transport_cost= transport_cost, output= output)
 
 
-        # cost_equipment_df, CO2_equipment_df = None, None
+        for id in variants:
+            total_cost[id] = cost_material[id]
+            total_CO2[id] = CO2_material[id]
+            total_duration[id] = 0
+            opt_equipment[id] = None
 
-        # We want to know the monetary value
-        # if cost_material != 0:
-        #     for id in variants:
-        #         areas = self.area(id)
-        #         structure = self.get_variant(id)
-        #         #cost_equipment = self.equipment_cost(id= id, areas= areas, equipment= equipment, structure= structure, cost_key= 'cost')
-        #     cost_equipment_df = self.optimal_equipment_set(equipment, sort_by="cost")
-        #
-        # # We want to know the CO2 emission
-        # elif CO2_material != 0:
-        #     for id in variants:
-        #         areas = self.area(id)
-        #         structure = self.get_variant(id)
-        #         #CO2_equipment = self.equipment_cost(id= id, areas= areas, equipment= equipment, structure= structure, cost_key= 'CO2')
-        #     CO2_equipment_df = self.optimal_equipment_set(equipment, sort_by="cost")
-        #
-        # if cost_equipment_df != None and CO2_equipment_df == None:
-        #     cost_equipment_df['cost'] = cost_equipment_df['cost'] + cost_material
-        #
-        # elif cost_equipment_df == None and CO2_equipment_df != None:
-        #     cost_equipment_df['cost'] = cost_equipment_df['cost'] + CO2_material
-        #
-        # else:
-        #     total_cost_df = cost_equipment_df.merge(CO2_equipment_df, by= 'area')
-        #     #Add the costs
-        
-        
-        return cost_material, CO2_material
+        if equipment != None:
 
+            calc_cost_equip, calc_CO2_equip = True, True
+
+            for equip in equipment:
+                if not isinstance(equip, Barge):
+                    for key, item in equip.design_type.items():
+                        if item['cost'] == None:
+                            calc_cost_equip = False
+                        if item['CO2'] == None:
+                            calc_CO2_equip = False
+
+            # if the variant can be installed pop from the total_cost dict
+            for id in variants:
+
+                try:
+                    optimal_set = self.equipment_cost(id,
+                                              equipment= equipment,
+                                              cost = calc_cost_equip,
+                                              CO2 = calc_CO2_equip,
+                                              optimize_on = optimize_on,
+                                              plot_error = plot_error)
+
+                    cost_equip = optimal_set[id]['cost'].iloc[0]
+                    CO2_equip = optimal_set[id]['CO2'].iloc[0]
+                    duration = optimal_set[id]['time'].iloc[0]
+                    op_equipment = optimal_set[id].index[0]
+
+                except EquipmentError:
+                    total_cost.pop(id)
+                    total_CO2.pop(id)
+                    total_duration.pop(id)
+                    opt_equipment.pop(id)
+
+                    user_warning(f'variant {id} can not be installed with the given equipment')
+
+                    continue
+
+                else:
+
+                    total_cost[id] += cost_equip
+                    total_CO2[id] += CO2_equip
+                    total_duration[id] = duration
+                    opt_equipment[id] = op_equipment
+
+
+        return total_cost, total_CO2, total_duration, opt_equipment
 
 
     def get_variant(self, variantID):

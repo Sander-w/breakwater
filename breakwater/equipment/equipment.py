@@ -188,6 +188,7 @@ class Truck(Equipment):
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.h_dry = h_dry
+        self.waterlvl = waterlvl
 
     def install(self, layer, grading_layer, ymax, section_coords, plot=False):
         """
@@ -198,10 +199,12 @@ class Truck(Equipment):
             The name of the layer. e.g. 'core' or 'armour'
         grading_layer: str
             The grading of the layer. e.g. HMA60_300
-        y_start: int
-            The lower limit of the to be constructed section
-        ymax: int
-            Maximum height which is already build
+        ymax: float
+            max height installed section
+        section_coords: list
+            coordinates of the section
+        revetment: bool
+            is the structure a revetment
         plot: bool
             Do we want to make a plot. Default is False
         Returns
@@ -212,13 +215,13 @@ class Truck(Equipment):
         install = False
         x, y = list(zip(*section_coords))
         y_start = min(y)
+
+        self.level = max([(y_start - self.waterlvl), (ymax - self.waterlvl)])
+
         if (
-            layer in self.design_type.keys()
-            and grading_layer in self.design_type[layer].keys()
+            grading_layer in self.design_type.keys()
         ):
-            if (y_start - self.waterlvl) >= self.h_dry or (
-                ymax - self.waterlvl
-            ) >= self.h_dry:
+            if (self.level >= self.h_dry):
                 install = True
 
         if plot:
@@ -290,6 +293,8 @@ class PlateFeeder(Equipment):
     design_type: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
+    top_installation: float
+        max height at which it can install
     mobilisation_cost: dict
         Cost of transportation to site in EUR and/or CO2 emission. e.g. {'cost': ... [EUR], 'CO2': ... [kg]}
     equipment_cost: dict
@@ -298,12 +303,14 @@ class PlateFeeder(Equipment):
         At which water depth is the equipment used
     h_dry: int
         Margin which account for wave overtopping so the equipment is not damaged.
+
     """
 
     def __init__(
         self,
         name,
         design_type,
+        top_installation,
         waterlvl,
         h_dry,
         mobilisation_cost = None,
@@ -315,8 +322,9 @@ class PlateFeeder(Equipment):
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.h_dry = h_dry
+        self.top_installation = top_installation
 
-    def install(self, layer, grading_layer, ymax, section_coords, plot=False):
+    def install(self, layer, grading_layer, ymax, section_coords, level=None, plot=False):
         """
 
         Parameters
@@ -339,13 +347,15 @@ class PlateFeeder(Equipment):
         install = False
         x, y = list(zip(*section_coords))
         y_start = min(y)
+        y_top = max(y)
+
+        if level == None:
+            level = max([(y_start - self.waterlvl), (ymax - self.waterlvl)])
+
         if (
-            layer in self.design_type.keys()
-            and grading_layer in self.design_type[layer].keys()
+            grading_layer in self.design_type.keys()
         ):
-            if (y_start - self.waterlvl) >= self.h_dry or (
-                ymax - self.waterlvl
-            ) >= self.h_dry:
+            if (level >= self.h_dry and (y_top <= level + self.top_installation)):
                 install = True
 
         if plot:
@@ -1430,7 +1440,6 @@ class Barge(Equipment):
         if (
             grading_layer in self.instance.design_type.keys()
         ):
-            #print(y_installation_waterdepth)
             if y_end >= y_installation_waterdepth - self.ukc:
                 if isinstance(self.instance, Crane):
                     xequip, yequip, flip = self.location_equipment(
@@ -1484,7 +1493,14 @@ class Barge(Equipment):
                         yloc_equip=yequip,
                         plot=plot,
                     )
+            if isinstance(self.instance, PlateFeeder) or isinstance(self.instance, Truck):
+                install = self.instance.install(layer= layer,
+                                                grading_layer = grading_layer,
+                                                ymax = self.waterlvl + self.height,
+                                                section_coords = section_coords,
+                                                level = self.waterlvl + self.height,
 
+                )
             else:
                 if isinstance(self.instance, Crane):
                     # In this case we can always install as we can freely manouevre the vessel and the crane can reach everywhere
