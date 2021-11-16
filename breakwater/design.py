@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
@@ -497,6 +496,12 @@ class Configurations:
 
         # set grading as attribute for adding cost
         self._Grading = Grading
+
+        # if material cost is added the standard names are below
+        # if also equipment is added it is changed to total_cost and total_CO2 (see add_cost)
+        self.col_cost = 'material_cost'
+        self.col_CO2 = 'material_CO2'
+
 
         # convert the input of structure to a list
         if isinstance(structure, list):
@@ -1068,6 +1073,7 @@ class Configurations:
             'concrete_price': concrete_price,
             'fill_price': fill_price}
 
+
         # check if all required cost have been given
         for structure in self.df.type.unique():
             # validate cost
@@ -1136,19 +1142,23 @@ class Configurations:
                     all_durations.append(None)
                     optimal_equipments.append(None)
 
+        if equipment != None:
+            self.col_cost = 'total_cost'
+            self.col_CO2 = 'total_CO2'
+            self.df['install_duration'] = all_durations
+            self.df['optimal_equipment'] = optimal_equipments
 
-        # add column to the df for either material or CO2
-        self.df['cost'] = computed_cost
-        self.df['CO2'] = computed_CO2
-        self.df['install_duration'] = all_durations
-        self.df['optimal_equipment'] = optimal_equipments
+        # add column to the df for either material or CO2 or total
+        self.df[self.col_cost] = computed_cost
+        self.df[self.col_CO2] = computed_CO2
+
 
         # drop row without any installation
-        self.df = self.df[self.df['cost'].notna()]
+        self.df = self.df[self.df[self.col_cost].notna()]
 
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
-            merge_Bm=True, merge_slope_toe=True):
+            merge_Bm=True, merge_slope_toe=True, equipment = None):
         """ Export concepts to Design Explorer 2
 
         Creates a folder that can be used in Design Explorer 2, the
@@ -1246,6 +1256,7 @@ class Configurations:
             a Rubble Mound and Vertical breakwater have been designed,
             False if you do not want to merge the columns.
 
+
         Raises
         ------
         KeyError
@@ -1253,6 +1264,11 @@ class Configurations:
         """
         # set empty df for export
         to_export = pd.DataFrame()
+
+        if 'cost' in params:
+           params[params.index('cost')] = self.col_cost
+        if 'CO2' in params:
+           params[params.index('CO2')] = self.col_CO2
 
         # check if RRM and CRM are in structure
         designed_structures = self.df.type.unique()
@@ -1320,7 +1336,6 @@ class Configurations:
             for id in row.concept.variantIDs:
                 # save name of the cross section
                 file_name = f'{row.type}.{row.id}'
-
                 if num_concepts > 1:
                     # add id if more than 1 concept
                     file_name = f'{file_name}{id}'
@@ -1328,7 +1343,12 @@ class Configurations:
                 save_name = f'{new_dir}/{file_name}'
 
                 # save cross section of the current concept
-                row.concept.plot(id, save_name=save_name)
+                # add equipment to plot if present
+                if 'optimal_equipment' in row.index.values:
+                    row.concept.plot(id, save_name=save_name, equipment= row.optimal_equipment[id])
+                    # add equipment to data
+                else:
+                    row.concept.plot(id, save_name=save_name)
 
                 data = {'CaseNo': [CaseNo], 'type': [row.type]}
 
@@ -1341,23 +1361,21 @@ class Configurations:
                 data.update(to_explorer)
 
                 # check if cost must be included
-                if 'cost' in params:
+                if self.col_cost in params:
                     # check if cost have been added
-                    if 'cost' in self.df.columns:
+                    if self.col_cost in self.df.columns:
                         # add cost to data
-                        if id in row.cost:
-                            data['cost'] = row.cost[id]
+                        data[self.col_cost] = row[self.col_cost][id]
 
                     else:
                         raise KeyError(
                             'cost have not been added, use add_cost to add '
                             'EUR cost to the df')
 
-                if 'CO2' in params:
-                    if 'CO2' in self.df.columns:
+                if self.col_CO2 in params:
+                    if self.col_CO2 in self.df.columns:
                         # add cost to data
-                        if id in row.CO2:
-                            data['CO2'] = row.CO2[id]
+                        data[self.col_CO2] = row[self.col_CO2][id]
 
                     else:
                         raise KeyError(
@@ -1367,8 +1385,7 @@ class Configurations:
                 if 'install_duration' in params:
                     if 'install_duration' in self.df.columns:
                         # add cost to data
-                        if id in row.install_duration:
-                            data['install_duration'] = row.install_duration[id]
+                        data['install_duration'] = row.install_duration[id]
 
                     else:
                         raise KeyError(
@@ -1376,8 +1393,7 @@ class Configurations:
 
                 # add image to data
                 data['img'] = [f'{file_name}.png']
-                # add equipment to data
-                data['equipment'] = row.optimal_equipment[id]
+
 
                 # create a df of data and add to the df to_export
                 export_row = pd.DataFrame(data=data)
@@ -1423,7 +1439,6 @@ class Configurations:
         # and make img the right most column_names
         column_names[0:0] = ['CaseNo', 'type']
         column_names.insert(len(column_names), 'img')
-        column_names.insert(len(column_names), 'equipment')
 
         # restructure df with order of column_names
         to_export = to_export.loc[:, column_names]

@@ -1,9 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
-import pandas as pd
-import os
-
 
 class Equipment:
     """
@@ -1368,6 +1365,8 @@ class Barge(Equipment):
         other,
         installation_waterdepth,
         height,
+        downtime_production,
+        extra_cost,
         ukc = None,
         margin_x=2,
         design_type=None,
@@ -1394,6 +1393,13 @@ class Barge(Equipment):
 
         if self.ukc == None:
             self.ukc = 0
+
+        self.design_type = {}
+
+        for grading, dict in self.instance.design_type.items():
+
+            self.design_type[grading] = {'cost': dict['cost'] + extra_cost, 'CO2': dict['CO2'],
+                                         'production_rate': dict['production_rate'] - downtime_production}
 
     def install(
         self,

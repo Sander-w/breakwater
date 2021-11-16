@@ -1301,11 +1301,11 @@ class RubbleMound:
             ):
 
                 price = (
-                    equip.instance.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
+                    equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
                 )
 
                 time = area / (
-                    equip.instance.get_production_rate(
+                    equip.get_production_rate(
                         layer=layer, grading_layer=grading
                     )
 
@@ -1347,6 +1347,8 @@ class RubbleMound:
         cols.insert(0, 'area')
         df = df[cols]
         df = df.applymap(lambda x: None if x == {} else x)
+
+
         return df
 
     def optimal_equipment_set(self, dataframe, optimize_on ="cost"):
@@ -1365,6 +1367,7 @@ class RubbleMound:
         """
 
         df = dataframe
+
         df.index = np.arange(0, len(df))
 
         # All the sections
@@ -1382,14 +1385,16 @@ class RubbleMound:
         combinations_dict = []
         combinations_lst = []
 
+        all_equips_dict = {}
+
         for equip in equipment:
 
             i = 0
             installed = equipment_layers[equip].copy()
             equips_dict = {}
             equips_dict[equip] = installed.copy()
-
             equips_lst = [equip]
+
             # can't install a single layer
             if len(installed) != 0:
                 while list(installed) != list(all_sections) and i < len(equipment):
@@ -1399,7 +1404,6 @@ class RubbleMound:
                                         reverse= True)
 
                     most_new = rest_equip[0]
-
 
                     newlayers = [l for l in equipment_layers[most_new] if l not in installed]
                     installed.extend(newlayers)
@@ -1413,6 +1417,8 @@ class RubbleMound:
                     if equips_lst not in combinations_dict:
                         combinations_dict.append(equips_dict)
                         combinations_lst.append(equips_lst)
+
+                all_equips_dict[f'{equips_lst}'] = equips_dict
 
         cost_combinations = {}
 
@@ -1439,6 +1445,8 @@ class RubbleMound:
         df_optimal['cost'] = df_optimal['cost'].round(2)
         df_optimal['CO2'] = df_optimal['CO2'].round(5)
         df_optimal['time'] = df_optimal['time'].round(5)
+
+
 
         return df_optimal
 
@@ -1504,7 +1512,7 @@ class RubbleMound:
                 max_height_xcorner = 0
                 length_top = 0
 
-                build_order = ['core', 'filter layer', 'underlayer', 'toe', 'armour']
+                build_order = ['core', 'filter layer', 'underlayer', 'armour', 'toe']
                 for layer in build_order:
                     if layer in areas.keys():
                         # What is the grading of the layer?
@@ -1612,19 +1620,18 @@ class RubbleMound:
 
         # set empty dict to store the output in
         cost = {}
+        variant_price = {}
         # iterate over the generated variants
         for id in variants:
             # get the areas and structure of the variants
             areas = self.area(id)
             structure = self.get_variant(id)
-
             # iterate over the layers to price each layer
-            variant_price = {}
             for layer, area in areas.items():
                 if layer is 'core':
                     # core is not included in the structure dict
                     price = ((core_price[key] + transport_cost[key])
-                              * self._input_arguments['Dn50_core'])
+                              * area)
 
                 elif (self._input_arguments['armour'] is not 'Rock'
                         and layer is 'armour'):
@@ -1987,7 +1994,7 @@ class RubbleMound:
 
         return variant
 
-    def plot(self, *variants, wlev=None, save_name=None):
+    def plot(self, *variants, wlev=None, save_name=None, equipment= None):
         """Plot the cross section of the specified breakwater(s)
 
         Parameters
@@ -2094,6 +2101,12 @@ class RubbleMound:
             else:
                 name = save_name.split("/")[-1]
                 title = f"Cross section of {name}"
+
+            # get equipment to show in design explorer
+            if equipment != None:
+                plt.figtext(0.5, 0.01, f"Used equipment: {equipment}", ha="center", fontsize=10)
+
+
 
             plt.title(title)
 
