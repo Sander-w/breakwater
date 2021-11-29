@@ -1024,7 +1024,7 @@ class Configurations:
         return configs, max_combinations
 
     def add_cost(
-            self, equipment= None, core_price=None, unit_price=None, concrete_price=None,
+            self, equipment=None, core_price=None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
             length=None, optimize_on = ['cost', 'time']):
         """ Compute the cost of each concept either CO2 or material cost
@@ -1084,7 +1084,6 @@ class Configurations:
         computed_CO2 = []
         all_durations = []
         optimal_equipments = []
-
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
             # check if concept is not None
@@ -1142,6 +1141,7 @@ class Configurations:
                     all_durations.append(None)
                     optimal_equipments.append(None)
 
+
         if equipment != None:
             self.col_cost = 'total_cost'
             self.col_CO2 = 'total_CO2'
@@ -1153,12 +1153,16 @@ class Configurations:
         self.df[self.col_CO2] = computed_CO2
 
 
+
         # drop row without any installation
         self.df = self.df[self.df[self.col_cost].notna()]
 
+        if len(self.df) == 0:
+            raise NotSupportedError('There are no variants which can be installed')
+
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
-            merge_Bm=True, merge_slope_toe=True, equipment = None):
+            merge_Bm=True, merge_slope_toe=True):
         """ Export concepts to Design Explorer 2
 
         Creates a folder that can be used in Design Explorer 2, the
@@ -1327,6 +1331,9 @@ class Configurations:
                 all_CaseNo.append([CaseNo])
                 continue
 
+
+
+
             # compute number of variants for this concept
             num_concepts = len(row.concept.variantIDs)
 
@@ -1335,74 +1342,75 @@ class Configurations:
 
             for id in row.concept.variantIDs:
                 # save name of the cross section
-                file_name = f'{row.type}.{row.id}'
-                if num_concepts > 1:
-                    # add id if more than 1 concept
-                    file_name = f'{file_name}{id}'
+                if row[self.col_cost][id] is not None:
+                    file_name = f'{row.type}.{row.id}'
+                    if num_concepts > 1:
+                        # add id if more than 1 concept
+                        file_name = f'{file_name}{id}'
 
-                save_name = f'{new_dir}/{file_name}'
+                    save_name = f'{new_dir}/{file_name}'
 
-                # save cross section of the current concept
-                # add equipment to plot if present
-                if 'optimal_equipment' in row.index.values:
-                    row.concept.plot(id, save_name=save_name, equipment= row.optimal_equipment[id])
-                    # add equipment to data
-                else:
-                    row.concept.plot(id, save_name=save_name)
-
-                data = {'CaseNo': [CaseNo], 'type': [row.type]}
-
-                # get the values from the variant and add to data
-                variant = row.concept.get_variant(variantID=id)
-                to_explorer = _DE_params(
-                    args=params, variant=variant, row=row, concept=row.concept,
-                    structure=row.type, slopes=slopes,
-                    change_CRM_class=format_class_as_string)
-                data.update(to_explorer)
-
-                # check if cost must be included
-                if self.col_cost in params:
-                    # check if cost have been added
-                    if self.col_cost in self.df.columns:
-                        # add cost to data
-                        data[self.col_cost] = row[self.col_cost][id]
-
+                    # save cross section of the current concept
+                    # add equipment to plot if present
+                    if 'optimal_equipment' in row.index.values:
+                        row.concept.plot(id, save_name=save_name, equipment= row.optimal_equipment[id])
+                        # add equipment to data
                     else:
-                        raise KeyError(
-                            'cost have not been added, use add_cost to add '
-                            'EUR cost to the df')
+                        row.concept.plot(id, save_name=save_name)
 
-                if self.col_CO2 in params:
-                    if self.col_CO2 in self.df.columns:
-                        # add cost to data
-                        data[self.col_CO2] = row[self.col_CO2][id]
+                    data = {'CaseNo': [CaseNo], 'type': [row.type]}
 
-                    else:
-                        raise KeyError(
-                            'CO2 have not been added, use add_cost to add CO2'
-                            'cost to the df')
+                    # get the values from the variant and add to data
+                    variant = row.concept.get_variant(variantID=id)
+                    to_explorer = _DE_params(
+                        args=params, variant=variant, row=row, concept=row.concept,
+                        structure=row.type, slopes=slopes,
+                        change_CRM_class=format_class_as_string)
+                    data.update(to_explorer)
 
-                if 'install_duration' in params:
-                    if 'install_duration' in self.df.columns:
-                        # add cost to data
-                        data['install_duration'] = row.install_duration[id]
+                    # check if cost must be included
+                    if self.col_cost in params:
+                        # check if cost have been added
+                        if self.col_cost in self.df.columns:
+                            # add cost to data
+                            data[self.col_cost] = round(row[self.col_cost][id], 2)
 
-                    else:
-                        raise KeyError(
-                            'equipment have not been added, thus no installation rates are provided')
+                        else:
+                            raise KeyError(
+                                'cost have not been added, use add_cost to add '
+                                'EUR cost to the df')
 
-                # add image to data
-                data['img'] = [f'{file_name}.png']
+                    if self.col_CO2 in params:
+                        if self.col_CO2 in self.df.columns:
+                            # add cost to data
+                            data[self.col_CO2] = round(row[self.col_CO2][id], 4)
+
+                        else:
+                            raise KeyError(
+                                'CO2 have not been added, use add_cost to add CO2'
+                                'cost to the df')
+
+                    if 'install_duration' in params:
+                        if 'install_duration' in self.df.columns:
+                            # add cost to data
+                            data['install_duration'] = round(row.install_duration[id], 4)
+
+                        else:
+                            raise KeyError(
+                                'equipment have not been added, thus no installation rates are provided')
+
+                    # add image to data
+                    data['img'] = [f'{file_name}.png']
 
 
-                # create a df of data and add to the df to_export
-                export_row = pd.DataFrame(data=data)
-                to_export = to_export.append(
-                    export_row, ignore_index=True, sort=True)
+                    # create a df of data and add to the df to_export
+                    export_row = pd.DataFrame(data=data)
+                    to_export = to_export.append(
+                        export_row, ignore_index=True, sort=True)
 
-                # add CaseNo to temp CaseNo and increase with 1
-                temp_CaseNo.append(CaseNo)
-                CaseNo += 1
+                    # add CaseNo to temp CaseNo and increase with 1
+                    temp_CaseNo.append(CaseNo)
+                    CaseNo += 1
 
             # add all stored CaseNo of the current concept in a list
             all_CaseNo.append(temp_CaseNo)

@@ -84,7 +84,7 @@ class Equipment:
                 flip = True
             else:
                 # on the left side of the structure so move to the right
-                xloc_equip = xpoint - sum(args)
+                xloc_equip = -xpoint - sum(args)
 
         # In this case we're building from land into the depth or on same level. In the latter the location does not matter
         else:
@@ -94,7 +94,7 @@ class Equipment:
                 xloc_equip = xpoint - sum(args)
             else:
                 # on the left side of structure so move to right on top
-                xloc_equip = xpoint + sum(args)
+                xloc_equip = -xpoint + sum(args)
                 flip = True
 
         return xloc_equip, yloc_equip, flip
@@ -176,6 +176,7 @@ class Truck(Equipment):
         design_type,
         waterlvl,
         h_dry,
+        type = 'land',
         mobilisation_cost = None,
         equipment_cost = None,
     ):
@@ -186,6 +187,7 @@ class Truck(Equipment):
         )
         self.h_dry = h_dry
         self.waterlvl = waterlvl
+        self.type = type
 
     def install(self, layer, grading_layer, ymax, section_coords, plot=False):
         """
@@ -310,6 +312,7 @@ class PlateFeeder(Equipment):
         top_installation,
         waterlvl,
         h_dry,
+        type = 'Land',
         mobilisation_cost = None,
         equipment_cost = None,
     ):
@@ -320,6 +323,7 @@ class PlateFeeder(Equipment):
         )
         self.h_dry = h_dry
         self.top_installation = top_installation
+        self.type = type
 
     def install(self, layer, grading_layer, ymax, section_coords, level=None, plot=False):
         """
@@ -398,7 +402,7 @@ class PlateFeeder(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry}\n",
             ha="center",
@@ -447,6 +451,7 @@ class Excavator(Equipment):
         waterlvl,
         loading_chart,
         h_dry,
+        type = 'land',
         mobilisation_cost = None,
         equipment_cost = None,
         offset=3,
@@ -459,6 +464,7 @@ class Excavator(Equipment):
         self.loading_chart = loading_chart
         self.h_dry = h_dry
         self.offset = offset
+        self.type = type
 
     def rotate_loading_chart(self, points_chart, xloc_equip, yloc_equip):
         """
@@ -567,6 +573,7 @@ class Excavator(Equipment):
         xmax_top,
         mass,
         length_top,
+        slope,
         plot=False,
         xloc_equip=None,
         yloc_equip=None,
@@ -602,6 +609,7 @@ class Excavator(Equipment):
         x_section, y_section = zip(*section_coords)
         flip = False
 
+
         # In this case we're building from land into the depth and we need to define the location of the equipment
         if xloc_equip == None:
             xloc_equip, yloc_equip, flip = self.location_equipment(
@@ -611,6 +619,8 @@ class Excavator(Equipment):
                 equip=self,
                 ymax=ymax,
             )
+
+
 
         # From which depths in the chart do we need information regarding the mass, stored in ychart
         dy = np.unique(y_section)
@@ -648,9 +658,11 @@ class Excavator(Equipment):
             # At what reaches do the masses suffice
             xreaches = np.array(load_chart[y]["x"])[np.where(masses >= mass)[0]]
             xdiff = abs(xreaches) - abs(x)
+
+
             # Are the reaches larger than the minimum distance between equipment and section (=x) AND
             # Is the distance which we will have to move back the equipment smaller than the length of the top layer
-            if any(xdiff >= 0) and (min(xdiff[np.where(xdiff >= 0)]) <= length_top):
+            if any(xdiff >= 0):
                 all_reach.append(True)
                 new_xequiploc.append(min(xdiff[np.where(xdiff >= 0)]))
             else:
@@ -666,6 +678,23 @@ class Excavator(Equipment):
                 (ymax - self.waterlvl) >= self.h_dry and all(all_reach)
             ):
                 install = True
+
+        if ymax > (self.waterlvl + self.h_dry) and not install and slope != (0,0):
+            dy = ymax - (self.waterlvl + self.h_dry)
+            V, H = slope
+            xmax_top = xmax_top - H/V * dy
+            install = self.install(
+                layer= layer,
+                grading_layer = grading_layer,
+                ymax = self.waterlvl + self.h_dry,
+                section_coords = section_coords,
+                xmax_top = xmax_top,
+                mass = mass,
+                length_top = length_top,
+                slope = slope,
+            )
+
+
 
         if plot:
             self.plot(
@@ -771,7 +800,7 @@ class Excavator(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
             f"4. The {self.name} can reach the section: {all(all_reach)}",
@@ -1036,6 +1065,7 @@ class Crane(Equipment):
         waterlvl,
         loading_chart,
         h_dry,
+        type = 'land',
         mobilisation_cost = None,
         equipment_cost = None,
         offset=3,
@@ -1049,6 +1079,7 @@ class Crane(Equipment):
         self.loading_chart = loading_chart
         self.h_dry = h_dry
         self.offset = offset
+        self.type = type
 
     def install(
         self,
@@ -1058,6 +1089,7 @@ class Crane(Equipment):
         section_coords,
         xmax_top,
         mass,
+        slope,
         xloc_equip=None,
         yloc_equip=None,
         plot=False,
@@ -1089,6 +1121,7 @@ class Crane(Equipment):
         x_section, y_section = zip(*section_coords)
         y_start, y_end = min(y_section), max(y_section)
 
+
         # If xloc_equip is None we're building from land so we need to define it
         if xloc_equip == None:
             xloc_equip, yloc_equip, flip = self.location_equipment(
@@ -1098,6 +1131,7 @@ class Crane(Equipment):
                 equip=self,
                 ymax=ymax,
             )
+
 
         # Maximum length between exuipment and section
         max_dist_x = max(abs(np.array(x_section) - xloc_equip))
@@ -1129,6 +1163,20 @@ class Crane(Equipment):
                 (ymax - self.waterlvl) >= self.h_dry and mass <= M_max and h <= hmax
             ):
                 install = True
+        if ymax > (self.waterlvl + self.h_dry) and not install and slope != (0,0):
+            dy = ymax - (self.waterlvl + self.h_dry)
+            V, H = slope
+            xmax_top = xmax_top - H/V * dy
+            install = self.install(
+                layer= layer,
+                grading_layer = grading_layer,
+                ymax = self.waterlvl + self.h_dry,
+                section_coords = section_coords,
+                xmax_top = xmax_top,
+                mass = mass,
+                slope= slope
+            )
+
 
         if plot:
             self.plot(
@@ -1186,7 +1234,7 @@ class Crane(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
             f"4. Mass layer <= M_max: {mass <= M_max}",
@@ -1234,6 +1282,7 @@ class Vessel(Equipment):
         design_type,
         waterlvl,
         installation_waterdepth,
+        type = 'Marine',
         mobilisation_cost = None,
         equipment_cost = None,
         ukc = None,
@@ -1248,6 +1297,8 @@ class Vessel(Equipment):
 
         if self.ukc == None:
             self.ukc = 0
+
+        self.type = type
 
     def install(self, section_coords, layer, grading_layer, plot=False):
         """
@@ -1318,7 +1369,7 @@ class Vessel(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
             f"2. waterlevel - installation_waterdepth >= yend + margin: {(self.waterlvl - (self.installation_waterdepth + self.ukc)) >= end_section}\n",
             ha="center",
             fontsize=18,
@@ -1367,6 +1418,7 @@ class Barge(Equipment):
         height,
         downtime_production,
         extra_cost,
+        type = 'Marine',
         ukc = None,
         margin_x=2,
         design_type=None,
@@ -1390,6 +1442,7 @@ class Barge(Equipment):
         self.height = height
         self.margin_x = margin_x
         self.ukc = ukc
+        self.type = type
 
         if self.ukc == None:
             self.ukc = 0
@@ -1471,6 +1524,7 @@ class Barge(Equipment):
                         xloc_equip=xequip,
                         yloc_equip=yequip,
                         plot=plot,
+                        slope= (0, 0)
                     )
 
                 elif isinstance(self.instance, Excavator):
@@ -1498,6 +1552,7 @@ class Barge(Equipment):
                         xloc_equip=xequip,
                         yloc_equip=yequip,
                         plot=plot,
+                        slope= (0, 0)
                     )
             if isinstance(self.instance, PlateFeeder) or isinstance(self.instance, Truck):
                 install = self.instance.install(layer= layer,
@@ -1521,6 +1576,7 @@ class Barge(Equipment):
                         xloc_equip=(min(x_section) + max(x_section)) / 2,
                         yloc_equip=y_installation_waterdepth + self.height,
                         plot=plot,
+                        slope= (0, 0)
                     )
                 elif isinstance(self.instance, Excavator):
                     # The Excavator searches the optimal location on a top layer with length infinity (the water level)
@@ -1539,5 +1595,6 @@ class Barge(Equipment):
                         xloc_equip=xequip,
                         yloc_equip=yequip,
                         plot=plot,
+                        slope= (0, 0)
                     )
         return install

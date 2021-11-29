@@ -175,6 +175,8 @@ class RubbleMound:
         self.Grading = Grading
         self.depth_area = None
 
+        self.slope = slope
+
         # set input as private attribute
         self._input_arguments = {
             "structure_type": structure_type,
@@ -1151,10 +1153,9 @@ class RubbleMound:
         xcorner_layer = max(coords)[0]
         length_top_sec = maxDiff(x[np.where(y == max(y))])
 
-
         # If the equipment is not yet evaluated create a dict, else continue with the already present dict created earlier
-        if equip.name not in self.depth_area[layer]["Area_yrange"][key]["equipment"].keys():
-            self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name] = {}
+        if equip not in self.depth_area[layer]["Area_yrange"][key]["equipment"].keys():
+            self.depth_area[layer]["Area_yrange"][key]["equipment"][equip] = {}
 
 
         # Check to which class the equipment belongs and whether to install
@@ -1174,8 +1175,8 @@ class RubbleMound:
                 price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
                 # Is the height of the layer higher than the current max layer? replace top and min_x values
@@ -1185,7 +1186,6 @@ class RubbleMound:
                     length_top = length_top_sec
 
         elif isinstance(equip, PlateFeeder):
-
             if equip.install(
                 layer=layer,
                 grading_layer=grading,
@@ -1201,8 +1201,8 @@ class RubbleMound:
                 price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
                 # Is the height of the layer higher than the current max layer? replace top and min_x values
@@ -1212,7 +1212,6 @@ class RubbleMound:
                     length_top = length_top_sec
 
         elif isinstance(equip, Vessel):
-
             if equip.install(section_coords=coords, layer=layer, grading_layer=grading):
                 time = (
                     area / equip.get_production_rate(layer=layer, grading_layer=grading)
@@ -1221,8 +1220,8 @@ class RubbleMound:
                 price = equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1242,6 +1241,7 @@ class RubbleMound:
                 xmax_top=max_height_xcorner,
                 mass=mass,
                 length_top=length_top,
+                slope= self.slope,
             ):
                 time = (
                     area / equip.get_production_rate(layer=layer, grading_layer=grading)
@@ -1251,8 +1251,8 @@ class RubbleMound:
 
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1269,6 +1269,7 @@ class RubbleMound:
                 xmax_top=max_height_xcorner,
                 section_coords=coords,
                 mass=mass,
+                slope = self.slope
             ):
 
                 time = (
@@ -1279,8 +1280,8 @@ class RubbleMound:
 
 
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1311,8 +1312,8 @@ class RubbleMound:
 
                 )
 
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip.name]['time'] = time
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
+                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
 
                 self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
 
@@ -1348,7 +1349,6 @@ class RubbleMound:
         df = df[cols]
         df = df.applymap(lambda x: None if x == {} else x)
 
-
         return df
 
     def optimal_equipment_set(self, dataframe, optimize_on ="cost"):
@@ -1377,10 +1377,9 @@ class RubbleMound:
         equipment_layers = {}
         # Which equipment can install which sections
         for i in range(len(equipment)):
-            equipment_layers[equipment[i]] = []
-            for index, row in df.iterrows():
-                if bool(row[equipment[i]]):
-                        equipment_layers[equipment[i]].append(index)
+            layers_equip_i = list(df[df[equipment[i]].notna()].index.values)
+            equipment_layers[(equipment[i].name, equipment[i].type)] = layers_equip_i
+
 
         combinations_dict = []
         combinations_lst = []
@@ -1389,11 +1388,12 @@ class RubbleMound:
 
         for equip in equipment:
 
+            equip = (equip.name, equip.type)
             i = 0
             installed = equipment_layers[equip].copy()
             equips_dict = {}
-            equips_dict[equip] = installed.copy()
-            equips_lst = [equip]
+            equips_dict[equip[0]] = installed.copy()
+            equips_lst = [equip[0]]
 
             # can't install a single layer
             if len(installed) != 0:
@@ -1402,13 +1402,22 @@ class RubbleMound:
                     rest_equip = sorted(equipment_layers.keys(),
                                         key=lambda k: len(set(equipment_layers[k]).difference(set(installed))),
                                         reverse= True)
+                    rest_equip = sorted(rest_equip,
+                                        key= lambda k: k[1],
+                                        reverse= True)
 
-                    most_new = rest_equip[0]
 
-                    newlayers = [l for l in equipment_layers[most_new] if l not in installed]
+                    for re in rest_equip:
+                        most_new = re
+                        newlayers = [l for l in equipment_layers[most_new] if l not in installed]
+                        if len(newlayers) == 0:
+                            continue
+                        else:
+                            break
+
                     installed.extend(newlayers)
-                    equips_dict[rest_equip[0]] = newlayers
-                    equips_lst.append(rest_equip[0])
+                    equips_dict[most_new[0]] = newlayers
+                    equips_lst.append(most_new[0])
                     installed = sorted(installed)
                     i += 1
 
@@ -1420,7 +1429,13 @@ class RubbleMound:
 
                 all_equips_dict[f'{equips_lst}'] = equips_dict
 
+
+
         cost_combinations = {}
+        for c in df.columns:
+            if c != 'area':
+                df.rename(columns={c: c.name}, inplace= True)
+
 
         for combi in combinations_dict:
             s = ''
@@ -1627,6 +1642,7 @@ class RubbleMound:
             areas = self.area(id)
             structure = self.get_variant(id)
             # iterate over the layers to price each layer
+            print(id)
             for layer, area in areas.items():
                 if layer is 'core':
                     # core is not included in the structure dict
@@ -1885,10 +1901,10 @@ class RubbleMound:
                     op_equipment = optimal_set[id].index[0]
 
                 except EquipmentError:
-                    total_cost.pop(id)
-                    total_CO2.pop(id)
-                    total_duration.pop(id)
-                    opt_equipment.pop(id)
+                    total_cost[id] = None
+                    total_CO2[id] = None
+                    total_duration[id] = None
+                    opt_equipment[id] = None
 
                     user_warning(f'variant {id} can not be installed with the given equipment')
 
@@ -1955,6 +1971,7 @@ class RubbleMound:
                 f"Variant with ID = {variantID} is not a variant, "
                 f"generated variants are: {self.variantIDs}"
             )
+
 
         # add armour layer
         variant["armour"] = self.structure["armour"]
