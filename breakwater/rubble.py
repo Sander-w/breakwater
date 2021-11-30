@@ -5,6 +5,7 @@ from tabulate import tabulate
 
 
 from breakwater.equipment.equipment import Truck, Vessel, Excavator, Crane, Barge, PlateFeeder
+from breakwater.equipment.combinations_algorithms import combination_algorithm
 from .core import substructure
 from .core.bishop import Bishop
 from .core.overtopping import rubble_mound
@@ -1351,121 +1352,9 @@ class RubbleMound:
 
         return df
 
-    def optimal_equipment_set(self, dataframe, optimize_on ="cost"):
-
-        """
-
-        Parameters
-        ----------
-        dataframe
-        optimize_on: str or list
-            one or more of 'CO2', 'cost' or 'time'
-
-        Returns
-        -------
-
-        """
-
-        df = dataframe
-
-        df.index = np.arange(0, len(df))
-
-        # All the sections
-        all_sections = df.index
-        # All the equipment
-        equipment = [c for c in df.columns if c != 'area']
-        equipment_layers = {}
-        # Which equipment can install which sections
-        for i in range(len(equipment)):
-            layers_equip_i = list(df[df[equipment[i]].notna()].index.values)
-            equipment_layers[(equipment[i].name, equipment[i].type)] = layers_equip_i
 
 
-        combinations_dict = []
-        combinations_lst = []
-
-        all_equips_dict = {}
-
-        for equip in equipment:
-
-            equip = (equip.name, equip.type)
-            i = 0
-            installed = equipment_layers[equip].copy()
-            equips_dict = {}
-            equips_dict[equip[0]] = installed.copy()
-            equips_lst = [equip[0]]
-
-            # can't install a single layer
-            if len(installed) != 0:
-                while list(installed) != list(all_sections) and i < len(equipment):
-
-                    rest_equip = sorted(equipment_layers.keys(),
-                                        key=lambda k: len(set(equipment_layers[k]).difference(set(installed))),
-                                        reverse= True)
-                    rest_equip = sorted(rest_equip,
-                                        key= lambda k: k[1],
-                                        reverse= True)
-
-
-                    for re in rest_equip:
-                        most_new = re
-                        newlayers = [l for l in equipment_layers[most_new] if l not in installed]
-                        if len(newlayers) == 0:
-                            continue
-                        else:
-                            break
-
-                    installed.extend(newlayers)
-                    equips_dict[most_new[0]] = newlayers
-                    equips_lst.append(most_new[0])
-                    installed = sorted(installed)
-                    i += 1
-
-                if list(installed) == list(all_sections):
-                    equips_lst = sorted(equips_lst)
-                    if equips_lst not in combinations_dict:
-                        combinations_dict.append(equips_dict)
-                        combinations_lst.append(equips_lst)
-
-                all_equips_dict[f'{equips_lst}'] = equips_dict
-
-
-
-        cost_combinations = {}
-        for c in df.columns:
-            if c != 'area':
-                df.rename(columns={c: c.name}, inplace= True)
-
-
-        for combi in combinations_dict:
-            s = ''
-            cost = 0
-            CO2 = 0
-            time = 0
-            for key, value in combi.items():
-                s += (key + ' + ')
-                for section in value:
-                    d = df[key].iloc[section]
-                    if 'cost' in d:
-                        cost += d['cost']
-                    if 'CO2' in d:
-                        CO2 += d['CO2']
-                    if 'time' in d:
-                        time += d['time']
-
-            cost_combinations[s[:-2]] = {'cost': cost, 'CO2': CO2, 'time': time}
-
-        df_optimal = pd.DataFrame.from_dict(cost_combinations, orient='index')
-        df_optimal = df_optimal.sort_values(by= optimize_on)
-        df_optimal['cost'] = df_optimal['cost'].round(2)
-        df_optimal['CO2'] = df_optimal['CO2'].round(5)
-        df_optimal['time'] = df_optimal['time'].round(5)
-
-
-
-        return df_optimal
-
-    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, plot_error = True):
+    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, algorithm = 'smart_combinations', threshold= None, plot_error = True):
         """
         Compute the cost of the breakwater sections using equipment
         Parameters
@@ -1594,8 +1483,10 @@ class RubbleMound:
                                       depth_area = self.depth_area,
                                       plot_error = plot_error)
             else:
-                optimal_equipment[id] = self.optimal_equipment_set(dataframe= df_variants[id],
-                                                                   optimize_on = optimize_on)
+                optimal_equipment[id] = combination_algorithm(dataframe= df_variants[id],
+                                                              optimize_on = optimize_on,
+                                                              algorithm= algorithm,
+                                                              threshold= threshold)
 
         return optimal_equipment
 
@@ -1642,7 +1533,6 @@ class RubbleMound:
             areas = self.area(id)
             structure = self.get_variant(id)
             # iterate over the layers to price each layer
-            print(id)
             for layer, area in areas.items():
                 if layer is 'core':
                     # core is not included in the structure dict
@@ -1799,6 +1689,8 @@ class RubbleMound:
         unit_price,
         equipment=None,
         transport_cost= None,
+        algorithm = 'smart_combinations',
+        threshold = None,
         optimize_on = ['cost', 'time'],
         output="variant",
         plot_error = True,
@@ -1826,6 +1718,9 @@ class RubbleMound:
             the cost to transport a m³ of rock from the quarry to the
             project location
             {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}
+        algorithm: str
+            Which algorithm should be used to determine the set of equipment
+            either smart_combinations or cheap_combinations. Default is smart_combinations
         output : {variant, layer, average}
             format of the output dict, variant returns the total cost
             of each variant, layer the cost of each layer for each
@@ -1893,7 +1788,9 @@ class RubbleMound:
                                               cost = calc_cost_equip,
                                               CO2 = calc_CO2_equip,
                                               optimize_on = optimize_on,
-                                              plot_error = plot_error)
+                                              algorithm= algorithm,
+                                              plot_error = plot_error,
+                                              threshold= threshold)
 
                     cost_equip = optimal_set[id]['cost'].iloc[0]
                     CO2_equip = optimal_set[id]['CO2'].iloc[0]
