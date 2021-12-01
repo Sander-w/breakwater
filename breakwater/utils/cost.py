@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .exceptions import InputError, RockGradingError
+from .exceptions import NotSupportedError, RockGradingError
+
 
 def _process_cost(structure, cost, Grading, validate=True):
     """ Process cost input to a dict

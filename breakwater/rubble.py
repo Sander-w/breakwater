@@ -1,18 +1,19 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from tabulate import tabulate
 
 
-from breakwater.equipment.equipment import Truck, Vessel, Excavator, Crane, Barge, PlateFeeder
+from breakwater.equipment.equipment import Barge
 from breakwater.equipment.combinations_algorithms import combination_algorithm
+from breakwater.equipment.equipment_functions import install_all_equipments, equipment_dataframe
+
 from .core import substructure
 from .core.bishop import Bishop
 from .core.overtopping import rubble_mound
 from .core.scour import scour_protection
 from .core.stability import hudson, vandermeer
 from .core.toe import toe_stability
-from .utils.breakwater_divide import GaussianA, divide_cross_section, maxDiff
+from .utils.breakwater_divide import GaussianA, divide_cross_section
 from .utils.exceptions import (
     InputError,
     NotSupportedError,
@@ -1100,262 +1101,6 @@ class RubbleMound:
         return coordinates
 
 
-    def install_all_equipments(
-        self,
-        coords,
-        equip,
-        layer,
-        grading,
-        mass,
-        end_lay,
-        area,
-        key,
-        max_height,
-        max_height_xcorner,
-        length_top,
-        cost_key
-    ):
-        """
-        Function which updates the depth_area dict based on if an equipment can install a section
-        Parameters
-        ----------
-        coords: list
-            coordinates of the section
-        equip: object
-            An equipment object
-        layer: str
-            Which layer are we installing (e.g. core)
-        grading: str
-            What is the grading of the layer
-        mass: float
-            The mass of the material of the layer
-        end_lay: float
-            Upper y-coordinate of the section
-        area: float
-            Area of the section
-        key: str
-            the range of the section (e.g. '0.0-1.0')
-        max_height: float
-            Maximum height of already build layer
-        max_height_xcorner: float
-            Corner of heightest build layer
-        length_top: float
-            Length of highest build layer at max_height
-        cost_key: str
-            Either CO2 or cost
-
-        Returns
-        -------
-        tuple
-        """
-        x, y = list(zip(*coords))
-        x, y = np.array(x), np.array(y)
-        slope = self._input_arguments["slope"]
-        xcorner_layer = max(coords)[0]
-        length_top_sec = maxDiff(x[np.where(y == max(y))])
-
-        # If the equipment is not yet evaluated create a dict, else continue with the already present dict created earlier
-        if equip not in self.depth_area[layer]["Area_yrange"][key]["equipment"].keys():
-            self.depth_area[layer]["Area_yrange"][key]["equipment"][equip] = {}
-
-
-        # Check to which class the equipment belongs and whether to install
-        if isinstance(equip, Truck):
-            if equip.install(
-                layer=layer,
-                grading_layer=grading,
-                ymax=max_height,
-                section_coords=coords,
-                length_top= length_top,
-            ):
-
-                time = (
-                    area / equip.get_production_rate(layer=layer, grading_layer=grading)
-
-                )
-
-                price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
-
-
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
-
-                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-                # Is the height of the layer higher than the current max layer? replace top and min_x values
-                if end_lay > max_height:
-                    max_height = end_lay
-                    max_height_xcorner = xcorner_layer
-                    length_top = length_top_sec
-
-        elif isinstance(equip, PlateFeeder):
-            if equip.install(
-                layer=layer,
-                grading_layer=grading,
-                ymax=max_height,
-                section_coords=coords,
-            ):
-
-                time = (
-                    area / equip.get_production_rate(layer=layer, grading_layer=grading)
-
-                )
-
-                price = area *  equip.get_price(layer=layer, grading_layer=grading, key= cost_key)
-
-
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
-
-                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-                # Is the height of the layer higher than the current max layer? replace top and min_x values
-                if end_lay > max_height:
-                    max_height = end_lay
-                    max_height_xcorner = xcorner_layer
-                    length_top = length_top_sec
-
-        elif isinstance(equip, Vessel):
-            if equip.install(section_coords=coords, layer=layer, grading_layer=grading):
-                time = (
-                    area / equip.get_production_rate(layer=layer, grading_layer=grading)
-
-                )
-                price = equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
-
-
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
-
-                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-
-                # Is the height of the layer higher than the current max layer? replace top and min_x values
-                if end_lay > max_height:
-                    max_height = end_lay
-                    max_height_xcorner = xcorner_layer
-                    length_top = length_top_sec
-
-        elif isinstance(equip, Excavator):
-
-            if equip.install(
-                layer=layer,
-                grading_layer=grading,
-                ymax=max_height,
-                section_coords=coords,
-                xmax_top=max_height_xcorner,
-                mass=mass,
-                length_top=length_top,
-                slope= self.slope,
-            ):
-                time = (
-                    area / equip.get_production_rate(layer=layer, grading_layer=grading)
-
-                )
-                price = equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
-
-
-
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
-
-                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-
-                if end_lay > max_height:
-                    max_height = end_lay
-                    max_height_xcorner = xcorner_layer
-                    length_top = length_top_sec
-
-        elif isinstance(equip, Crane):
-            if equip.install(
-                layer=layer,
-                grading_layer=grading,
-                ymax=max_height,
-                xmax_top=max_height_xcorner,
-                length_top= length_top,
-                section_coords=coords,
-                mass=mass,
-                slope = self.slope
-            ):
-
-                time = (
-                    area / equip.get_production_rate(layer=layer, grading_layer=grading)
-
-                )
-                price = equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
-
-
-
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
-
-                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-
-                if end_lay > max_height:
-                    max_height = end_lay
-                    max_height_xcorner = xcorner_layer
-                    length_top = length_top_sec
-
-        elif isinstance(equip, Barge):
-
-            if equip.install(
-                layer=layer,
-                grading_layer=grading,
-                slope=slope,
-                section_coords=coords,
-                xmax_top=max_height_xcorner,
-                mass=mass,
-            ):
-
-                price = (
-                    equip.get_price(layer=layer, grading_layer=grading, key= cost_key) * area
-                )
-
-                time = area / (
-                    equip.get_production_rate(
-                        layer=layer, grading_layer=grading
-                    )
-
-                )
-
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip][cost_key] = price
-                self.depth_area[layer]["Area_yrange"][key]["equipment"][equip]['time'] = time
-
-                self.depth_area[layer]["Area_yrange"][key]["color"] = "g"
-
-                if end_lay > max_height:
-                    max_height = end_lay
-                    max_height_xcorner = xcorner_layer
-                    length_top = length_top_sec
-
-        return max_height, max_height_xcorner, length_top
-
-    def equipment_dataframe(self):
-
-        d = {
-            (i, j): self.depth_area[i]["Area_yrange"][j]
-            for i in self.depth_area.keys()
-            for j in self.depth_area[i]["Area_yrange"].keys()
-        }
-
-        d2 = {}
-        area = []
-        for layer, section in d.keys():
-            n1, n2 = round(float(section.split("-")[0]), 2), round(
-                float(section.split("-")[1]), 2
-            )
-            d2[(layer, f"{n1}-{n2}")] = d[(layer, section)]['equipment']
-            area.append(sum(d[(layer, section)]['area']))
-
-        mux = pd.MultiIndex.from_tuples(d2.keys())
-        df = pd.DataFrame(list(d2.values()), index=mux)
-        df['area'] = area
-        cols = [c for c in df.columns if c != 'area']
-        cols.insert(0, 'area')
-        df = df[cols]
-        df = df.applymap(lambda x: None if x == {} else x)
-
-        return df
-
-
-
     def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, algorithm = 'smart_combinations', threshold= None, plot_error = True):
         """
         Compute the cost of the breakwater sections using equipment
@@ -1457,7 +1202,8 @@ class RubbleMound:
                                         max_height,
                                         max_height_xcorner,
                                         length_top,
-                                    ) = self.install_all_equipments(
+                                        self.depth_area
+                                    ) = install_all_equipments(
                                         coords=section_coords,
                                         equip=equip,
                                         layer=layer,
@@ -1469,10 +1215,12 @@ class RubbleMound:
                                         max_height=max_height,
                                         max_height_xcorner=max_height_xcorner,
                                         length_top=length_top,
-                                        cost_key= cost_var
+                                        cost_key= cost_var,
+                                        depth_area = self.depth_area,
+                                        slope = self.slope
                                     )
 
-            df_variants[id] = self.equipment_dataframe()
+            df_variants[id] = equipment_dataframe(depth_area= self.depth_area)
             cols = [c for c in df_variants[id].columns if c != 'area']
             df2 = df_variants[id][cols].dropna(how= 'all')
 
@@ -1493,7 +1241,7 @@ class RubbleMound:
         return optimal_equipment
 
 
-    def cost_CO2_or_money(self, *variants, core_price, transport_cost, unit_price, output, key):
+    def material_CO2_or_cost(self, *variants, core_price, transport_cost, unit_price, output, key):
         """
 
         Parameters
@@ -1650,7 +1398,7 @@ class RubbleMound:
         
         if core_price['cost'] != None:
             
-            cost_material = self.cost_CO2_or_money(*variants, core_price = core_price, transport_cost = transport_cost,
+            cost_material = self.material_CO2_or_cost(*variants, core_price = core_price, transport_cost = transport_cost,
                                                    unit_price = unit_price, output = output, key = 'cost')
             # check if average must be computed
             if output is 'average':
@@ -1667,7 +1415,7 @@ class RubbleMound:
                     
         if core_price['CO2'] != None:
             
-            CO2_material = self.cost_CO2_or_money(*variants, core_price = core_price, transport_cost = transport_cost,
+            CO2_material = self.material_CO2_or_cost(*variants, core_price = core_price, transport_cost = transport_cost,
                                                    unit_price = unit_price, output = output, key = 'CO2')
             # check if average must be computed
             if output is 'average':
