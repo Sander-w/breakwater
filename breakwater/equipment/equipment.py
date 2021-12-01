@@ -83,7 +83,7 @@ class Equipment:
                 xloc_equip = xpoint + sum(args)
                 flip = True
             else:
-                # on the left side of the structure so move to the right
+                # on the left side of the structure so move to the right, xpoint is a positive value but symmetric
                 xloc_equip = -xpoint - sum(args)
 
         # In this case we're building from land into the depth or on same level. In the latter the location does not matter
@@ -93,7 +93,7 @@ class Equipment:
                 # on the right side of structure so move to left on top
                 xloc_equip = xpoint - sum(args)
             else:
-                # on the left side of structure so move to right on top
+                # on the left side of structure so move to right on top, xpoint is a positive value but symmetric
                 xloc_equip = -xpoint + sum(args)
                 flip = True
 
@@ -166,6 +166,8 @@ class Truck(Equipment):
         What is the cost of usage of the equipment per hour in EUR and/or CO2 emmission. e.g. {'cost': ... [EUR/hr], 'CO2': ... [kg/hr]}
     waterlvl: float
         At which water depth is the equipment used
+    required_length: float
+        minimum length of the level the equipment is standing on.
     h_dry: int
         Margin which account for wave overtopping so the equipment is not damaged.
     """
@@ -175,6 +177,7 @@ class Truck(Equipment):
         name,
         design_type,
         waterlvl,
+        required_length,
         h_dry,
         type = 'land',
         mobilisation_cost = None,
@@ -188,8 +191,9 @@ class Truck(Equipment):
         self.h_dry = h_dry
         self.waterlvl = waterlvl
         self.type = type
+        self.required_length = required_length
 
-    def install(self, layer, grading_layer, ymax, section_coords, plot=False):
+    def install(self, layer, grading_layer, ymax, section_coords, length_top, plot=False):
         """
 
         Parameters
@@ -220,7 +224,7 @@ class Truck(Equipment):
         if (
             grading_layer in self.design_type.keys()
         ):
-            if (self.level >= self.h_dry):
+            if (self.level >= self.h_dry and length_top >= self.required_length):
                 install = True
 
         if plot:
@@ -230,11 +234,12 @@ class Truck(Equipment):
                 grading_layer=grading_layer,
                 ymax=ymax,
                 install=install,
+                top_length= length_top
             )
 
         return install
 
-    def plot(self, section_coords, layer, grading_layer, ymax, install):
+    def plot(self, section_coords, layer, grading_layer, ymax, install, top_length):
 
         fig, ax = plt.subplots(figsize=(15, 5))
         ax.axhline(self.waterlvl, color="b", label="waterlevel")
@@ -268,7 +273,8 @@ class Truck(Equipment):
             -0.1,
             f"1. The {self.name} can build the layer: {layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
-            f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry}\n",
+            f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
+            f"4. required_length <= layer length {(top_length >= self.required_length)}",
             ha="center",
             fontsize=18,
             bbox={"facecolor": facecolor, "alpha": 0.5, "pad": 5},
@@ -434,6 +440,8 @@ class Excavator(Equipment):
         What is the cost of usage of the equipment per hour in EUR and/or CO2 emmission. e.g. {'cost': ... [EUR/hr], 'CO2': ... [kg/hr]}
     waterlvl: float
         Water level at which the equipment is used
+    required_length: float
+        minimum length of the level the equipment is standing on.
     loading_chart: dict
         Give the coordinates with the according maximum stone weight from the loading chart,
         sorted from high to low y.
@@ -451,6 +459,7 @@ class Excavator(Equipment):
         waterlvl,
         loading_chart,
         h_dry,
+        required_length,
         type = 'land',
         mobilisation_cost = None,
         equipment_cost = None,
@@ -465,6 +474,7 @@ class Excavator(Equipment):
         self.h_dry = h_dry
         self.offset = offset
         self.type = type
+        self.required_length = required_length
 
     def rotate_loading_chart(self, points_chart, xloc_equip, yloc_equip):
         """
@@ -620,8 +630,6 @@ class Excavator(Equipment):
                 ymax=ymax,
             )
 
-
-
         # From which depths in the chart do we need information regarding the mass, stored in ychart
         dy = np.unique(y_section)
         within, loading_polygon, load_chart, section_polygon = self.chart_location(
@@ -675,7 +683,7 @@ class Excavator(Equipment):
             grading_layer in self.design_type.keys()
         ):
             if (y_start - self.waterlvl) >= self.h_dry or (
-                (ymax - self.waterlvl) >= self.h_dry and all(all_reach)
+                (ymax - self.waterlvl) >= self.h_dry and all(all_reach) and length_top >= self.required_length
             ):
                 install = True
 
@@ -690,7 +698,7 @@ class Excavator(Equipment):
                 section_coords = section_coords,
                 xmax_top = xmax_top,
                 mass = mass,
-                length_top = length_top,
+                length_top = 2*abs(xmax_top), #symmetric so twice this distance
                 slope = slope,
             )
 
@@ -764,24 +772,24 @@ class Excavator(Equipment):
             )
 
             x, y = loading_polygon2.exterior.xy
-            if xloc_equip > xloc_equip2:
-                ax.hlines(
-                    yloc_equip,
-                    xloc_equip,
-                    xloc_equip - length_top,
-                    linestyles="--",
-                    color="r",
-                    label="length top layer",
-                )
-            else:
-                ax.hlines(
-                    yloc_equip,
-                    xloc_equip,
-                    xloc_equip + length_top,
-                    linestyles="--",
-                    color="r",
-                    label="length top layer",
-                )
+            # if xloc_equip > xloc_equip2:
+            #     ax.hlines(
+            #         yloc_equip,
+            #         xloc_equip,
+            #         xloc_equip - length_top,
+            #         linestyles="--",
+            #         color="r",
+            #         label="length top layer",
+            #     )
+            # else:
+            #     ax.hlines(
+            #         yloc_equip,
+            #         xloc_equip,
+            #         xloc_equip + length_top,
+            #         linestyles="--",
+            #         color="r",
+            #         label="length top layer",
+            #     )
             ax.fill(np.array(x), np.array(y), "g", label=f"loading_chart 2", alpha=0.8)
 
         ax.fill(np.array(x_section), y_section, "b", label=f"section (M = {mass})")
@@ -803,7 +811,8 @@ class Excavator(Equipment):
             f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
-            f"4. The {self.name} can reach the section: {all(all_reach)}",
+            f"4. The {self.name} can reach the section: {all(all_reach)} AND\n"
+            f"5. required_length <= layer length {(length_top >= self.required_length)}",
             ha="center",
             fontsize=18,
             bbox={"facecolor": facecolor, "alpha": 0.5, "pad": 5},
@@ -825,6 +834,7 @@ class Caterpillar345(Excavator):
         design_type,
         waterlvl,
         h_dry,
+        required_length,
         mobilisation_cost = None,
         equipment_cost = None,
         offset=3,
@@ -873,6 +883,7 @@ class Caterpillar345(Excavator):
             mobilisation_cost=mobilisation_cost,
             equipment_cost=equipment_cost,
             waterlvl=waterlvl,
+            required_length = required_length,
             h_dry=h_dry,
             offset=offset,
             loading_chart=lchart,
@@ -885,6 +896,7 @@ class HITACHI_EX1200(Excavator):
         design_type,
         waterlvl,
         h_dry,
+        required_length,
         mobilisation_cost = None,
         equipment_cost = None,
         offset=3,
@@ -958,6 +970,7 @@ class HITACHI_EX1200(Excavator):
             mobilisation_cost=mobilisation_cost,
             equipment_cost=equipment_cost,
             waterlvl=waterlvl,
+            required_length = required_length,
             h_dry=h_dry,
             offset=offset,
             loading_chart=lchart,
@@ -970,6 +983,7 @@ class HITACHI_EX1900(Excavator):
         design_type,
         waterlvl,
         h_dry,
+        required_length,
         mobilisation_cost = None,
         equipment_cost = None,
         offset=3,
@@ -1028,6 +1042,7 @@ class HITACHI_EX1900(Excavator):
             mobilisation_cost=mobilisation_cost,
             equipment_cost=equipment_cost,
             waterlvl=waterlvl,
+            required_length = required_length,
             h_dry=h_dry,
             offset=offset,
             loading_chart=lchart,
@@ -1052,6 +1067,10 @@ class Crane(Equipment):
     loading_chart: Dataframe
         Per boom length and radius a maximum lift capacity is given. Column names are [radius, boom length 1, boom length 2 etc].
         The rows are the corresponding values for the radius and then the lift capacities
+    waterlvl: float
+        At which water depth is the equipment used
+    required_length: float
+        minimum length of the level the equipment is standing on.
     h_dry: int
         Margin which account for wave overtopping so the equipment is not damaged.
     offset: int
@@ -1063,6 +1082,7 @@ class Crane(Equipment):
         name,
         design_type,
         waterlvl,
+        required_length,
         loading_chart,
         h_dry,
         type = 'land',
@@ -1080,6 +1100,7 @@ class Crane(Equipment):
         self.h_dry = h_dry
         self.offset = offset
         self.type = type
+        self.required_length = required_length
 
     def install(
         self,
@@ -1090,6 +1111,7 @@ class Crane(Equipment):
         xmax_top,
         mass,
         slope,
+        length_top,
         xloc_equip=None,
         yloc_equip=None,
         plot=False,
@@ -1160,9 +1182,10 @@ class Crane(Equipment):
             grading_layer in self.design_type.keys()
         ):
             if (y_start - self.waterlvl) >= self.h_dry or (
-                (ymax - self.waterlvl) >= self.h_dry and mass <= M_max and h <= hmax
+                (ymax - self.waterlvl) >= self.h_dry and mass <= M_max and h <= hmax and length_top >= self.required_length
             ):
                 install = True
+
         if ymax > (self.waterlvl + self.h_dry) and not install and slope != (0,0):
             dy = ymax - (self.waterlvl + self.h_dry)
             V, H = slope
@@ -1172,6 +1195,7 @@ class Crane(Equipment):
                 grading_layer = grading_layer,
                 ymax = self.waterlvl + self.h_dry,
                 section_coords = section_coords,
+                length_top= 2*abs(xmax_top),
                 xmax_top = xmax_top,
                 mass = mass,
                 slope= slope
@@ -1187,6 +1211,7 @@ class Crane(Equipment):
                 xloc_equip=xloc_equip,
                 yloc_equip=yloc_equip,
                 install=install,
+                length_top= length_top,
                 mass=mass,
                 M_max=M_max,
             )
@@ -1200,6 +1225,7 @@ class Crane(Equipment):
         ymax,
         xloc_equip,
         yloc_equip,
+        length_top,
         install,
         mass,
         M_max,
@@ -1237,7 +1263,8 @@ class Crane(Equipment):
             f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
-            f"4. Mass layer <= M_max: {mass <= M_max}",
+            f"4. Mass layer <= M_max: {mass <= M_max} AND\n"
+            f"5. required_length <= layer length {(length_top >= self.required_length)}",
             ha="center",
             fontsize=18,
             bbox={"facecolor": facecolor, "alpha": 0.5, "pad": 5},
@@ -1521,6 +1548,7 @@ class Barge(Equipment):
                         section_coords=section_coords,
                         xmax_top=xmax_top,
                         mass=mass,
+                        length_top=float("inf"),
                         xloc_equip=xequip,
                         yloc_equip=yequip,
                         plot=plot,
@@ -1572,6 +1600,7 @@ class Barge(Equipment):
                         ymax= self.waterlvl + self.height,
                         section_coords=section_coords,
                         xmax_top=xmax_top,
+                        length_top=float("inf"),
                         mass=mass,
                         xloc_equip=(min(x_section) + max(x_section)) / 2,
                         yloc_equip=y_installation_waterdepth + self.height,

@@ -1166,6 +1166,7 @@ class RubbleMound:
                 grading_layer=grading,
                 ymax=max_height,
                 section_coords=coords,
+                length_top= length_top,
             ):
 
                 time = (
@@ -1268,6 +1269,7 @@ class RubbleMound:
                 grading_layer=grading,
                 ymax=max_height,
                 xmax_top=max_height_xcorner,
+                length_top= length_top,
                 section_coords=coords,
                 mass=mass,
                 slope = self.slope
