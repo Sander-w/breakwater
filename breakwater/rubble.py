@@ -1,7 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
 from tabulate import tabulate
-
+import matplotlib.pyplot as plt
 
 from breakwater.equipment.equipment import Barge
 from breakwater.equipment.combinations_algorithms import combination_algorithm
@@ -1100,8 +1099,7 @@ class RubbleMound:
         # return the coordinates of the specified variants
         return coordinates
 
-
-    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, algorithm = 'smart_combinations', threshold= None, plot_error = True):
+    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, algorithm = 'smart_combinations', limit= None, plot_error = True):
         """
         Compute the cost of the breakwater sections using equipment
         Parameters
@@ -1236,7 +1234,7 @@ class RubbleMound:
                 optimal_equipment[id] = combination_algorithm(dataframe= df_variants[id],
                                                               optimize_on = optimize_on,
                                                               algorithm= algorithm,
-                                                              threshold= threshold)
+                                                              limit= limit)
 
         return optimal_equipment
 
@@ -1440,7 +1438,7 @@ class RubbleMound:
         equipment=None,
         transport_cost= None,
         algorithm = 'smart_combinations',
-        threshold = None,
+        limit = None,
         optimize_on = ['cost', 'time'],
         output="variant",
         plot_error = True,
@@ -1540,7 +1538,7 @@ class RubbleMound:
                                               optimize_on = optimize_on,
                                               algorithm= algorithm,
                                               plot_error = plot_error,
-                                              threshold= threshold)
+                                              limit= limit)
 
                     cost_equip = optimal_set[id]['cost'].iloc[0]
                     CO2_equip = optimal_set[id]['CO2'].iloc[0]
