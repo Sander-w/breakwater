@@ -19,7 +19,7 @@ from .caisson import Caisson
 from breakwater.equipment.equipment import Truck, Vessel, Crane, Excavator, Barge, PlateFeeder, HITACHI_EX1900, Caterpillar345, HITACHI_EX1200
 
 # import structure 3D
-from .structure_3D import shape_3D, governing_wave_direction
+from .structure_3D import structure_3D
 
 # file loader
 from .design import read_breakwaters

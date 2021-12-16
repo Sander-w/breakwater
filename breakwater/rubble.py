@@ -2085,6 +2085,7 @@ class RockRubbleMound(RubbleMound):
                 N=N,
                 alpha=self.alpha,
                 slope_foreshore=slope_foreshore,
+                beta= beta,
                 val=vdm,
                 safety=safety,
                 logger=self.logger,
