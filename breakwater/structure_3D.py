@@ -6,16 +6,35 @@ import pandas as pd
 from breakwater.shape_3D.shape import all_designs, wave_angles_structure
 from breakwater.utils.exceptions import Design3DError
 
-
 class structure_3D():
 
     def __init__(
                 self,
                 kml_path,
                 wave_conditions,
+                slope,
+                slope_foreshore,
+                B,
+                N,
+                rho_w,
+                ArmourUnit,
+                Grading,
+                core_material,
+                LimitState,
                 shape = 'LinearRing',
                 structure_type= 'breakwater',
                 wave_direction= 'right',
+                safety=1,
+                slope_toe=(2, 3),
+                B_toe=None,
+                layers=1,
+                layers_underlayer=2,
+                vdm= 'max',
+                filter_rule=None,
+                Soil=None,
+                phi=40,
+                id=None,
+                **kwargs
                 ):
         """
         Class structure_3D which can be used to expand the 2D design to a 3D structure
@@ -33,76 +52,6 @@ class structure_3D():
         wave_direction: str, default= 'right'
             When walking in clockwise direction along the coordinates, do the waves
             come from the right or the left
-        """
-
-        self.kml_path = kml_path
-        self.wave_conditions = wave_conditions
-        self.shape = shape
-        self.structure_type = structure_type
-        self.wave_direction = wave_direction
-        self.Grading = None
-        self.df_design = pd.DataFrame()
-
-    def plot_topview(self):
-        """
-        Plot the top view of the structure shape
-
-        Returns
-        -------
-        Matplotlib.figure
-
-        """
-
-        orientation_dict = wave_angles_structure(kml_path= self.kml_path, wave_conditions= self.wave_conditions,
-                                                   wave_direction = self.wave_direction, shape = self.shape)
-
-        color = iter(cm.tab20c(np.linspace(0, 1, len(orientation_dict))))
-
-        for part, specs in orientation_dict.items():
-            label = True
-            colr = next(color)
-            for c in specs['coordinates']:
-                if label == True:
-                    plt.plot([c[0][0], c[1][0]], [c[0][1], c[1][1]], label= part, color = colr)
-                    label = False
-                else:
-                    plt.plot([c[0][0], c[1][0]], [c[0][1], c[1][1]], color= colr)
-
-        plt.legend()
-        plt.axis('off')
-
-    def design_3D(
-                    self,
-                    h,
-                    Sd,
-                    Nod,
-                    q,
-                    slope,
-                    slope_foreshore,
-                    B,
-                    N,
-                    rho_w,
-                    ArmourUnit,
-                    Grading,
-                    core_material,
-                    limitstate_label= 'ULS',
-                    safety=1,
-                    slope_toe=(2, 3),
-                    B_toe=None,
-                    layers=1,
-                    layers_underlayer=2,
-                    vdm= 'max',
-                    filter_rule=None,
-                    Soil=None,
-                    phi=40,
-                    id=None,
-                    **kwargs):
-
-        """
-        Creates a design for each part of the structure by the governing wave direction
-
-        Parameters
-        ----------
         h: float
             Water depth at the structure
         Sd: int
@@ -158,13 +107,16 @@ class structure_3D():
             internal friction angle of rock [degrees]
         id : int, optional, default: None
             add a unique id to the breakwater
-
-        Returns
-        -------
-        dict
         """
 
+        self.kml_path = kml_path
+        self.wave_conditions = wave_conditions
+        self.shape = shape
+        self.structure_type = structure_type
+        self.wave_direction = wave_direction
         self.Grading = Grading
+
+        LimitState = LimitState.Limit_states
 
         designs_all_directions = all_designs(
                                             kml_path= self.kml_path,
@@ -172,19 +124,15 @@ class structure_3D():
                                             wave_conditions= self.wave_conditions,
                                             shape= self.shape,
                                             structure_type= self.structure_type,
-                                            h= h,
-                                            Sd= Sd,
-                                            Nod= Nod,
-                                            q= q,
                                             slope= slope,
                                             slope_foreshore= slope_foreshore,
                                             B= B,
                                             N= N,
                                             rho_w= rho_w,
+                                            LimitState= LimitState,
                                             ArmourUnit= ArmourUnit,
                                             Grading= Grading,
                                             core_material= core_material,
-                                            limitstate_label= limitstate_label,
                                             safety= safety,
                                             slope_toe= slope_toe,
                                             B_toe= B_toe,
@@ -226,10 +174,40 @@ class structure_3D():
 
         self.df_design = df
 
-        return df
+    def plot_topview(self):
+        """
+        Plot the top view of the structure shape
+
+        Returns
+        -------
+        Matplotlib.figure
+
+        """
+
+        orientation_dict = wave_angles_structure(kml_path= self.kml_path, wave_conditions= self.wave_conditions,
+                                                   wave_direction = self.wave_direction, shape = self.shape)
+
+        color = iter(cm.tab20c(np.linspace(0, 1, len(orientation_dict))))
+
+        for part, specs in orientation_dict.items():
+            label = True
+            colr = next(color)
+            for c in specs['coordinates']:
+                if label == True:
+                    plt.plot([c[0][0], c[1][0]], [c[0][1], c[1][1]], label= part, color = colr)
+                    label = False
+                else:
+                    plt.plot([c[0][0], c[1][0]], [c[0][1], c[1][1]], color= colr)
+
+        plt.legend()
+        plt.axis('off')
+
 
     def plot_section(
                     self,
+                    *variants,
+                    wlev=None,
+                    save_name=None,
                     section
                     ):
         """
@@ -250,7 +228,7 @@ class structure_3D():
 
         section = self.df_design.loc[section]
 
-        section['structure'].plot('all')
+        section['structure'].plot(*variants, wlev= wlev, save_name= save_name)
 
     def totalcost_3D(
                     self,
@@ -268,52 +246,84 @@ class structure_3D():
 
         Parameters
         ----------
-        core_price
-        unit_price
-        grading_price
-        equipment
-        transport_cost
-        algorithm
-        limit
-        optimize_on
-        output
+        core_price : dict
+            cost of the core material per m³
+            {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}
+        unit_price : dict
+            the cost of an armour unit per m³
+            {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}
+        grading_price: dict
+            cost of material and CO2 per stone grading. {'LMA_40/60': {'cost': ..., 'CO2':...}}
+        equipment: lst
+            list of equipment out of Equipment class
+        transport_cost : dict
+            the cost to transport a m³ of rock from the quarry to the
+            project location
+            {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}
+        algorithm: str
+            Which algorithm should be used to determine the set of equipment
+            either smart_combinations, cheap_combinations. Default is smart_combinations
+        limit: int
+            In the case the cheap_combinations algorithm is chosen this limit gives the maximum number
+            of equipment used
+        output : {variant, layer, average}
+            format of the output dict, variant returns the total cost
+            of each variant, layer the cost of each layer for each
+            variant and average returns the average cost.
 
         Returns
         -------
+        tuple
+            the cost
+
+        Raises
+        ------
+        RockGradingError
+            if no pricing is included in the given RockGrading
+        EquipmentError
+            if the given equipment is not able to fill all the sections
 
         """
 
-        if self.df_design.empty:
-            raise Design3DError('First create designs for all the different sections of the structure')
+        cost_df = self.df_design.copy()
 
+        self.Grading.add_cost(grading_price)
+
+        lst_total_cost = []
+        lst_total_CO2 = []
+        lst_duration = []
+        lst_opt_equip = []
+
+        for index, row in self.df_design.iterrows():
+            variants = row['structure']
+            length = row['length [m]']
+
+            total_cost, total_CO2, duration, opt_equip = variants.total_cost(
+                                                                                'all',
+                                                                                core_price= core_price,
+                                                                                unit_price= unit_price,
+                                                                                equipment= equipment,
+                                                                                length= length,
+                                                                                plot_error= False,
+                                                                                transport_cost= transport_cost,
+                                                                                algorithm = algorithm,
+                                                                                limit = limit,
+                                                                                optimize_on = optimize_on,
+                                                                                output= output,
+                                                                                )
+
+            lst_total_cost.append(total_cost)
+            lst_total_CO2.append(total_CO2)
+            lst_duration.append(duration)
+            lst_opt_equip.append(opt_equip)
+
+        if equipment != None:
+            cost_df['total cost [EUR]'] = lst_total_cost
+            cost_df['total CO2 [kge]'] = lst_total_CO2
+            cost_df['duration [wk]'] = lst_duration
+            cost_df['equipment'] = lst_opt_equip
         else:
-            self.Grading.add_cost(grading_price)
+            cost_df['material cost [EUR]'] = lst_total_cost
+            cost_df['material CO2 [kge]'] = lst_total_CO2
 
-            for index, row in self.df_design.iterrows():
-                variants = row['structure']
-                length = row['length [m]']
-
-                total_cost, total_CO2, duration, opt_equip = variants.total_cost(
-                                                                                    'all',
-                                                                                    core_price= core_price,
-                                                                                    unit_price= unit_price,
-                                                                                    equipment= equipment,
-                                                                                    plot_error= False,
-                                                                                    transport_cost= transport_cost,
-                                                                                    algorithm = algorithm,
-                                                                                    limit = limit,
-                                                                                    optimize_on = optimize_on,
-                                                                                    output= output,
-                                                                                    )
-
-                print(total_cost)
-                if optimize_on[0] == 'cost':
-                    variant = min(total_cost, key = total_cost.get)
-                if optimize_on[0] == 'CO2':
-                    variant = min(total_CO2, key = total_CO2.get)
-                else:
-                    variant = min(duration, key = duration)
-
-                total_cost = total_cost[variant] * length
-                material_CO2 = material_CO2[variant] * length
-                duration = duration[variant] * length
+        return cost_df

@@ -19,6 +19,8 @@ from .caisson import Caisson
 from breakwater.equipment.equipment import Truck, Vessel, Crane, Excavator, Barge, PlateFeeder, HITACHI_EX1900, Caterpillar345, HITACHI_EX1200
 
 # import structure 3D
+from breakwater.shape_3D.Limitstate_3D import LimitState_3D
+from breakwater.shape_3D.Battjes_3D import BattjesGroenendijk_3D
 from .structure_3D import structure_3D
 
 # file loader

@@ -3,10 +3,10 @@ import numpy as np
 from shapely.geometry import Polygon
 from shapely.geometry.polygon import orient
 import math
+from math import radians, cos, sin, asin, sqrt
 from geopy import distance
 import string
 
-from breakwater.core.battjes import BattjesGroenendijk
 from breakwater.conditions import LimitState
 from breakwater.utils.exceptions import InputError
 from breakwater.rubble import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
@@ -73,7 +73,21 @@ def create_shape(kml_file):
 
     return shape_counterclock
 
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance in meters between two points
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
 
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a))
+    r = 6371 # Radius of earth in kilometers. Use 3956 for miles. Determines return value units.
+    return (c * r) * 1000
 
 def structure_orientation(counterclock_coords, wave_direction= 'right'):
     """
@@ -104,9 +118,7 @@ def structure_orientation(counterclock_coords, wave_direction= 'right'):
         long2, long1 = coords_anticlock[1][0], coords_anticlock[0][0]
         lat2, lat1 = coords_anticlock[1][1], coords_anticlock[0][1]
 
-        loc1 = (long1, lat1)
-        loc2 = (long2, lat2)
-        dist = math.ceil(distance.distance(loc1, loc2).meters)
+        dist = math.ceil(haversine(lon1= long1, lat1= lat1, lon2= long2, lat2= lat2))
 
         dLon = (long2 - long1)
         x = math.cos(math.radians(lat2)) * math.sin(math.radians(dLon))
@@ -153,7 +165,7 @@ def structure_orientation(counterclock_coords, wave_direction= 'right'):
 
     return orientation_dicts
 
-def wave_angles_structure(kml_path, wave_conditions, wave_direction = 'right', shape = 'Linestring'):
+def wave_angles_structure(kml_path, wave_conditions,LimitStates= None, wave_direction = 'right', shape = 'Linestring'):
 
     """
     Determines all the angles of the wave with respect to the orientation of all
@@ -165,6 +177,8 @@ def wave_angles_structure(kml_path, wave_conditions, wave_direction = 'right', s
         location of the kml file
     wave_conditions: dict
         key is the wave direction and the items a dict with Hm0 and Tp
+    LimitStates: lst
+        list with LimitState objects
     wave_directions: dict
         per wave direction the significant wave height and wave period is provided
     shape: str
@@ -196,8 +210,10 @@ def wave_angles_structure(kml_path, wave_conditions, wave_direction = 'right', s
 
             beta = np.where(beta >= 270, 360 - beta, beta)
             beta = np.where(beta <= 90, beta, None)
-
-            orientation_dict[key]['wave_conditions'].append({'Hm0': wavespecs['Hm0'], 'Tp': wavespecs['Tp'], 'beta': beta})
+            if LimitStates == None:
+                orientation_dict[key]['wave_conditions'].append({'Hm0': wavespecs['Hm0'], 'Tp': wavespecs['Tp'], 'beta': beta})
+            else:
+                orientation_dict[key]['wave_conditions'].append({'Hm0': wavespecs['Hm0'], 'Tp': wavespecs['Tp'], 'beta': beta, 'LimitState': LimitStates[wave_angle]})
 
     return orientation_dict
 
@@ -205,10 +221,6 @@ def all_designs(
         kml_path,
         wave_conditions,
         shape,
-        h,
-        Sd,
-        Nod,
-        q,
         slope,
         slope_foreshore,
         B,
@@ -216,10 +228,10 @@ def all_designs(
         rho_w,
         Grading,
         core_material,
+        LimitState,
         structure_type= 'breakwater',
         ArmourUnit= None,
         wave_direction= 'right',
-        limitstate_label= 'ULS',
         safety=1,
         slope_toe=(2, 3),
         B_toe=None,
@@ -306,24 +318,14 @@ def all_designs(
     -------
     dict
     """
-    orientation_dict = wave_angles_structure(kml_path= kml_path, wave_conditions= wave_conditions,
+    orientation_dict = wave_angles_structure(kml_path= kml_path, wave_conditions= wave_conditions, LimitStates= LimitState,
                                              wave_direction = wave_direction, shape = shape)
-
     for part, specs in orientation_dict.items():
         for i in range(len(specs['wave_conditions'])):
             condition = specs['wave_conditions'][i]
             orientation_dict[part]['wave_conditions'][i]['design'] = []
             for beta in condition['beta']:
-
                 if beta != None:
-                    battjes = BattjesGroenendijk(Hm0= condition['Hm0'], h=15, slope_foreshore=(1,100))
-                    H2_per = battjes.get_Hp(0.02)
-
-                    limitstate = LimitState(h= h, Hs= condition['Hm0'], H2_per=H2_per, Tp= condition['Tp'],
-                                     Sd= Sd, Nod= Nod, q= q, label= limitstate_label)
-
-                    limitstate.transform_periods(0.5)
-
                     if structure_type == 'breakwater' and ArmourUnit == None:
                         design = RockRubbleMound(
                                                 slope= slope,
@@ -331,7 +333,7 @@ def all_designs(
                                                 rho_w= rho_w,
                                                 B= B,
                                                 N= N,
-                                                LimitState= limitstate,
+                                                LimitState= condition['LimitState'],
                                                 Grading= Grading,
                                                 core_material= core_material,
                                                 safety= safety,
@@ -354,7 +356,7 @@ def all_designs(
                                                     slope_foreshore= slope,
                                                     B= B,
                                                     rho_w= rho_w,
-                                                    LimitState= limitstate,
+                                                    LimitState= condition['LimitState'],
                                                     ArmourUnit= ArmourUnit,
                                                     Grading= Grading,
                                                     core_material= core_material,
@@ -378,7 +380,7 @@ def all_designs(
                                                             slope_foreshore= slope_foreshore,
                                                             B= B,
                                                             rho_w= rho_w,
-                                                            LimitState= limitstate,
+                                                            LimitState= condition['LimitState'],
                                                             ArmourUnit= ArmourUnit,
                                                             Grading= Grading,
                                                             core_material= core_material,
@@ -403,3 +405,4 @@ def all_designs(
                     orientation_dict[part]['wave_conditions'][i]['design'].append(None)
 
     return orientation_dict
+

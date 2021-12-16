@@ -1099,7 +1099,8 @@ class RubbleMound:
         # return the coordinates of the specified variants
         return coordinates
 
-    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, algorithm = 'smart_combinations', limit= None, plot_error = True):
+    def equipment_cost(self, *variants, equipment, cost, CO2, optimize_on, algorithm = 'smart_combinations',
+                       limit= None, plot_error = True):
         """
         Compute the cost of the breakwater sections using equipment
         Parameters
@@ -1118,6 +1119,16 @@ class RubbleMound:
             calculate the CO2 emission
         optimize_on: str or list
             one or more of 'CO2', 'cost' or 'time'
+        algorithm: str
+            Which algorithm should be used to determine the set of equipment
+            either smart_combinations or cheap_combinations. Default is smart_combinations
+        length: float
+            The length of the structure in meters. default is 1.
+        limit: int
+            In the case the cheap_combinations algorithm is chosen this limit gives the maximum number
+            of equipment used
+        plot_error: bool
+            Should there be a plot if the equipment is not able to install the structure. Default is True.
         Returns
         -------
             dictionary with the prices per layer
@@ -1239,7 +1250,7 @@ class RubbleMound:
         return optimal_equipment
 
 
-    def material_CO2_or_cost(self, *variants, core_price, transport_cost, unit_price, output, key):
+    def material_CO2_or_cost(self, *variants, core_price, transport_cost, unit_price, output, key, length= 1):
         """
 
         Parameters
@@ -1264,7 +1275,8 @@ class RubbleMound:
             variant and average returns the average cost.
         key: str
             Either CO2 or cost
-
+        length: float
+            The length of the structure. default is 1.
         Returns
         -------
 
@@ -1285,13 +1297,13 @@ class RubbleMound:
                 if layer is 'core':
                     # core is not included in the structure dict
                     price = ((core_price[key] + transport_cost[key])
-                              * area)
+                              * area) * length
 
                 elif (self._input_arguments['armour'] is not 'Rock'
                         and layer is 'armour'):
                     # concrete armour units
                     V_armour = structure['armour']['class']
-                    price = area * unit_price[V_armour][key]
+                    price = area * unit_price[V_armour][key] * length
 
                 else:
                     # layer of the breakwater
@@ -1299,7 +1311,7 @@ class RubbleMound:
 
                     # get the price per meter
                     price = ((Grading[rock_class][key] + transport_cost[key])
-                              * area)
+                              * area) * length
 
                 # add to dict
                 variant_price[layer] = price
@@ -1323,7 +1335,7 @@ class RubbleMound:
         return cost
 
     def material_cost(
-            self, *variants, core_price, unit_price, transport_cost,
+            self, *variants, core_price, unit_price, length, transport_cost,
             output='variant'):
 
         """ Compute the cost per meter for each variant
@@ -1343,6 +1355,8 @@ class RubbleMound:
         unit_price : dict
             the cost of an armour unit per m³
             {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}
+        length: float
+            The length of the structure. default is 1.
         transport_cost : dict
             the cost to transport a m³ of rock from the quarry to the
             project location
@@ -1396,7 +1410,7 @@ class RubbleMound:
         
         if core_price['cost'] != None:
             
-            cost_material = self.material_CO2_or_cost(*variants, core_price = core_price, transport_cost = transport_cost,
+            cost_material = self.material_CO2_or_cost(*variants, core_price = core_price, length= length, transport_cost = transport_cost,
                                                    unit_price = unit_price, output = output, key = 'cost')
             # check if average must be computed
             if output is 'average':
@@ -1413,7 +1427,7 @@ class RubbleMound:
                     
         if core_price['CO2'] != None:
             
-            CO2_material = self.material_CO2_or_cost(*variants, core_price = core_price, transport_cost = transport_cost,
+            CO2_material = self.material_CO2_or_cost(*variants, core_price = core_price, length= length, transport_cost = transport_cost,
                                                    unit_price = unit_price, output = output, key = 'CO2')
             # check if average must be computed
             if output is 'average':
@@ -1436,6 +1450,7 @@ class RubbleMound:
         core_price,
         unit_price,
         equipment=None,
+        length = 1,
         transport_cost= None,
         algorithm = 'smart_combinations',
         limit = None,
@@ -1456,6 +1471,8 @@ class RubbleMound:
             arguments, all variants will be plotted.
         equipment: lst
             list of equipment out of Equipment class
+        length: float
+            The length of the structure. default is 1.
         core_price : dict
             cost of the core material per m³
             {'cost': ... [EUR/m3], 'CO2': ... [kg/m3]}
@@ -1469,6 +1486,9 @@ class RubbleMound:
         algorithm: str
             Which algorithm should be used to determine the set of equipment
             either smart_combinations or cheap_combinations. Default is smart_combinations
+        limit: int
+            In the case the cheap_combinations algorithm is chosen this limit gives the maximum number
+            of equipment used
         output : {variant, layer, average}
             format of the output dict, variant returns the total cost
             of each variant, layer the cost of each layer for each
@@ -1505,14 +1525,13 @@ class RubbleMound:
         total_duration = {}
         opt_equipment = {}
 
-        cost_material, CO2_material = self.material_cost(*variants, core_price= core_price, unit_price= unit_price,
+        cost_material, CO2_material = self.material_cost(*variants, core_price= core_price, unit_price= unit_price, length= length,
                                                          transport_cost= transport_cost, output= output)
-
 
         for id in variants:
             total_cost[id] = cost_material[id]
             total_CO2[id] = CO2_material[id]
-            total_duration[id] = 0
+            total_duration[id] = None
             opt_equipment[id] = None
 
         if equipment != None:
@@ -1529,7 +1548,6 @@ class RubbleMound:
 
             # if the variant can be installed pop from the total_cost dict
             for id in variants:
-
                 try:
                     optimal_set = self.equipment_cost(id,
                                               equipment= equipment,
@@ -1540,9 +1558,9 @@ class RubbleMound:
                                               plot_error = plot_error,
                                               limit= limit)
 
-                    cost_equip = optimal_set[id]['cost'].iloc[0]
-                    CO2_equip = optimal_set[id]['CO2'].iloc[0]
-                    duration = optimal_set[id]['time'].iloc[0]
+                    cost_equip = optimal_set[id]['cost'].iloc[0] * length
+                    CO2_equip = optimal_set[id]['CO2'].iloc[0] * length
+                    duration = optimal_set[id]['time'].iloc[0] * length
                     op_equipment = optimal_set[id].index[0]
 
                 except EquipmentError:
@@ -1551,7 +1569,8 @@ class RubbleMound:
                     total_duration[id] = None
                     opt_equipment[id] = None
 
-                    user_warning(f'variant {id} can not be installed with the given equipment')
+                    user_warning(f'variant {id} can not be installed with the given equipment. Only material costs'
+                                 f' can be calculated')
 
                     continue
 
