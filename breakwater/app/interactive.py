@@ -9,7 +9,7 @@ from matplotlib.figure import Figure
 
 from .settings import settings, size
 from .footer import footer
-from ..rubble import RockRubbleMound, ConcreteRubbleMound
+from ..rubble_2D import RockRubbleMound, ConcreteRubbleMound
 from ..caisson import Caisson
 from ..utils.exceptions import RockGradingError, ArmourUnitsError
 from ..utils._kwarg_validator import _RM_vkwargs, _C_vkwargs

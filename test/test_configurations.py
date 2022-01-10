@@ -3,7 +3,7 @@ import unittest
 import warnings
 import numpy as np
 
-from breakwater.design import Configurations
+from breakwater.design_2D import Configurations
 from breakwater.conditions import LimitState
 from breakwater.material import RockGrading, Xbloc
 

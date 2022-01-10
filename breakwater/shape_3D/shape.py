@@ -8,7 +8,7 @@ import string
 
 from breakwater.conditions import LimitState
 from breakwater.utils.exceptions import InputError
-from breakwater.rubble import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
+from breakwater.rubble_2D import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
 
 def coords_from_kml(kml_file):
 
