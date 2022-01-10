@@ -145,3 +145,5 @@ dmypy.json
 .vscode/
 
 .idea/
+
+.Notebooks/DesignExplorer/*

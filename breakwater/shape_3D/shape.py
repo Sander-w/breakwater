@@ -4,7 +4,6 @@ from shapely.geometry import Polygon
 from shapely.geometry.polygon import orient
 import math
 from math import radians, cos, sin, asin, sqrt
-from geopy import distance
 import string
 
 from breakwater.conditions import LimitState
@@ -156,16 +155,13 @@ def structure_orientation(counterclock_coords, wave_direction= 'right'):
                 orientation_dicts[f'section {letter[r[-1]]}']['orientation'].append(orientation)
                 orientation_dicts[f'section {letter[r[-1]]}']['distance'].append(dist)
         else:
-            if f'section {letter[s[-1]]}' not in orientation_dicts.keys():
-                orientation_dicts[f'section {letter[s[-1]]}'] = {'coordinates': [[(long1, lat1), (long2, lat2)]], 'orientation': [orientation], 'distance': [dist]}
-                r.append(s[-1]+1)
-            else:
-                orientation_dicts[f'section {letter[s[-1]]}']['distance'][0] +=  dist
-                orientation_dicts[f'section {letter[s[-1]]}']['coordinates'][0][-1] = (long2, lat2)
+            orientation_dicts[f'section {letter[s[-1]]}'] = {'coordinates': [[(long1, lat1), (long2, lat2)]], 'orientation': [orientation], 'distance': [dist]}
+            r.append(s[-1]+1)
+            s.append(r[-1])
 
     return orientation_dicts
 
-def wave_angles_structure(kml_path, wave_conditions,LimitStates= None, wave_direction = 'right', shape = 'Linestring'):
+def wave_angles_structure(kml_path, wave_conditions, LimitStates= None, wave_direction = 'right', shape = 'Linestring'):
 
     """
     Determines all the angles of the wave with respect to the orientation of all

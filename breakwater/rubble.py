@@ -1675,7 +1675,7 @@ class RubbleMound:
 
         return variant
 
-    def plot(self, *variants, wlev=None, save_name=None, equipment= None):
+    def plot(self, *variants, wlev=None, save_name=None, equipment= None, get_data = False):
         """Plot the cross section of the specified breakwater(s)
 
         Parameters
@@ -1721,7 +1721,7 @@ class RubbleMound:
         V, H = self._input_arguments["slope"]
 
         plt.figure(figsize=(10, 5))
-
+        coords = {}
         for i, id in enumerate(variants):
             # set subplot
             if len(variants) == 2:
@@ -1739,6 +1739,7 @@ class RubbleMound:
 
             for layer, lines in coordinates.items():
                 plt.plot(lines["x"], lines["y"], color="k")
+                coords[layer] = lines
 
                 # check largest value for xlim
                 if np.max(lines["x"]) >= xlim_max:
@@ -1799,8 +1800,11 @@ class RubbleMound:
         if save_name is not None:
             plt.savefig(f"{save_name}.png")
             plt.close()
-        else:
+        elif not get_data:
             plt.show()
+        else:
+            plt.close()
+            return coords
 
     def print_variant(self, *variants, decimals=3):
         """Print the details for the specified variant(s)

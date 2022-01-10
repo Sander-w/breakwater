@@ -16,7 +16,6 @@ from .conditions import LimitState
 from .material import read_grading, read_units
 from .rubble import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
 
-
 def read_configurations(
         filepath, structure, kd=None, name=None, LS=None, Grading=None,
         ArmourUnits=None, BermMaterial=None):
