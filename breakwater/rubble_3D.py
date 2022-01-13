@@ -111,10 +111,10 @@ class structure_3D():
         """
 
         self.kml_path = kml_path
-        self.wave_conditions = wave_conditions
         self.shape = shape
-        self.structure_type = structure_type
         self.wave_direction = wave_direction
+        self.wave_conditions = wave_conditions
+        self.structure_type = structure_type
         self.Grading = Grading
 
         LimitState = LimitState.Limit_states
@@ -312,31 +312,6 @@ class structure_3D():
 
         section['structure'].print_variant(*variants, decimals= decimals)
 
-    def plot_3D(self):
-
-        plt.figure(figsize= (10, 6.7))
-
-        start = None
-
-        for index, row in self.df_design.iterrows():
-            if index == 'section A':
-                coords = row['coordinates']
-                lon, lat = list(zip(*coords))
-                if start == None:
-                    start = (lon[0], lat[0])
-
-                lon = np.array(lon) - start[0]
-                lat = np.array(lat) - start[1]
-
-                coords = row['structure'].plot('a', get_data = True)
-                for layer, line in coords.items():
-                    x = line['x']
-                    y = line['y']
-                    if self.wave_direction == 'right':
-                        x = np.array(x) * -1
-                    plt.plot(x, y, color= 'b')
-                    plt.gca().set_aspect("equal", adjustable="box")
-
 
     def totalcost_3D(
                     self,
@@ -426,13 +401,13 @@ class structure_3D():
             lst_opt_equip.append(opt_equip)
 
         if equipment != None:
-            cost_df['total cost'] = lst_total_cost
-            cost_df['total CO2'] = lst_total_CO2
+            cost_df['cost'] = lst_total_cost
+            cost_df['CO2'] = lst_total_CO2
             cost_df['duration'] = lst_duration
             cost_df['equipment'] = lst_opt_equip
         else:
-            cost_df['material_cost'] = lst_total_cost
-            cost_df['material_CO2'] = lst_total_CO2
+            cost_df['cost'] = lst_total_cost
+            cost_df['CO2'] = lst_total_CO2
 
         self.df = cost_df
 

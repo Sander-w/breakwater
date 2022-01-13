@@ -10,6 +10,7 @@ from breakwater.conditions import LimitState
 from breakwater.utils.exceptions import InputError
 from breakwater.rubble_2D import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
 
+
 def coords_from_kml(kml_file):
 
     """
@@ -48,8 +49,6 @@ def create_shape(kml_file):
     ----------
     coordinates: list
         list containing tuples with (lon, lat) of the LinearRing
-    shape: str
-        shape of the structure, can either be 'Line', 'LinearRing' or 'Polygon'
     Returns
     -------
     shapely.geometry
@@ -161,7 +160,7 @@ def structure_orientation(counterclock_coords, wave_direction= 'right'):
 
     return orientation_dicts
 
-def wave_angles_structure(kml_path, wave_conditions, LimitStates= None, wave_direction = 'right', shape = 'Linestring'):
+def wave_angles_structure(kml_path, wave_conditions, LimitStates= None, wave_direction = 'right', shape = 'LinearRing'):
 
     """
     Determines all the angles of the wave with respect to the orientation of all
@@ -177,8 +176,8 @@ def wave_angles_structure(kml_path, wave_conditions, LimitStates= None, wave_dir
         list with LimitState objects
     wave_directions: dict
         per wave direction the significant wave height and wave period is provided
-    shape: str
-        can be either Linestring or Polygon. Use Polygon when the shape is closed
+    shape: {'LinearRing', 'Polygon'}
+        can be either LinearRing or Polygon. Use Polygon when the shape is closed
     Returns
     -------
     dict
@@ -189,7 +188,7 @@ def wave_angles_structure(kml_path, wave_conditions, LimitStates= None, wave_dir
 
     counterclock_coords = shape_counterclock.exterior.coords
 
-    if shape == 'Linestring':
+    if shape != 'Polygon':
         # delete duplicates created by polygon when the shape is a Linestring
         counterclock_coords = dict.fromkeys(counterclock_coords)
         # if there where only two coordinates, a fictive one was added to create a polygon. Delete this one

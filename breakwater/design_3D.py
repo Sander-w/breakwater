@@ -12,7 +12,7 @@ from .utils._design_explorer import _DE_params
 from .utils.exceptions import RockGradingError, ArmourUnitsError, InputError, user_warning, NotSupportedError
 from .utils._progress import ProgressBar
 from .utils.cost import _process_cost
-from breakwater.shape_3D.shape import wave_angles_structure
+
 
 class Configurations_3D:
 
@@ -31,8 +31,6 @@ class Configurations_3D:
                  safety=1,
                  **kwargs):
 
-        data = wave_angles_structure(kml_path, wave_conditions, LimitStates= LimitState.Limit_states, wave_direction = 'right', shape = 'Linestring')
-
         # add LimitState, rho_w and slope_foreshore to kwargs input
         # so that input can be validated
         kwargs['LimitState'] = LimitState
@@ -44,11 +42,6 @@ class Configurations_3D:
 
         # set grading as attribute for adding cost
         self._Grading = Grading
-
-        # if material cost is added the standard names are below
-        # if also equipment is added it is changed to total_cost and total_CO2 (see add_cost)
-        self.col_cost = 'material_cost'
-        self.col_CO2 = 'material_CO2'
 
 
         # convert the input of structure to a list
@@ -623,6 +616,7 @@ class Configurations_3D:
 
                 row.concept.df_design = df_cost
 
+
     @staticmethod
     def seperate_sections(section, dataframe):
 
@@ -639,9 +633,26 @@ class Configurations_3D:
 
         return df
 
+    @staticmethod
+    def merge_df_sections(dataframe_lst, variables):
+        all_combinations_df = dataframe_lst[0].merge(dataframe_lst[1], how='cross')
+
+        for v in variables:
+            all_combinations_df[v] = all_combinations_df[f'{v}_x'] + all_combinations_df[f'{v}_y']
+            all_combinations_df.drop([f'{v}_x', f'{v}_y'], axis= 1, inplace= True)
+
+        for i in range(2, len(dataframe_lst)):
+            all_combinations_df = all_combinations_df.merge(dataframe_lst[i], how= 'cross')
+
+            for v in variables:
+                all_combinations_df[v] = all_combinations_df[f'{v}_x'] + all_combinations_df[f'{v}_y']
+                all_combinations_df.drop([f'{v}_x', f'{v}_y'], axis= 1, inplace= True)
+
+        return all_combinations_df
+
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
-            merge_Bm=True, merge_slope_toe=True):
+            merge_Bm=True, merge_slope_toe=True, reduce_on= 'cost', keep = '3'):
         """ Export concepts to Design Explorer 2
 
         Creates a folder that can be used in Design Explorer 2, the
@@ -738,6 +749,14 @@ class Configurations_3D:
             True if slope_foundation must be merged with slope_toe when
             a Rubble Mound and Vertical breakwater have been designed,
             False if you do not want to merge the columns.
+        reduce_on: {'cost', 'CO2', 'install_duration'}, default: 'cost'
+            on which of the variables should the dataframes be reduced
+            to minimize the total number of possibilities of combinations
+            of cross-sections. The most optimum (amount depends on keep
+            argument below) are kept.
+        keep: float, default = 3
+            amount of possibilities which are kept per section.
+
 
 
         Raises
@@ -746,10 +765,7 @@ class Configurations_3D:
             if the cost are asked to export but not yet specified
         """
 
-        if 'cost' in params:
-           params[params.index('cost')] = self.col_cost
-        if 'CO2' in params:
-           params[params.index('CO2')] = self.col_CO2
+        variables = ['cost', 'CO2']
 
         # check if RRM and CRM are in structure
         designed_structures = self.df.type.unique()
@@ -796,10 +812,12 @@ class Configurations_3D:
         sections = self.df.iloc[0]['concept'].df_design.index.values
 
 
+        all_sections_df = []
+
         for sec in sections:
             # set empty df for export
             to_export = pd.DataFrame()
-
+            params = [p for p in params if 'img' not in p]
             # add list to store all CaseNo in
             CaseNo = 1
             all_CaseNo = []
@@ -809,9 +827,6 @@ class Configurations_3D:
             df = self.seperate_sections(section= sec, dataframe= self.df)
             num_concepts = df.shape[0]
             bar = ProgressBar(number=num_concepts, task='Saving')
-
-            new_dir2 = f'{new_dir}/{sec}'
-            os.mkdir(new_dir2)
 
             for index, row in df.iterrows():
                 # check if concept exists
@@ -830,13 +845,13 @@ class Configurations_3D:
 
                 for id in row.structure.variantIDs:
                     # save name of the cross section
-                    if row[self.col_cost][id] is not None:
+                    if row['cost'][id] is not None:
                         file_name = f'{row.type}.{row.id}'
                         if num_concepts > 1:
                             # add id if more than 1 concept
                             file_name = f'{file_name}{id}'
 
-                        save_name = f'{new_dir2}/{file_name}'
+                        save_name = f'{file_name}'
 
                         # save cross section of the current concept
                         # add equipment to plot if present
@@ -856,22 +871,23 @@ class Configurations_3D:
                             change_CRM_class=format_class_as_string)
 
                         data.update(to_explorer)
+
                         # check if cost must be included
-                        if self.col_cost in params:
+                        if 'cost' in params:
                             # check if cost have been added
-                            if self.col_cost in row.index:
+                            if 'cost' in row.index:
                                 # add cost to data
-                                data[self.col_cost] = round(row[self.col_cost][id], 2)
+                                data['cost'] = round(row['cost'][id], 2)
 
                             else:
                                 raise KeyError(
                                     'cost have not been added, use add_cost to add '
                                     'EUR cost to the df')
 
-                        if self.col_CO2 in params:
-                            if self.col_CO2 in row.index:
+                        if 'CO2' in params:
+                            if 'CO2' in row.index:
                                 # add cost to data
-                                data[self.col_CO2] = round(row[self.col_CO2][id], 4)
+                                data['CO2'] = round(row['CO2'][id], 4)
 
                             else:
                                 raise KeyError(
@@ -882,13 +898,14 @@ class Configurations_3D:
                             if 'install_duration' in row.index:
                                 # add cost to data
                                 data['install_duration'] = round(row.install_duration[id], 4)
+                                variables.append('install_duration')
 
                             else:
                                 raise KeyError(
                                     'equipment have not been added, thus no installation rates are provided')
 
                         # add image to data
-                        data['img'] = [f'{file_name}.png']
+                        data[f'img_{sec}'] = [f'{file_name}.png']
 
 
                         # create a df of data and add to the df to_export
@@ -933,7 +950,7 @@ class Configurations_3D:
             # add CaseNo and type as the left most column_names
             # and make img the right most column_names
             column_names[0:0] = ['CaseNo', 'type']
-            column_names.insert(len(column_names), 'img')
+            column_names.insert(len(column_names), f'img_{sec}')
 
             # restructure df with order of column_names
             to_export = to_export.loc[:, column_names]
@@ -950,11 +967,22 @@ class Configurations_3D:
                     to_export.slope_foundation, inplace=True)
                 del to_export['slope_foundation']
 
-            # save to_export df to a excel file
-            excel_save_name = f'{new_dir2}/data.csv'
-            to_export.to_csv(excel_save_name, index=False)
+            to_export.sort_values(by= reduce_on, inplace= True)
+            to_export = to_export.head(3)
 
-            print(f'folder {new_dir2} is ready for Design Explorer 2')
+            delete_cols = [c for c in to_export.columns if c not in variables + [f'img_{sec}']]
+            to_export.drop(delete_cols, axis=1, inplace=True)
+            all_sections_df.append(to_export)
+
+
+        to_export = self.merge_df_sections(dataframe_lst= all_sections_df, variables= variables)
+        to_export['CaseNo'] = to_export.index
+        print(to_export)
+        # save to_export df to a excel file
+        excel_save_name = f'data.csv'
+        to_export.to_csv(excel_save_name, index=False)
+
+        print(f'folder {new_dir} is ready for Design Explorer 2')
 
     def get_concept(self, id=None, CaseNo=None):
         """ Get the specified concept
