@@ -244,6 +244,8 @@ class structure_3D():
                     section,
                     wlev=None,
                     save_name=None,
+                    table= False,
+                    table_data = None
                     ):
         """Plot the cross section of the specified section
 
@@ -278,7 +280,7 @@ class structure_3D():
 
         section = self.df_design.loc[section]
 
-        section['structure'].plot(*variants, wlev= wlev, save_name= save_name)
+        section['structure'].plot(*variants, wlev= wlev, save_name= save_name, table= table, table_data= table_data)
 
     def print_section(self, *variants, section, decimals=3):
         """Print the details for the specified variant(s)

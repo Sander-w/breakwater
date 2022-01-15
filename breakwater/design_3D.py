@@ -650,6 +650,21 @@ class Configurations_3D:
 
         return all_combinations_df
 
+    @staticmethod
+    def create_table_data(to_explorer, variables):
+
+        table_data = {}
+        for key, value in to_explorer.items():
+            if key not in variables:
+                if type(value) == list:
+                    table_data[key] = value[0]
+                else:
+                    table_data[key] = value
+
+        table_data = {'parameter': list(table_data.keys()), 'value': list(table_data.values())}
+
+        return table_data
+
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
             merge_Bm=True, merge_slope_toe=True, reduce_on= 'cost', keep = '3'):
@@ -767,6 +782,8 @@ class Configurations_3D:
 
         variables = ['cost', 'CO2']
 
+        if 'install_duration' in params:
+            variables.append('install_duration')
         # check if RRM and CRM are in structure
         designed_structures = self.df.type.unique()
         if 'CRM' and 'RRM' and 'CRMR' in designed_structures:
@@ -813,6 +830,7 @@ class Configurations_3D:
 
 
         all_sections_df = []
+        bar = ProgressBar(number=len(sections), task='Saving')
 
         for sec in sections:
             # set empty df for export
@@ -826,14 +844,13 @@ class Configurations_3D:
             # set up progress bar, and CaseNo
             df = self.seperate_sections(section= sec, dataframe= self.df)
             num_concepts = df.shape[0]
-            bar = ProgressBar(number=num_concepts, task='Saving')
+
 
             for index, row in df.iterrows():
                 # check if concept exists
 
                 if row.structure is None:
                     # go to next concept
-                    bar.next()
                     all_CaseNo.append([CaseNo])
                     continue
 
@@ -846,20 +863,13 @@ class Configurations_3D:
                 for id in row.structure.variantIDs:
                     # save name of the cross section
                     if row['cost'][id] is not None:
-                        file_name = f'{row.type}.{row.id}'
+                        file_name = f'{sec}.{row.type}.{row.id}'
                         if num_concepts > 1:
                             # add id if more than 1 concept
                             file_name = f'{file_name}{id}'
 
-                        save_name = f'{file_name}'
+                        save_name = f'{new_dir}/{file_name}'
 
-                        # save cross section of the current concept
-                        # add equipment to plot if present
-                        if 'optimal_equipment' in row.index:
-                            row.structure.plot(id, save_name=save_name, equipment= row.optimal_equipment[id])
-                            # add equipment to data
-                        else:
-                            row.structure.plot(id, save_name=save_name)
                         data = {'CaseNo': [CaseNo], 'type': [row.type]}
                         # get the values from the variant and add to data
                         variant = row.structure.get_variant(variantID=id)
@@ -871,6 +881,17 @@ class Configurations_3D:
                             change_CRM_class=format_class_as_string)
 
                         data.update(to_explorer)
+                        # create data in the table next to the plot
+                        table_data = self.create_table_data(to_explorer= to_explorer, variables= variables)
+                        # save cross section of the current concept
+                        # add equipment to plot if present
+
+                        if 'optimal_equipment' in row.index:
+                            row.structure.plot(id, save_name=save_name, equipment= row.optimal_equipment[id], table= True,
+                                               table_data= table_data)
+                            # add equipment to data
+                        else:
+                            row.structure.plot(id, save_name=save_name, table= True, table_data= table_data)
 
                         # check if cost must be included
                         if 'cost' in params:
@@ -898,7 +919,6 @@ class Configurations_3D:
                             if 'install_duration' in row.index:
                                 # add cost to data
                                 data['install_duration'] = round(row.install_duration[id], 4)
-                                variables.append('install_duration')
 
                             else:
                                 raise KeyError(
@@ -919,9 +939,9 @@ class Configurations_3D:
                     # add all stored CaseNo of the current concept in a list
                 all_CaseNo.append(temp_CaseNo)
 
-                bar.next()
+            bar.next()
 
-            bar.finish()
+
 
             # add all CaseNo to the df so that concept can be selected by CaseNo
             df['CaseNo'] = all_CaseNo
@@ -974,12 +994,14 @@ class Configurations_3D:
             to_export.drop(delete_cols, axis=1, inplace=True)
             all_sections_df.append(to_export)
 
+        bar.finish()
 
         to_export = self.merge_df_sections(dataframe_lst= all_sections_df, variables= variables)
         to_export['CaseNo'] = to_export.index
-        print(to_export)
+        exp_cols = [c for c in to_export.columns]
+        to_export = to_export[['CaseNo'] + [ec for ec in exp_cols if ec != 'CaseNo']]
         # save to_export df to a excel file
-        excel_save_name = f'data.csv'
+        excel_save_name = f'{new_dir}/data.csv'
         to_export.to_csv(excel_save_name, index=False)
 
         print(f'folder {new_dir} is ready for Design Explorer 2')

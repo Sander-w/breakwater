@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from tabulate import tabulate
 import matplotlib.pyplot as plt
 
@@ -1675,7 +1676,7 @@ class RubbleMound:
 
         return variant
 
-    def plot(self, *variants, wlev=None, save_name=None, equipment= None, get_data = False):
+    def plot(self, *variants, wlev=None, save_name=None, equipment= None, get_data = False, table = False, table_data = None):
         """Plot the cross section of the specified breakwater(s)
 
         Parameters
@@ -1720,8 +1721,21 @@ class RubbleMound:
 
         V, H = self._input_arguments["slope"]
 
-        plt.figure(figsize=(10, 5))
+
         coords = {}
+
+        if len(variants) == 1 and table:
+
+            if table_data == None:
+                table_data = {'parameter': ['Rc', 'B', 'slope'], 'value': [round(self.Rc,2), round(self._input_arguments['B'],2),
+                                                                               self._input_arguments['slope']]}
+            fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [1, 2]}, figsize=(5,5))
+            df = pd.DataFrame(data = table_data)
+            ax[0].table(cellText=df.values, colLabels=df.columns, cellLoc= 'center', loc='center')
+            ax[0].axis('off')
+        else:
+            plt.figure(figsize=(15, 5))
+
         for i, id in enumerate(variants):
             # set subplot
             if len(variants) == 2:
@@ -1788,8 +1802,6 @@ class RubbleMound:
             if equipment != None:
                 plt.figtext(0.5, 0.01, f"Used equipment: {equipment}", ha="center", fontsize=10)
 
-
-
             plt.title(title)
 
             plt.gca().set_aspect("equal", adjustable="box")
@@ -1798,8 +1810,10 @@ class RubbleMound:
         plt.tight_layout()
 
         if save_name is not None:
+
             plt.savefig(f"{save_name}.png")
             plt.close()
+
         elif not get_data:
             plt.show()
         else:
