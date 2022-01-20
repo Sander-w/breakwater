@@ -1725,14 +1725,7 @@ class RubbleMound:
         coords = {}
 
         if len(variants) == 1 and table:
-
-            if table_data == None:
-                table_data = {'parameter': ['Rc', 'B', 'slope'], 'value': [round(self.Rc,2), round(self._input_arguments['B'],2),
-                                                                               self._input_arguments['slope']]}
-            fig, ax = plt.subplots(2, 1, gridspec_kw={'height_ratios': [1, 2]}, figsize=(5,5))
-            df = pd.DataFrame(data = table_data)
-            ax[0].table(cellText=df.values, colLabels=df.columns, cellLoc= 'center', loc='center')
-            ax[0].axis('off')
+            plt.subplot(2, 1, 1)
         else:
             plt.figure(figsize=(15, 5))
 
@@ -1797,10 +1790,9 @@ class RubbleMound:
             else:
                 name = save_name.split("/")[-1]
                 title = f"Cross section of {name}"
-
             # get equipment to show in design explorer
-            if equipment != None:
-                plt.figtext(0.5, 0.01, f"Used equipment: {equipment}", ha="center", fontsize=10)
+            # if equipment != None:
+            #     plt.figtext(0.5, 0.01, f"Used equipment: {equipment}", ha="center", fontsize=10)
 
             plt.title(title)
 
@@ -1808,6 +1800,42 @@ class RubbleMound:
             plt.grid()
 
         plt.tight_layout()
+
+        # show a table with specs of the design and a table with used equipment
+        if table and equipment != None:
+            plt.subplot(2,2, 3)
+            if table_data == None:
+                table_data = {'parameter': ['Rc', 'B', 'slope'], 'value': [round(self.Rc,2), round(self._input_arguments['B'],2),
+                                                                           self._input_arguments['slope']]}
+            df = pd.DataFrame(data = table_data)
+            plt.table(cellText=df.values, colLabels=df.columns, cellLoc= 'center', loc='center')
+            plt.axis('off')
+
+            plt.subplot(2,2,4)
+            table_data = {'equipment': equipment.split(' + ')}
+            df = pd.DataFrame(data = table_data)
+            plt.table(cellText=df.values, colLabels=df.columns, cellLoc= 'center', loc='center')
+            plt.axis('off')
+            plt.subplots_adjust(wspace=0.05, hspace=0.05)
+        # show a table with specs of the design
+        elif table:
+            plt.subplot(2,1, 2)
+            if table_data == None:
+                table_data = {'parameter': ['Rc', 'B', 'slope'], 'value': [round(self.Rc,2), round(self._input_arguments['B'],2),
+                                                                           self._input_arguments['slope']]}
+            df = pd.DataFrame(data = table_data)
+            plt.table(cellText=df.values, colLabels=df.columns, cellLoc= 'center', loc='center')
+            plt.axis('off')
+
+            plt.subplots_adjust(wspace=0, hspace=0)
+        # show a table with used equipment
+        elif equipment != None:
+            plt.subplot(2,1, 2)
+            table_data = {'equipment': equipment.split(' + ')}
+            df = pd.DataFrame(data = table_data)
+            plt.table(cellText=df.values, colLabels=df.columns, cellLoc= 'center', loc='center')
+            plt.axis('off')
+            plt.subplots_adjust(wspace=0.05, hspace=0.05)
 
         if save_name is not None:
 

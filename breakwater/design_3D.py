@@ -507,6 +507,19 @@ class Configurations_3D:
         # return the combinations and number of combinations
         return configs, max_combinations
 
+    @staticmethod
+    def total_variants(df_3d):
+        num = 0
+        for i, row in df_3d.iterrows():
+            if row.concept is None:
+                # not a valid concept
+                continue
+            else:
+                for index, row in row.concept.df_design.iterrows():
+                    variants = row['structure']
+                    num += len(variants.variantIDs)
+        return num
+
     def add_cost(
             self,
             core_price,
@@ -572,7 +585,9 @@ class Configurations_3D:
             # validate cost
             _process_cost(structure, cost, self._Grading)
 
-        # set list to store cost in
+        # ProgressBar
+        num_concepts = self.total_variants(df_3d= self.df)
+        bar = ProgressBar(number=num_concepts, task='Computing cost')
 
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
@@ -588,20 +603,20 @@ class Configurations_3D:
                     df_cost = row.concept.totalcost_3D(
                         core_price= core_price, unit_price= unit_price, grading_price= grading_price,
                         equipment = equipment, transport_cost=transport_cost, algorithm= algorithm,
-                        limit= limit, optimize_on= optimize_on, output= output)
+                        limit= limit, optimize_on= optimize_on, output= output, progress_bar= bar)
 
 
                 elif row.type == 'CRM':
                     df_cost  = row.concept.totalcost_3D(
                         core_price= core_price, unit_price= unit_price, grading_price= grading_price,
                         equipment = equipment, transport_cost=transport_cost, algorithm= algorithm,
-                        limit= limit, optimize_on= optimize_on, output= output)
+                        limit= limit, optimize_on= optimize_on, output= output, progress_bar= bar)
 
                 elif row.type == 'CRMR':
                     df_cost = row.concept.totalcost_3D(
                         core_price= core_price, unit_price= unit_price, grading_price= grading_price,
                         equipment = equipment, transport_cost=transport_cost, algorithm= algorithm,
-                        limit= limit, optimize_on= optimize_on, output= output)
+                        limit= limit, optimize_on= optimize_on, output= output, progress_bar= bar)
 
                 elif row.type == 'RC' or row.type == 'CC':
                     # check if investment cost must be added
@@ -609,13 +624,14 @@ class Configurations_3D:
                     df_cost  = row.concept.totalcost_3D(
                         core_price= core_price, unit_price= unit_price, grading_price= grading_price,
                         equipment = equipment, transport_cost=transport_cost, algorithm= algorithm,
-                        limit= limit, optimize_on= optimize_on, output= output)
+                        limit= limit, optimize_on= optimize_on, output= output, progress_bar= bar)
 
                 else:
                     raise NotSupportedError(f'{row.type} is not supported')
 
                 row.concept.df_design = df_cost
 
+        bar.finish()
 
     @staticmethod
     def seperate_sections(section, dataframe):

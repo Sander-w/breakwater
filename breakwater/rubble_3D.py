@@ -326,6 +326,7 @@ class structure_3D():
                     limit = None,
                     optimize_on = ['cost', 'time'],
                     output="variant",
+                    progress_bar= None,
                     ):
         """
 
@@ -394,8 +395,11 @@ class structure_3D():
                                                                                 algorithm = algorithm,
                                                                                 limit = limit,
                                                                                 optimize_on = optimize_on,
-                                                                                output= output,
-                                                                                )
+                                                                                output= output)
+
+            if progress_bar != None:
+                for i in variants.variantIDs:
+                    progress_bar.next()
 
             lst_total_cost.append(total_cost)
             lst_total_CO2.append(total_CO2)
@@ -405,8 +409,8 @@ class structure_3D():
         if equipment != None:
             cost_df['cost'] = lst_total_cost
             cost_df['CO2'] = lst_total_CO2
-            cost_df['duration'] = lst_duration
-            cost_df['equipment'] = lst_opt_equip
+            cost_df['install_duration'] = lst_duration
+            cost_df['optimal_equipment'] = lst_opt_equip
         else:
             cost_df['cost'] = lst_total_cost
             cost_df['CO2'] = lst_total_CO2
