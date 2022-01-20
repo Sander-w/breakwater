@@ -18,10 +18,10 @@ class structure_3D():
                 B,
                 N,
                 rho_w,
-                ArmourUnit,
                 Grading,
                 core_material,
                 LimitState,
+                ArmourUnit = None,
                 shape = 'LinearRing',
                 structure_type= 'breakwater',
                 wave_direction= 'right',
@@ -51,7 +51,7 @@ class structure_3D():
         structure_type: str, default is breakwater
             Either revetment or breakwater
         wave_direction: str, default= 'right'
-            When walking in clockwise direction along the coordinates, do the waves
+            When walking in counter-clockwise direction along the coordinates, do the waves
             come from the right or the left
         h: float
             Water depth at the structure
@@ -177,8 +177,6 @@ class structure_3D():
         df.rename(columns= {0: 'coordinates', 1: 'structure', 2: 'length [m]'}, inplace= True)
         df['class Dn50'] = [None] * len(df)
         df['Rc'] = [None] * len(df)
-
-
 
         i = 0
         for index, row in df.iterrows():

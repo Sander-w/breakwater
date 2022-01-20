@@ -249,7 +249,7 @@ def all_designs(
     wave_conditions: dict
         dictionary with orientation the key and item is a dict with Hm0 and Tp
     wave_direction: str, default= 'right'
-        When walking in clockwise direction along the coordinates, do the waves
+        When walking in counter-clockwise direction along the coordinates, do the waves
         come from the right or the left
     structure_type: str, default= 'breakwater'
         type of structure, either breakwater or revetment
