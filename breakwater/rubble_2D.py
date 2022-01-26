@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import pandas as pd
 from tabulate import tabulate
@@ -1183,9 +1185,8 @@ class RubbleMound:
                             mass = self.rho * (self._input_arguments['Dn50_core'])**3
                         # use armour units
                         elif layer == "armour" and self._input_arguments["armour"] != "Rock":
-                            grading = self.structure['armour']['Mass']
-                            mass = int(self.structure["armour"]["class"] * 2400 / 1000)
-
+                            grading = str(structure[layer]["class"])
+                            mass = self.structure['armour']['Mass'] / 1000
                         else:
                             grading = structure[layer]["class"]
                             mass = self.Grading.rosin_rammler(grading, 0.90) / 1000
@@ -1541,7 +1542,7 @@ class RubbleMound:
 
             for equip in equipment:
                 if not isinstance(equip, Barge):
-                    for key, item in equip.design_type.items():
+                    for key, item in equip.layer_cost.items():
                         if item['cost'] == None:
                             calc_cost_equip = False
                         if item['CO2'] == None:
@@ -2754,7 +2755,7 @@ class ConcreteRubbleMound(RubbleMound):
             "class Dn50": V_required ** (1 / 3),
             "state": state,
             "layers": layers,
-            'Mass': ArmourUnit.units[V_required]['M']
+            'Mass': int(V_required * ArmourUnit.rho)
         }
 
         # design underlayer, filter layer and crest height
@@ -2826,7 +2827,7 @@ class ConcreteRubbleMound(RubbleMound):
                 "class Dn50": new_class ** (1 / 3),
                 "state": state,
                 "layers": layers,
-                'Mass': ArmourUnit.units[V_required]['M']
+                'Mass': int(V_required * ArmourUnit.rho)
             }
 
             # check if the class of the units has changed
@@ -3143,7 +3144,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             "class Dn50": V_required ** (1 / 3),
             "state": state,
             "layers": layers,
-            'Mass': ArmourUnit.units[V_required]['M']
+            'Mass': int(V_required * ArmourUnit.rho)
         }
 
         # design underlayer, filter layer and crest height
@@ -3215,7 +3216,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
                 "class Dn50": new_class ** (1 / 3),
                 "state": state,
                 "layers": layers,
-                'Mass': ArmourUnit.units[V_required]['M']
+                'Mass': int(V_required * ArmourUnit.rho)
             }
 
             # check if the class of the units has changed
