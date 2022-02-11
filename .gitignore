@@ -6,6 +6,11 @@
 # ignore .breakwaters files
 *.breakwaters
 
+# ignore results
+*.png
+*.stix
+*.sli
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

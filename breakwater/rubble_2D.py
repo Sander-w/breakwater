@@ -1943,6 +1943,23 @@ class RubbleMound:
                 print(f"no {type.lower()} messages in log")
             print()
 
+    def to_polygon_coordinates(self, variantID):
+        """Return polygon coordinates of specified layer"""
+
+        layer_dict = {}
+        point_list = []
+
+        # iterate over coordinates from _layers method to fill dict
+        for layer, coord in self._layers(variantID).items():
+            # get the x and y coordinates
+            x = coord["x"]
+            y = coord["y"]
+            [point_list.append((x[i],y[i])) for i in range(0,len(x))]
+            layer_dict[layer] = point_list
+            point_list = []     # Empty list
+
+        return layer_dict
+
     def area(self, variantID):
         """Compute the area of all layers
 
