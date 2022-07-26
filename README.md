@@ -80,7 +80,7 @@ script.
 
 ## Getting Started
 
-The latest released version is available at the [Python package index]
+The latest released version is available at the Van Oord [Python package index]
 
 ```sh
 pip install breakwater
@@ -88,9 +88,13 @@ pip install breakwater
 
 Alternatively, the source code can be downloaded, or cloned, from the GitHub repository.  
 
-```sh
-python setup.py install
-```
+To install this package in a anaconda environment in developer mode please follow steps below after opening a terminal in Anaconda:
+1. `conda create --name nameofyournewenvironment python=3.8 --no-default-packages`
+2. `source activate nameofyournewenvironment` ; 
+3. `conda install jupyter pip`
+4. `pip install --upgrade pip`
+5. Navigate to the local repository of the coastal-tools and then run `pip install -e .`
+
 
 A tutorial of **breakwater** can be found in [Chapter 3] of the documentation. This
 [documentation] also provides a full overview of the implemented failure mechanisms,
