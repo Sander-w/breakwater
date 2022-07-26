@@ -2,6 +2,7 @@ import numpy as np
 
 from ..utils.exceptions import NotSupportedError
 
+
 def xi_critical(Cpl, Cs, P, alpha):
     """ Critical value of the surf-similarity parameter for Van der Meer
 
@@ -226,7 +227,7 @@ def vandermeer_shallow(Hs, H2, Delta, P, Sd, N, xi_s_min_1, alpha, safety=1):
 
 def vandermeer(
         LimitState, Delta, P, N, alpha, slope_foreshore, val='max',
-        safety=1, logger=None):
+        safety=1, logger=None, beta=None):
     """ Van der Meer formulae for deep and shallow water conditions
 
     Implementation of Van der Meer formulae for deep and shallow
@@ -339,6 +340,9 @@ def vandermeer(
     # add msg to log which formula was used
     if logger != None:
         logger['INFO'].append(msg)
+
+    if beta != None:
+        Dn50 = 0.5*beta * Dn50
 
     return Dn50
 
