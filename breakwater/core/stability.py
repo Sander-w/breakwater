@@ -227,7 +227,7 @@ def vandermeer_shallow(Hs, H2, Delta, P, Sd, N, xi_s_min_1, alpha, safety=1):
 
 def vandermeer(
         LimitState, Delta, P, N, alpha, slope_foreshore, val='max',
-        safety=1, beta = None, logger=None):
+        safety=1, logger=None):
     """ Van der Meer formulae for deep and shallow water conditions
 
     Implementation of Van der Meer formulae for deep and shallow
@@ -392,6 +392,7 @@ def hudson(H, Kd, Delta, alpha):
     Dn50 = H/(Delta*(Kd/np.tan(alpha))**(1/3))
     return Dn50
 
+
 def vangent(Dn50_per, beta, cb):
     """ Van Gent formula for reduction of stone diameter under 
     oblique wave attack (Van Gent, 2014)
@@ -428,4 +429,4 @@ def vangent(Dn50_per, beta, cb):
     
     Dn50_beta = Dn50_per*((1-cb)*np.cos(beta)**2+cb)
     
-    return(Dn50_beta)
+    return Dn50_beta 
