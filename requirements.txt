@@ -15,3 +15,6 @@ tk
 tabulate
 XlsxWriter
 shapely
+pykml
+psutil
+packaging
