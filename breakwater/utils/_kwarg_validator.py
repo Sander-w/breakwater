@@ -71,9 +71,8 @@ def _RM_vkwargs(type):
                      'Required': True,
                      'unit': '[-]'},
 
-        'Dn50_core' : {'Default': None,
-                       'Validator': lambda value: isinstance(value, int)
-                                                  or isinstance(value, float),
+        'core_material' : {'Default': None,
+                       'Validator': lambda value: isinstance(value, dict),
                        'Correct': 'int or float',
                        'Constant': False,
                        'Required': True,
