@@ -166,6 +166,9 @@ class RubbleMound:
         self.bishop = None
         self.F_norm = None
 
+        self.Dn50_core = Dn50_core
+        self.Grading = Grading
+
         # set input as private attribute
         self._input_arguments = {
             "structure_type": structure_type,
@@ -360,7 +363,7 @@ class RubbleMound:
             pass
         else:
             # get armour_layer
-            if armour_layer is "Rock":
+            if armour_layer == "Rock":
                 material = "armourstones"
             else:
                 material = "units"
@@ -499,6 +502,8 @@ class RubbleMound:
                     # update normative F and bishop object as attribute
                     self.F_norm = slip.circles[slip.normative].F
                     self.bishop = slip
+
+        self.rho = rho
 
     def _estimate_htoe(self, Dn50=0):
         """Method to estimate the height of the toe"""
@@ -642,7 +647,7 @@ class RubbleMound:
 
         # check structure type: breakwater or revetment.
         # breakwater is covered with armour on both sides
-        if self._input_arguments["structure_type"] is "breakwater":
+        if self._input_arguments["structure_type"] == "breakwater":
             # compute armour layer
             armour_y1 = t_filter + t_underlayer + t_scour
             armour_y2 = height
@@ -686,7 +691,7 @@ class RubbleMound:
 
             # check if armour layer is made out of rock
             # as there is a different toe structure for rock and armour units
-            if self._input_arguments["armour"] is "Rock":
+            if self._input_arguments["armour"] == "Rock":
                 # compute point where armour layer intersect with the toe
                 x = (abs(arm_under_x2 - armour_x1) * V_toe / H_toe) / (
                     V / H + V_toe / H_toe
@@ -867,7 +872,7 @@ class RubbleMound:
 
         # check structure type: breakwater or revetment. default is breakwater
         # revetment is covered with armour only on sea side
-        if self._input_arguments["structure_type"] is "revetment":
+        if self._input_arguments["structure_type"] == "revetment":
             # compute armour layer
             armour_y1 = t_filter + t_underlayer + t_scour
             armour_y2 = height
@@ -911,7 +916,7 @@ class RubbleMound:
 
             # check if armour layer is made out of rock
             # as there is a different toe structure for rock and armour units
-            if self._input_arguments["armour"] is "Rock":
+            if self._input_arguments["armour"] == "Rock":
                 # compute point where armour layer intersect with the toe
                 x = (abs(arm_under_x2 - armour_x1) * V_toe / H_toe) / (
                     V / H + V_toe / H_toe
@@ -1085,7 +1090,7 @@ class RubbleMound:
         return coordinates
 
     def _cost(
-        self, *variants, type, core_price, unit_price, transport_cost, output="variant"
+        self, *variants, type, unit_price, transport_cost, output="variant"
     ):
         """Compute the cost for either the material or CO2 footprint per meter for each variant
 
@@ -1100,8 +1105,6 @@ class RubbleMound:
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float
@@ -1164,20 +1167,37 @@ class RubbleMound:
             # iterate over the layers to price each layer
             variant_price = {}
             for layer, area in areas.items():
-                if layer is "core":
-                    # core is not included in the structure dict
+                if layer == "core":
+                    # get the class of the core and then the price, error if no grading available
+                    core_class = self.Grading.get_class(self.Dn50_core)
+                    core_price = self.Grading.grading[core_class][dictvar]
+
                     price = (core_price + transport_cost) * self._input_arguments[
                         "Dn50_core"
                     ]
 
                 elif (
-                    self._input_arguments["armour"] is not "Rock" and layer is "armour"
+                    self._input_arguments["armour"] != "Rock" and layer == "armour"
                 ):
-                    # concrete armour units
-                    price = area * unit_price
+                        rho_c = self.rho
+                        armour_class = str(int(self.structure['armour']['class'] * rho_c / 1000)) + 't'
+
+                        #  Or maybe better to create a function with calculates the area below a certain location
+                        # V, H = self._input_arguments["slope"]
+                        # y = self._layers(id)['armour']['y']
+                        # depth = np.array(y) - installation_depth
+
+
+                        for key, value in unit_price.items():
+                            try:
+                                if armour_class == key.split('_')[1]:
+                                    price = area * value
+
+                            except:
+                                return NotSupportedError('Make sure the unit price dict looks as follows: code_mass : price (1140x22_22t: 50)')
 
                 else:
-                    # layer of the breakwater
+                    # layer of the breakwater![](../../../../AppData/Local/Temp/download.png)
                     rock_class = structure[layer]["class"]
 
                     # get the price per meter
@@ -1187,10 +1207,10 @@ class RubbleMound:
                 variant_price[layer] = np.round(price, 2)
 
             # add to cost dict
-            if output is "variant" or output is "average":
+            if output == "variant" or output == "average":
                 # add total cost of all layers
                 cost[id] = np.round(np.sum(list(variant_price.values())), 2)
-            elif output is "layer":
+            elif output == "layer":
                 # add the cost of each layer
                 cost[id] = variant_price
             else:
@@ -1203,7 +1223,7 @@ class RubbleMound:
                 )
 
         # check if average must be computed
-        if output is "average":
+        if output == "average":
             # compute average cost
             cost = {"average": np.round(np.average(list(cost.values())), 2)}
 
@@ -1792,7 +1812,7 @@ class RockRubbleMound(RubbleMound):
             f"and variants: {self.variantIDs}"
         )
 
-    def cost(self, *variants, type, core_price, transport_cost=None, output="variant"):
+    def cost(self, *variants, type, transport_cost=None, output="variant"):
         """Compute the cost for the material or the CO2 footprint per meter for each variant
 
         Method to compute the cost of each generated variant, the cost
@@ -1809,8 +1829,6 @@ class RockRubbleMound(RubbleMound):
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         transport_cost : float, optional, default: None
             the cost to transport a m³ of rock from the quarry to the
             project location
@@ -1833,7 +1851,6 @@ class RockRubbleMound(RubbleMound):
         cost = self._cost(
             *variants,
             type= type,
-            core_price=core_price,
             unit_price=0,
             transport_cost=transport_cost,
             output=output,
@@ -2264,6 +2281,9 @@ class ConcreteRubbleMound(RubbleMound):
         self.logger = {"INFO": [], "WARNING": []}
         self.structure = {}
 
+        # Density
+        self.rho = ArmourUnit.rho
+
         # compute angles
         self.alpha = np.arctan(slope[0] / slope[1])
         slope_foreshore = np.arctan(slope_foreshore[0] / slope_foreshore[1])
@@ -2446,7 +2466,7 @@ class ConcreteRubbleMound(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
+        self, *variants, type, unit_price, transport_cost=None, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2470,8 +2490,6 @@ class ConcreteRubbleMound(RubbleMound):
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float, optional, default: None
@@ -2493,10 +2511,10 @@ class ConcreteRubbleMound(RubbleMound):
             if no pricing is included in the given RockGrading
         """
         # compute the cost of the concept
+        print(self.structure['Grading'].get)
         cost = self._cost(
             type = type,
             *variants,
-            core_price=core_price,
             unit_price=unit_price,
             transport_cost=transport_cost,
             output=output,
@@ -2653,6 +2671,8 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         self.id = id
         self.variantIDs = ["a", "b", "c", "d"]
 
+        self.rho = ArmourUnit.rho
+
         # compute relative buoyant density
         delta_armour = (ArmourUnit.rho - rho_w) / rho_w
 
@@ -2827,7 +2847,7 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
         )
 
     def cost(
-        self, *variants, type, core_price, unit_price, transport_cost=None, output="variant"
+        self, *variants, type,  unit_price, transport_cost=None, output="variant"
     ):
         """Compute the cost per meter for each variant for the materials or the CO2 footprint
 
@@ -2851,8 +2871,6 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             arguments, all variants will be plotted.
         type: {'Material, 'CO2'}
             Indicate whether the costs are calculated for the material or the CO2
-        core_price : float
-            cost of the core material per m³
         unit_price : float
             the cost of an armour unit per m³
         transport_cost : float, optional, default: None
@@ -2874,10 +2892,10 @@ class ConcreteRubbleMoundRevetment(RubbleMound):
             if no pricing is included in the given RockGrading
         """
         # compute the cost of the concept
+
         cost = self._cost(
             *variants,
             type= type,
-            core_price=core_price,
             unit_price=unit_price,
             transport_cost=transport_cost,
             output=output,
