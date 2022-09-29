@@ -2,7 +2,7 @@ import context
 import unittest
 import numpy as np
 
-from breakwater.rubble import RockRubbleMound, ConcreteRubbleMound
+from breakwater.rubble_2D import RockRubbleMound, ConcreteRubbleMound
 from breakwater.conditions import LimitState
 from breakwater.material import RockGrading, Xbloc
 from breakwater.utils.exceptions import no_warnings

@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
@@ -15,8 +14,7 @@ from .utils.cost import _process_cost, cost_influence
 from .caisson import Caisson
 from .conditions import LimitState
 from .material import read_grading, read_units
-from .rubble import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
-
+from .rubble_2D import RockRubbleMound, ConcreteRubbleMound, ConcreteRubbleMoundRevetment
 
 def read_configurations(
         filepath, structure, kd=None, name=None, LS=None, Grading=None,
@@ -284,7 +282,7 @@ class Configurations:
     +--------------------+-----+-----+-----+-----+-----+
     | B :sup:`1`         |  x  |  x  |  x  |     |     |
     +--------------------+-----+-----+-----+-----+-----+
-    | Dn50_core :sup:`1` |  x  |  x  |  x  |     |     |
+    | core_material :sup:`1` |  x  |  x  |  x  |     |     |
     +--------------------+-----+-----+-----+-----+-----+
     | N                  |  x  |     |     |     |     |
     +--------------------+-----+-----+-----+-----+-----+
@@ -384,9 +382,8 @@ class Configurations:
         is defined as (3,4). Required for RRM and CRM.
     B : float
         Crest width [m], required for RRM and CRM
-    Dn50_core : float
-        nominal diameter for the stones in the core of the breakwater [m],
-        required for RRM and CRM
+    core_material : dict
+        core_class and Dn50
     N : int
         Number of incident waves at the toe of the structure [-],
         required for RRM
@@ -498,6 +495,12 @@ class Configurations:
 
         # set grading as attribute for adding cost
         self._Grading = Grading
+
+        # if material cost is added the standard names are below
+        # if also equipment is added it is changed to total_cost and total_CO2 (see add_cost)
+        self.col_cost = 'material_cost'
+        self.col_CO2 = 'material_CO2'
+
 
         # convert the input of structure to a list
         if isinstance(structure, list):
@@ -700,10 +703,9 @@ class Configurations:
 
             # get the current concept
             concept = self._get_concept_set(configs=RM_varying, id=id)
-
             # unpack varying arguments same for RRM and CRM
             B = concept['B']
-            Dn50_core = concept['Dn50_core']
+            core_material = concept['core_material']
             B_toe = concept['B_toe']
             slope = concept['slope']
             slope_toe = concept['slope_toe']
@@ -715,7 +717,7 @@ class Configurations:
                         RM_rock = RockRubbleMound(
                             slope=slope, slope_foreshore=slope_foreshore,
                             rho_w=rho_w, B=B, N=N, LimitState=LimitState,
-                            Grading=Grading, Dn50_core=Dn50_core,
+                            Grading=Grading, core_material= core_material,
                             safety=safety, slope_toe=slope_toe, B_toe=B_toe,
                             layers=layers_rock, vdm=vdm, Soil=Soil, phi=phi,
                             id=id)
@@ -730,7 +732,7 @@ class Configurations:
                                              'id': [id],
                                              'concept': [RM_rock],
                                              'B': [B],
-                                             'Dn50_core': [Dn50_core],
+                                             'Dn50_core': [core_material['Dn50']],
                                              'B_toe': [B_toe],
                                              'slope': [slope],
                                              'slope_toe': [slope_toe],
@@ -746,7 +748,7 @@ class Configurations:
                             slope=slope, slope_foreshore=slope_foreshore, B=B,
                             rho_w=rho_w, LimitState=LimitState, safety=safety,
                             Grading=Grading, ArmourUnit=ArmourUnit, phi=phi,
-                            Dn50_core=Dn50_core, slope_toe=slope_toe,
+                            core_material= core_material, slope_toe=slope_toe,
                             B_toe=B_toe, layers=layers_units, Soil=Soil, id=id,
                             filter_rule=filter_rule)
 
@@ -760,7 +762,7 @@ class Configurations:
                                              'id': [id],
                                              'concept': [RM_units],
                                              'B': [B],
-                                             'Dn50_core': [Dn50_core],
+                                             'Dn50_core': [core_material['Dn50']],
                                              'B_toe': [B_toe],
                                              'slope': [slope],
                                              'slope_toe': [slope_toe],
@@ -776,7 +778,7 @@ class Configurations:
                             slope=slope, slope_foreshore=slope_foreshore, B=B,
                             rho_w=rho_w, LimitState=LimitState, safety=safety,
                             Grading=Grading, ArmourUnit=ArmourUnit, phi=phi,
-                            Dn50_core=Dn50_core, slope_toe=slope_toe,
+                            core_material= core_material, slope_toe=slope_toe,
                             B_toe=B_toe, layers=layers_units, Soil=Soil, id=id,
                             filter_rule=filter_rule)
 
@@ -790,7 +792,7 @@ class Configurations:
                                              'id': [id],
                                              'concept': [RM_units],
                                              'B': [B],
-                                             'Dn50_core': [Dn50_core],
+                                             'Dn50_core': [core_material['Dn50']],
                                              'B_toe': [B_toe],
                                              'slope': [slope],
                                              'slope_toe': [slope_toe],
@@ -915,7 +917,6 @@ class Configurations:
         index = id - 1
 
         unique_set = {}
-
         for param, val in configs.items():
             unique_set[param] = val[index]
 
@@ -1022,9 +1023,9 @@ class Configurations:
         return configs, max_combinations
 
     def add_cost(
-            self, type = None, core_price=None, unit_price=None, concrete_price=None,
+            self, equipment=None, core_price=None, unit_price=None, concrete_price=None,
             fill_price=None, transport_cost=None, investment=None,
-            length=None):
+            length=None, optimize_on = ['cost', 'time']):
         """ Compute the cost of each concept either CO2 or material cost
 
         Compute the cost of each concept and add the cost to the
@@ -1044,8 +1045,8 @@ class Configurations:
 
         Parameters
         ----------
-        type: {'Material', 'CO2'}
-            which cost type is added
+        Equipment: lst
+            With equipment from Equipment Class
         core_price : float, optional, default: None
             cost of the core material per m³, required for RRM and CRM
         unit_price : float, optional, default: None
@@ -1061,6 +1062,8 @@ class Configurations:
             the investment required to rent a dry dock
         length : float
             length of the breakwater [m]
+        optimize_on: str/list
+            On what to optimize
         """
         # make dict of the cost for validation
         cost = {
@@ -1069,41 +1072,44 @@ class Configurations:
             'concrete_price': concrete_price,
             'fill_price': fill_price}
 
+
         # check if all required cost have been given
         for structure in self.df.type.unique():
             # validate cost
-            _process_cost(structure, type, cost, self._Grading)
+            _process_cost(structure, cost, self._Grading)
 
         # set list to store cost in
         computed_cost = []
-
+        computed_CO2 = []
+        all_durations = []
+        optimal_equipments = []
         # iterate over the generated concepts
         for i, row in self.df.iterrows():
             # check if concept is not None
-            #print(row.concept)
             if row.concept is None:
                 # not a valid concept
                 computed_cost.append(None) #Wat gebeurt hier. Dit zorgt voor een error bij cost_influence
             else:
                 # valid concept
                 # check types and compute price
+
                 if row.type == 'RRM':
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, core_price=core_price,
-                        transport_cost=transport_cost, output='variant')
+                    total_cost, total_CO2, duration, opt_equip = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment, core_price= core_price,
+                        transport_cost=transport_cost, output='variant', plot_error= False,
+                        optimize_on= optimize_on)
 
                 elif row.type == 'CRM':
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, core_price=core_price,
+                    total_cost, total_CO2, duration, opt_equip  = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
-                        output='variant')
+                        output='variant', plot_error= False, optimize_on= optimize_on)
 
                 elif row.type == 'CRMR':
-                    print(row.concept.get_class())
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, core_price=core_price,
+                    total_cost, total_CO2, duration, opt_equip  = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment, core_price= core_price,
                         unit_price=unit_price, transport_cost=transport_cost,
-                        output='variant')
+                        output='variant', plot_error= False, optimize_on= optimize_on)
 
                 elif row.type == 'RC' or row.type == 'CC':
                     # check if investment cost must be added
@@ -1111,22 +1117,47 @@ class Configurations:
                         # add investment cost
                         row.concept.dry_dock(investment, length)
 
-                    price = row.concept.cost(
-                        *row.concept.variantIDs, type = type, concrete_price=concrete_price,
-                        fill_price=fill_price, unit_price=unit_price)
+                    total_cost, total_CO2, duration, opt_equip  = row.concept.total_cost(
+                        *row.concept.variantIDs, equipment = equipment,core_price= core_price,
+                        concrete_price=concrete_price, fill_price=fill_price, unit_price=unit_price,
+                        plot_error= False, optimize_on= optimize_on)
 
                 else:
                     raise NotSupportedError(f'{row.type} is not supported')
 
-                # add cost to list
-                #print(price == None)
-                computed_cost.append(price)
+                # add cost to list if dict is empty none of variants can't be installed
+                self.df.concept.iloc[i].variantIDs = list(total_cost.keys())
 
-        # add column to the df for either material or CO2
-        if type == 'Material':
-            self.df['material_cost'] = computed_cost
-        if type == 'CO2':
-            self.df['CO2_cost'] = computed_cost
+                if bool(total_cost):
+                    computed_cost.append(total_cost)
+                    computed_CO2.append(total_CO2)
+                    all_durations.append(duration)
+                    optimal_equipments.append(opt_equip)
+
+                else:
+                    computed_cost.append(None)
+                    computed_CO2.append(None)
+                    all_durations.append(None)
+                    optimal_equipments.append(None)
+
+
+        if equipment != None:
+            self.col_cost = 'total_cost'
+            self.col_CO2 = 'total_CO2'
+            self.df['install_duration'] = all_durations
+            self.df['optimal_equipment'] = optimal_equipments
+
+        # add column to the df for either material or CO2 or total
+        self.df[self.col_cost] = computed_cost
+        self.df[self.col_CO2] = computed_CO2
+
+
+
+        # drop row without any installation
+        self.df = self.df[self.df[self.col_cost].notna()]
+
+        if len(self.df) == 0:
+            raise NotSupportedError('There are no variants which can be installed')
 
     def to_design_explorer(
             self, params, mkdir='DesignExplorer', slopes='angles',
@@ -1152,9 +1183,11 @@ class Configurations:
         +--------------------------+------------+------------+
         | Parameter                | RRM + CRM  |  RC + CC   |
         +==========================+============+============+
-        | material_cost            |     o      |     o      |
+        | cost                     |     o      |     o      |
         +----------------------------------------------------+
-        | CO2_cost                 |     o      |     o      |
+        | CO2                      |     o      |     o      |
+        +----------------------------------------------------+
+        | install_duration         |     o      |     o      |
         +--------------------------+------------+------------+
         | B                        |     o      |     o      |
         +--------------------------+------------+------------+
@@ -1226,6 +1259,7 @@ class Configurations:
             a Rubble Mound and Vertical breakwater have been designed,
             False if you do not want to merge the columns.
 
+
         Raises
         ------
         KeyError
@@ -1233,6 +1267,11 @@ class Configurations:
         """
         # set empty df for export
         to_export = pd.DataFrame()
+
+        if 'cost' in params:
+           params[params.index('cost')] = self.col_cost
+        if 'CO2' in params:
+           params[params.index('CO2')] = self.col_CO2
 
         # check if RRM and CRM are in structure
         designed_structures = self.df.type.unique()
@@ -1282,7 +1321,6 @@ class Configurations:
 
         # add list to store all CaseNo in
         all_CaseNo = []
-
         # start the export
         for index, row in self.df.iterrows():
             # check if concept exists
@@ -1292,6 +1330,9 @@ class Configurations:
                 all_CaseNo.append([CaseNo])
                 continue
 
+
+
+
             # compute number of variants for this concept
             num_concepts = len(row.concept.variantIDs)
 
@@ -1300,60 +1341,75 @@ class Configurations:
 
             for id in row.concept.variantIDs:
                 # save name of the cross section
-                file_name = f'{row.type}.{row.id}'
+                if row[self.col_cost][id] is not None:
+                    file_name = f'{row.type}.{row.id}'
+                    if num_concepts > 1:
+                        # add id if more than 1 concept
+                        file_name = f'{file_name}{id}'
 
-                if num_concepts > 1:
-                    # add id if more than 1 concept
-                    file_name = f'{file_name}{id}'
+                    save_name = f'{new_dir}/{file_name}'
 
-                save_name = f'{new_dir}/{file_name}'
-
-                # save cross section of the current concept
-                row.concept.plot(id, save_name=save_name)
-
-                data = {'CaseNo': [CaseNo], 'type': [row.type]}
-
-                # get the values from the variant and add to data
-                variant = row.concept.get_variant(variantID=id)
-                to_explorer = _DE_params(
-                    args=params, variant=variant, row=row, concept=row.concept,
-                    structure=row.type, slopes=slopes,
-                    change_CRM_class=format_class_as_string)
-                data.update(to_explorer)
-
-                # check if material cost must be included
-                if 'material_cost' in params:
-                    # check if cost have been added
-                    if 'material_cost' in self.df.columns:
-                        # add cost to data
-                        data['material_cost'] = row.material_cost[id]
+                    # save cross section of the current concept
+                    # add equipment to plot if present
+                    if 'optimal_equipment' in row.index.values:
+                        row.concept.plot(id, save_name=save_name, equipment= row.optimal_equipment[id])
+                        # add equipment to data
                     else:
-                        raise KeyError(
-                            'Material cost have not been added, use add_cost to add '
-                            'cost to the df')
+                        row.concept.plot(id, save_name=save_name)
 
-                # check if CO2 cost must be included
-                if 'CO2_cost' in params:
-                    # check if cost have been added
-                    if 'CO2_cost' in self.df.columns:
-                        # add cost to data
-                        data['CO2_cost'] = row.CO2_cost[id]
-                    else:
-                        raise KeyError(
-                            'CO2 cost have not been added, use add_cost to add '
-                            'cost to the df')
+                    data = {'CaseNo': [CaseNo], 'type': [row.type]}
 
-                # add image to data
-                data['img'] = [f'{file_name}.png']
+                    # get the values from the variant and add to data
+                    variant = row.concept.get_variant(variantID=id)
+                    to_explorer = _DE_params(
+                        args=params, variant=variant, row=row, concept=row.concept,
+                        structure=row.type, slopes=slopes,
+                        change_CRM_class=format_class_as_string)
+                    data.update(to_explorer)
 
-                # create a df of data and add to the df to_export
-                export_row = pd.DataFrame(data=data)
-                to_export = to_export.append(
-                    export_row, ignore_index=True, sort=True)
+                    # check if cost must be included
+                    if self.col_cost in params:
+                        # check if cost have been added
+                        if self.col_cost in self.df.columns:
+                            # add cost to data
+                            data[self.col_cost] = round(row[self.col_cost][id], 2)
 
-                # add CaseNo to temp CaseNo and increase with 1
-                temp_CaseNo.append(CaseNo)
-                CaseNo += 1
+                        else:
+                            raise KeyError(
+                                'cost have not been added, use add_cost to add '
+                                'EUR cost to the df')
+
+                    if self.col_CO2 in params:
+                        if self.col_CO2 in self.df.columns:
+                            # add cost to data
+                            data[self.col_CO2] = round(row[self.col_CO2][id], 4)
+
+                        else:
+                            raise KeyError(
+                                'CO2 have not been added, use add_cost to add CO2'
+                                'cost to the df')
+
+                    if 'install_duration' in params:
+                        if 'install_duration' in self.df.columns:
+                            # add cost to data
+                            data['install_duration'] = round(row.install_duration[id], 4)
+
+                        else:
+                            raise KeyError(
+                                'equipment have not been added, thus no installation rates are provided')
+
+                    # add image to data
+                    data['img'] = [f'{file_name}.png']
+
+
+                    # create a df of data and add to the df to_export
+                    export_row = pd.DataFrame(data=data)
+                    to_export = to_export.append(
+                        export_row, ignore_index=True, sort=True)
+
+                    # add CaseNo to temp CaseNo and increase with 1
+                    temp_CaseNo.append(CaseNo)
+                    CaseNo += 1
 
             # add all stored CaseNo of the current concept in a list
             all_CaseNo.append(temp_CaseNo)

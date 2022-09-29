@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .exceptions import InputError, RockGradingError
+from .exceptions import NotSupportedError, RockGradingError
 
-def _process_cost(structure, type, cost, Grading, validate=True):
+
+def _process_cost(structure, cost, Grading, validate=True):
     """ Process cost input to a dict
 
     Parameters
@@ -35,7 +36,7 @@ def _process_cost(structure, type, cost, Grading, validate=True):
     if cost is not None:
         # cost have been added
         # check if cost have been added to the grading
-        if dictvar in Grading[list(Grading.grading.keys())[0]]:
+        if 'cost' in Grading[list(Grading.grading.keys())[0]]:
             # pricing has been added
             pass
         else:
@@ -131,13 +132,13 @@ def cost_influence(type, lines):
             for value in data['values']:
                 # normalise data and append to list
                 x.append((value - min)/(max - min))
-
             # add min and max to label
             label = f'{parameter} (min={min}, max={max})'
 
         else:
             # x equals the values
             x = data['values']
+
 
             # label is parameter
             label = parameter

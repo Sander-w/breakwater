@@ -1,0 +1,29 @@
+Program   : D-Settlement
+Version   : 20.1
+License   : 
+Company   :    
+
+Run identification :
+            
+            [END OF RUN IDENTIFICATION]
+
+Date      : 09-02-2022
+Time      : 15:40:07
+
+ERRORS IN VERTICALS
+For a calculation at least one vertical is needed.
+
+ERRORS IN MATERIALS index
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+OCR or POP (255 ) is outside its limits (0 - 2)
+
+ERRORS IN LOADS
+For a calculation at least one load is needed with time >= 0 and time < end of settlement calculation.
+
+[END OF ERROR FILE]

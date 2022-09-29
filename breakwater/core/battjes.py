@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.special as sc
 from scipy.optimize import fsolve
-import matplotlib.pyplot as plt
 
 
 class BattjesGroenendijk:
@@ -42,6 +41,7 @@ class BattjesGroenendijk:
             slope_foreshore = np.arctan(slope_foreshore[0]/slope_foreshore[1])
 
         Htr = (0.35 + 5.8*np.tan(slope_foreshore))*h
+
         self.Hrms = (0.6725 + 0.2025*(Hm0/h))*Hm0
         self.Htr_tilde = Htr/self.Hrms
 
