@@ -2,6 +2,7 @@ import numpy as np
 
 from ..material import RockGrading, ConcreteArmour
 from ..conditions import LimitState
+from ..shape_3D.Limitstate_3D import LimitState_3D
 from ..core.soil import Soil
 from .exceptions import InputError
 
@@ -58,7 +59,7 @@ def _RM_vkwargs(type):
                'unit': '[m]'},
 
         'LimitState' : {'Default': None,
-                        'Validator': lambda value: isinstance(value, LimitState),
+                        'Validator': lambda value: isinstance(value, LimitState) or isinstance(value, LimitState_3D),
                         'Correct': 'LimitState',
                         'Constant': True,
                         'Required': True,
@@ -71,9 +72,8 @@ def _RM_vkwargs(type):
                      'Required': True,
                      'unit': '[-]'},
 
-        'Dn50_core' : {'Default': None,
-                       'Validator': lambda value: isinstance(value, int)
-                                                  or isinstance(value, float),
+        'core_material' : {'Default': None,
+                       'Validator': lambda value: isinstance(value, dict),
                        'Correct': 'int or float',
                        'Constant': False,
                        'Required': True,
@@ -261,7 +261,7 @@ def _C_vkwargs(type):
                'unit': '[m]'},
 
         'LimitState' : {'Default': None,
-                        'Validator': lambda value: isinstance(value, LimitState),
+                        'Validator': lambda value: isinstance(value, LimitState) or isinstance(value, LimitState_3D),
                         'Correct': 'LimitState',
                         'Constant': True,
                         'Required': True,

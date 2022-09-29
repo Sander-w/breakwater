@@ -39,7 +39,7 @@ def _RM_vparams():
         'computed Dn50 underlayer': {'param': 'computed Dn50',
                                      'key': 'underlayer'},
 
-        'class underlayer': {'param': 'rock class',
+        'class underlayer': {'param': 'class',
                              'key': 'underlayer'},
 
         'class Dn50 underlayer': {'param': 'class Dn50',
@@ -48,7 +48,7 @@ def _RM_vparams():
         'computed Dn50 filter': {'param': 'computed Dn50',
                                      'key': 'filter layer'},
 
-        'class filter': {'param': 'rock class',
+        'class filter': {'param': 'class',
                          'key': 'filter layer'},
 
         'class Dn50 filter': {'param': 'class Dn50',
@@ -95,7 +95,7 @@ def _C_vparams():
         'computed Dn50 underlayer': {'param': 'computed Dn50',
                                      'key': 'underlayer'},
 
-        'class underlayer': {'param': 'rock class',
+        'class underlayer': {'param': 'class',
                              'key': 'underlayer'},
 
         'class Dn50 underlayer': {'param': 'class Dn50',
@@ -147,8 +147,10 @@ def _DE_params(
     # get the valid parameters
     if structure == 'RRM' or structure == 'CRM' or structure == 'CRMR':
         vparams = _RM_vparams()
+
     elif structure == 'RC' or structure == 'CC':
         vparams = _C_vparams()
+
     else:
         raise NotImplementedError(f'{structure} is not supported')
 
