@@ -7,7 +7,7 @@ from .overtopping import vertical_no_breaking, vertical_normal, vertical_low
 from .overtopping import composite_normal, composite_low, vertical
 from .scour import scour_protection
 from .soil import Soil
-from .stability import vandermeer_deep, vandermeer_shallow, vandermeer, hudson, vangent
+from .stability import vandermeer_deep, vandermeer_shallow, vandermeer, hudson, vangent, vangent_modified
 from .substructure import underlayer, filter_layers, layer_coefficient
 from .toe import toe_berm_stability, toe_stability
 

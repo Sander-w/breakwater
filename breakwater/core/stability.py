@@ -430,3 +430,70 @@ def vangent(Dn50_per, beta, cb):
     Dn50_beta = Dn50_per*((1-cb)*np.cos(beta)**2+cb)
     
     return Dn50_beta 
+
+def vangent_modified(Dn50_per, beta, cb, Hs, Tm0, h):
+    """ Van Gent formula for reduction of stone diameter under 
+    oblique wave attack (Van Gent, 2014), modified based on modelling
+    for Constanta Phase II.
+    
+        
+    .. math::
+        pi_s = Hs/L(h)*coth(kh)^3
+        
+        cb_pi = cpi1*pi_s^cpi2+cb
+        
+        Dn50_beta = Dn50_per{(1-cb)*cos(beta)^2+cb}
+    
+    .. warning::
+        To be used for checking purposes only. This formula is experimental
+        and based on calibration for Constanta Phase II only.
+        
+    .. note:
+        
+        
+    Parameters
+    ---------
+    Dn50_per: float
+        Dn50 as calculated for stability under perpendicular wave attack [m]
+    beta: float
+        Angle of oblique wave attack [rad]
+    cb: float
+        Correction factor for wave type [-]
+        cb = 0.42 for rock slopes with short-crested waves
+        cb = 0.35 for rock slopes with long-crested waves
+        cb = 0.35 for cubes in a double layer
+        cb = 0    for cubes in a single layer
+    Hs: float
+        Significant wave height [m]
+    Tm0: float
+        Significant wave period [s]
+            
+    """
+    
+    print('Warning: do not use vangent_modified for design purposes')
+    
+    
+    # Lh = 9.81/(2*np.pi)*Tm0**2
+    # print('La implemented as L0')
+    
+    Lh = Tm0*np.sqrt(9.81*h)
+    print('La implemented as shallow water wave')
+    
+    k = 2*np.pi/Lh
+    pi_s = Hs/Lh*(np.cosh(k*h)/np.sinh(k*h))**3
+    
+    #cpi1 en cpi2 uit 223045-VO-EXE-REP-0012
+    cpi1 = 0.6137
+    cpi2 = 0.6077
+    cb_pi = cpi1*pi_s**cpi2+cb
+    
+    Dn50_beta = Dn50_per*((1-cb_pi)*np.cos(beta)**2+cb_pi)
+    
+    # print intermediate values for development purposes
+    # print('La = '+str(La))
+    # print ('k = '+str(k))
+    # print('pi_s = '+str(pi_s))
+    # print('cb_pi = '+str(cb_pi))
+    # print('gamma = '+str((1-cb_pi)*np.cos(beta)**2+cb_pi))
+    
+    return Dn50_beta
