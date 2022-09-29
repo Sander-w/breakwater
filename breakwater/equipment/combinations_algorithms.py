@@ -69,13 +69,13 @@ def cheap_combinations(dataframe, optimize_on = 'cost'):
 
     return df_optimal
 
-def cheap_combinations_threshold(dataframe, threshold, optimize_on = 'cost'):
+def cheap_combinations_limit(dataframe, limit, optimize_on = 'cost'):
     """
 
     Parameters
     ----------
     dataframe
-    threshold
+    limit
     optimize_on
 
     Returns
@@ -99,7 +99,7 @@ def cheap_combinations_threshold(dataframe, threshold, optimize_on = 'cost'):
 
     del dataframe['area']
 
-    while len(dataframe.columns) > threshold:
+    while len(dataframe.columns) > limit:
 
         remaining_equipment = [c for c in dataframe.columns]
         marginal_costs = float('inf')
@@ -125,8 +125,8 @@ def cheap_combinations_threshold(dataframe, threshold, optimize_on = 'cost'):
             df_optimal = new_df_optimal
             dataframe = new_dataframe
         else:
-            raise InputError(f'It is not possible to install the structure with only {threshold} installation methods. The maximum allowed'
-                             f' threshold is {len(remaining_equipment)}.')
+            raise InputError(f'It is not possible to install the structure with only {limit} installation methods. The maximum allowed'
+                             f' limit is {len(remaining_equipment)}.')
 
     return df_optimal
 
@@ -243,11 +243,11 @@ def smart_combinations(dataframe, optimize_on ="cost"):
 
     return df_optimal
 
-def combination_algorithm(dataframe, optimize_on ="cost", algorithm = 'smart_combinations', threshold= None):
+def combination_algorithm(dataframe, optimize_on ="cost", algorithm = 'smart_combinations', limit= None):
 
     if algorithm == 'smart_combinations':
         return smart_combinations(dataframe= dataframe, optimize_on= optimize_on)
-    if algorithm == 'cheap_combinations' and threshold == None:
+    if algorithm == 'cheap_combinations' and limit == None:
         return cheap_combinations(dataframe= dataframe, optimize_on= optimize_on)
-    if algorithm == 'cheap_combinations' and threshold != None:
-        return cheap_combinations_threshold(dataframe= dataframe, optimize_on= optimize_on, threshold = threshold)
+    if algorithm == 'cheap_combinations' and limit != None:
+        return cheap_combinations_limit(dataframe= dataframe, optimize_on= optimize_on, limit = limit)

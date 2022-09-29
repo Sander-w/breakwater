@@ -223,9 +223,26 @@ def vandermeer_shallow(Hs, H2, Delta, P, Sd, N, xi_s_min_1, alpha, safety=1):
                    * xi_s_min_1**P)
     return Dn50
 
+def oblique_reduction(beta, cb):
+
+    """
+    Reduction factor for the armour nominal diameter accordint to Van Gent (2014)
+    Parameters
+    ----------
+    beta: float
+        the angle of wave attack [degrees]
+    cb: float
+        coefficient depending on armour layer. cb = 0.42 for rock armour
+        and 0.35 for double layer armour cubes
+    Returns
+    -------
+    float
+    """
+
+    return (1-cb) * (np.cos(beta))**2 + cb
 
 def vandermeer(
-        LimitState, Delta, P, N, alpha, slope_foreshore, val='max',
+        LimitState, Delta, P, N, alpha, slope_foreshore,beta, cb= 0.42, val='max',
         safety=1, logger=None):
     """ Van der Meer formulae for deep and shallow water conditions
 
@@ -339,6 +356,9 @@ def vandermeer(
     # add msg to log which formula was used
     if logger != None:
         logger['INFO'].append(msg)
+
+    reduct_factor = oblique_reduction(beta= beta, cb= cb)
+    Dn50 = reduct_factor * Dn50
 
     return Dn50
 

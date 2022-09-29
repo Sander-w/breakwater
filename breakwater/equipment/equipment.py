@@ -10,7 +10,7 @@ class Equipment:
     ----------
     name: str
         name of the equipment
-    design_type: dict
+    layer_cost: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
     mobilisation_cost: dict
@@ -23,7 +23,7 @@ class Equipment:
     """
 
     def __init__(
-        self, name, design_type, waterlvl, equipment_cost = None, mobilisation_cost= None
+        self, name, waterlvl, layer_cost, equipment_cost = None, mobilisation_cost= None
     ):
 
         if mobilisation_cost is None:
@@ -33,7 +33,7 @@ class Equipment:
             equipment_cost = {'cost': 0, 'CO2': 0}
 
         self.name = name
-        self.design_type = design_type
+        self.layer_cost = layer_cost
         self.mobilisation_cost = mobilisation_cost
         self.equipment_cost = equipment_cost
         self.waterlvl = waterlvl
@@ -115,14 +115,13 @@ class Equipment:
         -------
         float
         """
-
         # In this case the production rate, transport is already encorporated in the price [EUR/m3]
-        if 'cost' in  self.design_type[grading_layer].keys():
-            return self.design_type[grading_layer][key]
+        if 'cost' in  self.layer_cost[grading_layer].keys():
+            return self.layer_cost[grading_layer][key]
 
         # Production rate and price of equipment are split [EUR/hr] / [m3/hr] = [EUR/m3]
         else:
-            return self.equipment_cost[key] / self.design_type[grading_layer]['production_rate']
+            return self.equipment_cost[key] / self.layer_cost[grading_layer]['production_rate']
 
     def get_production_rate(self, layer, grading_layer):
 
@@ -140,12 +139,12 @@ class Equipment:
         float
         """
         #In this case the production rate is encorporated in the price
-        if 'production_rate' not in self.design_type[grading_layer]:
-            self.design_type[grading_layer]["production_rate"] = 1
+        if 'production_rate' not in self.layer_cost[grading_layer]:
+            self.layer_cost[grading_layer]["production_rate"] = 1
             raise UserWarning('There is no value given for the production rate and is therefore set to 1. \n'
                               'The duration of installation is not reliable')
 
-        return self.design_type[grading_layer]["production_rate"]
+        return self.layer_cost[grading_layer]["production_rate"]
 
 
 class Truck(Equipment):
@@ -157,7 +156,7 @@ class Truck(Equipment):
     ----------
     name: str
         name of the equipment
-    design_type: dict
+    layer_cost: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
     mobilisation_cost: dict
@@ -175,7 +174,7 @@ class Truck(Equipment):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         required_length,
         h_dry,
@@ -185,7 +184,7 @@ class Truck(Equipment):
     ):
 
         super().__init__(
-            name=name, design_type= design_type, equipment_cost= equipment_cost,
+            name=name, layer_cost= layer_cost, equipment_cost= equipment_cost,
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.h_dry = h_dry
@@ -221,8 +220,9 @@ class Truck(Equipment):
 
         self.level = max([(y_start - self.waterlvl), (ymax - self.waterlvl)])
 
+
         if (
-            grading_layer in self.design_type.keys()
+            grading_layer in self.layer_cost.keys()
         ):
             if (self.level >= self.h_dry and length_top >= self.required_length):
                 install = True
@@ -271,7 +271,7 @@ class Truck(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {layer in self.design_type.keys() and grading_layer in self.design_type[layer].keys()} AND\n"
+            f"1. The {self.name} can build the layer: {layer in self.layer_cost.keys() and grading_layer in self.layer_cost[layer].keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
             f"4. required_length <= layer length {(top_length >= self.required_length)}",
@@ -295,7 +295,7 @@ class PlateFeeder(Equipment):
     ----------
     name: str
         name of the equipment
-    design_type: dict
+    layer_cost: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
     top_installation: float
@@ -314,7 +314,7 @@ class PlateFeeder(Equipment):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         top_installation,
         waterlvl,
         h_dry,
@@ -324,7 +324,7 @@ class PlateFeeder(Equipment):
     ):
 
         super().__init__(
-            name=name, design_type= design_type, equipment_cost= equipment_cost,
+            name=name, layer_cost= layer_cost, equipment_cost= equipment_cost,
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.h_dry = h_dry
@@ -360,7 +360,7 @@ class PlateFeeder(Equipment):
             level = max([(y_start - self.waterlvl), (ymax - self.waterlvl)])
 
         if (
-            grading_layer in self.design_type.keys()
+            grading_layer in self.layer_cost.keys()
         ):
             if (level >= self.h_dry and (y_top <= level + self.top_installation)):
                 install = True
@@ -408,7 +408,7 @@ class PlateFeeder(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.layer_cost.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry}\n",
             ha="center",
@@ -431,7 +431,7 @@ class Excavator(Equipment):
     ----------
     name: str
         name of the equipment
-    design_type: dict
+    layer_cost: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
     mobilisation_cost: dict
@@ -455,7 +455,7 @@ class Excavator(Equipment):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         loading_chart,
         h_dry,
@@ -467,7 +467,7 @@ class Excavator(Equipment):
     ):
 
         super().__init__(
-            name=name, design_type= design_type, equipment_cost= equipment_cost,
+            name=name, layer_cost= layer_cost, equipment_cost= equipment_cost,
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.loading_chart = loading_chart
@@ -679,9 +679,7 @@ class Excavator(Equipment):
         y_start = min(y_section)
 
         # Minimum handle of grading for the layer
-        if (
-            grading_layer in self.design_type.keys()
-        ):
+        if grading_layer in self.layer_cost.keys():
             if (y_start - self.waterlvl) >= self.h_dry or (
                 (ymax - self.waterlvl) >= self.h_dry and all(all_reach) and length_top >= self.required_length
             ):
@@ -772,24 +770,7 @@ class Excavator(Equipment):
             )
 
             x, y = loading_polygon2.exterior.xy
-            # if xloc_equip > xloc_equip2:
-            #     ax.hlines(
-            #         yloc_equip,
-            #         xloc_equip,
-            #         xloc_equip - length_top,
-            #         linestyles="--",
-            #         color="r",
-            #         label="length top layer",
-            #     )
-            # else:
-            #     ax.hlines(
-            #         yloc_equip,
-            #         xloc_equip,
-            #         xloc_equip + length_top,
-            #         linestyles="--",
-            #         color="r",
-            #         label="length top layer",
-            #     )
+
             ax.fill(np.array(x), np.array(y), "g", label=f"loading_chart 2", alpha=0.8)
 
         ax.fill(np.array(x_section), y_section, "b", label=f"section (M = {mass})")
@@ -808,7 +789,7 @@ class Excavator(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.layer_cost.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
             f"4. The {self.name} can reach the section: {all(all_reach)} AND\n"
@@ -831,7 +812,7 @@ class Caterpillar345(Excavator):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         h_dry,
         required_length,
@@ -879,7 +860,7 @@ class Caterpillar345(Excavator):
 
         super().__init__(
             name=name,
-            design_type=design_type,
+            layer_cost=layer_cost,
             mobilisation_cost=mobilisation_cost,
             equipment_cost=equipment_cost,
             waterlvl=waterlvl,
@@ -893,7 +874,7 @@ class HITACHI_EX1200(Excavator):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         h_dry,
         required_length,
@@ -966,7 +947,7 @@ class HITACHI_EX1200(Excavator):
 
         super().__init__(
             name=name,
-            design_type=design_type,
+            layer_cost=layer_cost,
             mobilisation_cost=mobilisation_cost,
             equipment_cost=equipment_cost,
             waterlvl=waterlvl,
@@ -980,7 +961,7 @@ class HITACHI_EX1900(Excavator):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         h_dry,
         required_length,
@@ -1038,7 +1019,7 @@ class HITACHI_EX1900(Excavator):
 
         super().__init__(
             name=name,
-            design_type=design_type,
+            layer_cost=layer_cost,
             mobilisation_cost=mobilisation_cost,
             equipment_cost=equipment_cost,
             waterlvl=waterlvl,
@@ -1057,7 +1038,7 @@ class Crane(Equipment):
     ----------
     name: str
         name of the equipment
-    design_type: dict
+    layer_cost: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
     mobilisation_cost: dict
@@ -1080,7 +1061,7 @@ class Crane(Equipment):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         required_length,
         loading_chart,
@@ -1092,7 +1073,7 @@ class Crane(Equipment):
     ):
 
         super().__init__(
-            name=name, design_type= design_type, equipment_cost= equipment_cost,
+            name=name, layer_cost= layer_cost, equipment_cost= equipment_cost,
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.waterlvl = waterlvl
@@ -1178,9 +1159,8 @@ class Crane(Equipment):
         hmax = np.sqrt(float(l_boom) ** 2 - r ** 2)
         # Difference betweeen y-location equipment and highest section, should be smaller than hmax
         h = yloc_equip - y_end
-        if (
-            grading_layer in self.design_type.keys()
-        ):
+
+        if grading_layer in self.layer_cost.keys():
             if (y_start - self.waterlvl) >= self.h_dry or (
                 (ymax - self.waterlvl) >= self.h_dry and mass <= M_max and h <= hmax and length_top >= self.required_length
             ):
@@ -1260,7 +1240,7 @@ class Crane(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.layer_cost.keys()} AND\n"
             f"2. y_start >= water level + h_dry: {(y_start - self.waterlvl) >= self.h_dry} OR\n"
             f"3. ymax >= water level + h_dry: {(ymax - self.waterlvl) >= self.h_dry} AND\n"
             f"4. Mass layer <= M_max: {mass <= M_max} AND\n"
@@ -1287,7 +1267,7 @@ class Vessel(Equipment):
     ----------
     name: str
         name of the equipment
-    design_type: dict
+    layer_cost: dict
         Which layers can be designed with what grading at what cost and at what speed,
         {grading: {'cost': ... [EUR], 'CO2': ... [kg] , production_rate: ...}}, production rate [m3/hr]
     mobilisation_cost: dict
@@ -1306,7 +1286,7 @@ class Vessel(Equipment):
     def __init__(
         self,
         name,
-        design_type,
+        layer_cost,
         waterlvl,
         installation_waterdepth,
         type = 'Marine',
@@ -1316,7 +1296,7 @@ class Vessel(Equipment):
     ):
 
         super().__init__(
-            name=name, design_type= design_type, equipment_cost= equipment_cost,
+            name=name, layer_cost= layer_cost, equipment_cost= equipment_cost,
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         self.installation_waterdepth = installation_waterdepth
@@ -1348,9 +1328,7 @@ class Vessel(Equipment):
         x, y = list(zip(*section_coords))
         end = max(y)
         install = False
-        if (
-            grading_layer in self.design_type.keys()
-        ):
+        if grading_layer in self.layer_cost.keys():
             if (self.waterlvl - (self.installation_waterdepth + self.ukc)) >= end:
                 install = True
         if plot:
@@ -1396,7 +1374,7 @@ class Vessel(Equipment):
         plt.figtext(
             0.5,
             -0.1,
-            f"1. The {self.name} can build the layer: {grading_layer in self.design_type.keys()} AND\n"
+            f"1. The {self.name} can build the layer: {grading_layer in self.layer_cost.keys()} AND\n"
             f"2. waterlevel - installation_waterdepth >= yend + margin: {(self.waterlvl - (self.installation_waterdepth + self.ukc)) >= end_section}\n",
             ha="center",
             fontsize=18,
@@ -1448,13 +1426,13 @@ class Barge(Equipment):
         type = 'Marine',
         ukc = None,
         margin_x=2,
-        design_type=None,
+        layer_cost=None,
         mobilisation_cost = None,
         equipment_cost = None,
     ):
 
         super().__init__(
-            name=name, design_type= design_type, equipment_cost= equipment_cost,
+            name=name, layer_cost= layer_cost, equipment_cost= equipment_cost,
             waterlvl= waterlvl, mobilisation_cost= mobilisation_cost
         )
         # Inherit either from Standard_Excavator or Dragline_Excavator
@@ -1474,11 +1452,11 @@ class Barge(Equipment):
         if self.ukc == None:
             self.ukc = 0
 
-        self.design_type = {}
+        self.layer_cost = {}
 
-        for grading, dict in self.instance.design_type.items():
+        for grading, dict in self.instance.layer_cost.items():
 
-            self.design_type[grading] = {'cost': dict['cost'] + extra_cost, 'CO2': dict['CO2'],
+            self.layer_cost[grading] = {'cost': dict['cost'] + extra_cost, 'CO2': dict['CO2'],
                                          'production_rate': dict['production_rate'] - downtime_production}
 
     def install(
@@ -1524,7 +1502,7 @@ class Barge(Equipment):
         y_installation_waterdepth = self.waterlvl - self.installation_waterdepth
         # It is possible that the barge hit's the construction and we need to keep an extra offset
         if (
-            grading_layer in self.instance.design_type.keys()
+            grading_layer in self.instance.layer_cost.keys()
         ):
             if y_end >= y_installation_waterdepth - self.ukc:
                 if isinstance(self.instance, Crane):

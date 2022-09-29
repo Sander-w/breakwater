@@ -46,6 +46,19 @@ class RockGradingError(Exception):
     def __init__(self, message):
         self.message = message
 
+class Design3DError(Exception):
+    """Exception raised if there is an error in the 3D Design
+
+    Attributes
+    ----------
+    message
+        explanation of the error
+    """
+
+    __module__ = Exception.__module__
+
+    def __init__(self, message):
+        self.message = message
 
 class ArmourUnitsError(Exception):
     """Exception raised if there is an error in the Armour Units
