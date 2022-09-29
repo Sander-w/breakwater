@@ -26,7 +26,7 @@ from geo_dsuite import (
     SoilLayers,
     SoilBoundaries,
     analysis_method,
-    settled_stability
+    settled_stability,
 )
 
 from typing import List
@@ -37,11 +37,12 @@ from geo_dsuite.soil_layers import LayerDict
 #%%
 # Miscellaneous methods
 def skip_duplicates(elements):
-        prev = None
-        for elem in elements:
-            if elem != prev:
-                yield elem
-                prev = elem
+    prev = None
+    for elem in elements:
+        if elem != prev:
+            yield elem
+            prev = elem
+
 
 # def sort_clockwise(coords: List, clockwise=True):
 #     """Sort coordinate list clockwise"""
@@ -57,10 +58,10 @@ def skip_duplicates(elements):
 #         cent=(sum([p[0] for p in coords])/len(coords),sum([p[1] for p in coords])/len(coords))
 #         # sort by polar angle
 #         coords.sort(key=lambda p: math.atan2(p[1]-cent[1],p[0]-cent[0]))
-    
+
 #     return coords
 
-#--------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 
 #%%
 # Breakwater package input
@@ -69,35 +70,36 @@ from demo_2D_executable import breakwater_design
 bw_configs = breakwater_design()
 
 # Plot variant from Breakwater package
-bw_configs.df.loc[len(bw_configs.df)-1].concept.plot('all')
+bw_configs.df.loc[len(bw_configs.df) - 1].concept.plot("all")
 
 #%%
 # Define config and variant
 for config_idx in range(0, len(bw_configs.df)):
-    print(f'Configuration no. {config_idx}')
+    print(f"Configuration no. {config_idx}")
     config = bw_configs.df.loc[config_idx].concept
-    variant = 'a'
+    variant = "a"
 
     variant_polygons = {}
     for variant_idx in config.variantIDs:
         variant_polygons[variant_idx] = config.to_polygon_coordinates(variant_idx)
 
-    for variant_idx,variant_dict in variant_polygons.items():
-        for key,value in variant_dict.items():
+    for variant_idx, variant_dict in variant_polygons.items():
+        for key, value in variant_dict.items():
             variant_polygons[variant_idx][key] = Polygon(value).buffer(0)
 
-
     # Soil parameters input
-    materials = Materials.from_excel(r"C:\Users\QPQ\Python\Projects\breakwater\Notebooks\Geotech/Materials_with_defaults.xlsx")
-    materials.index.name=None
+    materials = Materials.from_excel(
+        r"C:\Users\QPQ\Python\Projects\breakwater\Notebooks\Geotech/Materials_with_defaults.xlsx"
+    )
+    materials.index.name = None
     materials_input = materials.to_soils()
     materials_list = []
 
-    print('materials')
+    print("materials")
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # Geometry setup
-    # Base geometry example 
+    # Base geometry example
     geom_list = []
 
     poly1_point1 = -200, -30
@@ -143,33 +145,33 @@ for config_idx in range(0, len(bw_configs.df)):
     materials_list.append(materials_input[2].name)
 
     # Breakwater geometry from breakwater package
-    for variant_idx,variant_dict in variant_polygons.items():
-        for key,value in variant_dict.items():
+    for variant_idx, variant_dict in variant_polygons.items():
+        for key, value in variant_dict.items():
             if variant_idx == variant:
                 geom_list.append(value)
-                materials_list.append(materials_input[1].name)            
+                materials_list.append(materials_input[1].name)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     # Headlines setup
     hl1_point1 = -50, 10
-    hl1_point2 = -10/2, 10
-    hl1_point3 = (10/2 + 2*10), 1
+    hl1_point2 = -10 / 2, 10
+    hl1_point3 = (10 / 2 + 2 * 10), 1
     hl1_point4 = 50, 1
 
     line1_pointlist = hl1_point1, hl1_point2, hl1_point3, hl1_point4
     hl1 = LineString([[p[0], p[1]] for p in line1_pointlist])
 
-    head_line_data = [{
-        "name": "Freatische lijn (PL1)",  
-        "geometry": hl1,
-        "is_phreatic": True,
+    head_line_data = [
+        {
+            "name": "Freatische lijn (PL1)",
+            "geometry": hl1,
+            "is_phreatic": True,
         }
     ]
 
     my_headlines = Headlines.from_base_headlines(head_line_data)
     my_headlines = my_headlines.set_index("name").sort_index()
-
 
     # Reflines setup
     rf1_point1 = -50, -5
@@ -178,26 +180,33 @@ for config_idx in range(0, len(bw_configs.df)):
     rfline1_pointlist = rf1_point1, rf1_point2
     rf1 = LineString([[p[0], p[1]] for p in rfline1_pointlist])
 
-    rf_line_data = [{
-        "name": "Referentie PL1",
-        "geometry": rf1,
-        "headline_top": "Freatische lijn (PL1)",
-        "headline_bottom": "Freatische lijn (PL1)"
+    rf_line_data = [
+        {
+            "name": "Referentie PL1",
+            "geometry": rf1,
+            "headline_top": "Freatische lijn (PL1)",
+            "headline_bottom": "Freatische lijn (PL1)",
         }
     ]
 
     my_reflines = Reflines.from_base_reflines(rf_line_data)
     my_reflines = my_reflines.set_index("name").sort_index()
 
-
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     # Analysis method setup
     # Search grid
-    bottom_left = geolib.geometry.one.Point(label='', id=None, x=-60.0, y=-999.0, z=30, tolerance=0.0001)
+    bottom_left = geolib.geometry.one.Point(
+        label="", id=None, x=-60.0, y=-999.0, z=30, tolerance=0.0001
+    )
     number_of_points_in_x = 30
     number_of_points_in_z = 20
-    search_grid = geolib.models.dstability.analysis.DStabilitySearchGrid(bottom_left=bottom_left,number_of_points_in_x=number_of_points_in_x, number_of_points_in_z=number_of_points_in_z, space=1.0)
+    search_grid = geolib.models.dstability.analysis.DStabilitySearchGrid(
+        bottom_left=bottom_left,
+        number_of_points_in_x=number_of_points_in_x,
+        number_of_points_in_z=number_of_points_in_z,
+        space=1.0,
+    )
 
     # Tangent lines
     bottom_tangent_line_z = -10
@@ -205,25 +214,31 @@ for config_idx in range(0, len(bw_configs.df)):
     space_tangent_lines = 0.5
 
     # Analysis method
-    my_analysis_method = geolib.models.dstability.analysis.DStabilityBishopBruteForceAnalysisMethod(search_grid=search_grid, bottom_tangent_line_z=bottom_tangent_line_z, number_of_tangent_lines=number_of_tangent_lines, space_tangent_lines=space_tangent_lines)
+    my_analysis_method = (
+        geolib.models.dstability.analysis.DStabilityBishopBruteForceAnalysisMethod(
+            search_grid=search_grid,
+            bottom_tangent_line_z=bottom_tangent_line_z,
+            number_of_tangent_lines=number_of_tangent_lines,
+            space_tangent_lines=space_tangent_lines,
+        )
+    )
 
-    #--------------------------------------------------------------------------
-
+    # --------------------------------------------------------------------------
 
     # TODO Create standard breakwater input method/class
     # TODO Create breakwater import method
-
 
     # SoilLayers setup
     layer_data = []
 
     for idx, geom in enumerate(geom_list):
-        layer_data.append({
+        layer_data.append(
+            {
                 "name": f"{idx}",
                 "notes": "",
                 "geometry": geom,
                 "material": materials_list[idx],
-                "top_boundary_exception": 0
+                "top_boundary_exception": 0,
             }
         )
 
@@ -233,38 +248,43 @@ for config_idx in range(0, len(bw_configs.df)):
     # Plot soillayers
     my_soil_layers.plot(materials=materials)
 
-
     # SettledStabilityStage setup
     initial = SettledStabilityStage(
-            name="Initial",
-            headlines=my_headlines,
-            reflines=my_reflines,
-            soil_layers=my_soil_layers,
-            analysis_method=my_analysis_method,
-        )
+        name="Initial",
+        headlines=my_headlines,
+        reflines=my_reflines,
+        soil_layers=my_soil_layers,
+        analysis_method=my_analysis_method,
+    )
 
-
-    # To settlement model 
+    # To settlement model
     m = initial.to_settlement_model(materials=materials)
-    m.serialize(Path(f"results/ScratchSettlementModel_ConfigNr-{config_idx}_Variant-{variant}.sli"))
-
+    m.serialize(
+        Path(
+            f"results/ScratchSettlementModel_ConfigNr-{config_idx}_Variant-{variant}.sli"
+        )
+    )
 
     # Stability analysis
     analysis = SettledStabilityAnalysis(
-            materials=materials,
-            stages=[initial],
-            path=Path(f"results"),
-        )
+        materials=materials,
+        stages=[initial],
+        path=Path(f"results"),
+    )
 
     # To stability model
     model, mappings = analysis.to_stability_model()
-    model.serialize(Path(f"results/ScratchStabilityModel_ConfigNr-{config_idx}_Variant-{variant}.stix"))
-    #--------------------------------------------------------------------------
+    model.serialize(
+        Path(
+            f"results/ScratchStabilityModel_ConfigNr-{config_idx}_Variant-{variant}.stix"
+        )
+    )
+    # --------------------------------------------------------------------------
 
     # Calculate stability model
     model.execute()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # Phased execution section
 
     # Geometry list from breakwater package
@@ -274,11 +294,12 @@ for config_idx in range(0, len(bw_configs.df)):
     # Geometry dict setup
     phased_layer_data = []
     for idx, geom in enumerate(new_geom_list):
-        phased_layer_data.append({
+        phased_layer_data.append(
+            {
                 "name": f"{idx}",
                 "notes": "",
                 "geometry": geom,
-                "material": materials_list[idx]
+                "material": materials_list[idx],
             }
         )
 
@@ -294,13 +315,15 @@ for config_idx in range(0, len(bw_configs.df)):
     [combined_geo := combined_geo.union(x) for x in combined]
 
     # Geometry list setup (2)
-    phased_layer_data = [{
-                "name": "20",
-                "notes": "",
-                "geometry": combined_geo,
-                "material": materials_list[-1],
-                "top_boundary_exception": 1
-            }]
+    phased_layer_data = [
+        {
+            "name": "20",
+            "notes": "",
+            "geometry": combined_geo,
+            "material": materials_list[-1],
+            "top_boundary_exception": 1,
+        }
+    ]
 
     # Create soillayers
     soil_layer_phased = SoilLayers.from_base_layers(phased_layer_data)
@@ -312,9 +335,9 @@ for config_idx in range(0, len(bw_configs.df)):
 
     # Define bounds and step size
     (xmin, ymin, xmax, ymax) = combined_geo.bounds
-    steps = (ymax-ymin)
-    steps_list = [1 for x in range(int(round(steps,0)))]
-    steps_list[-1] = -1 # Last step always to the top of the geometry with "-1"
+    steps = ymax - ymin
+    steps_list = [1 for x in range(int(round(steps, 0)))]
+    steps_list[-1] = -1  # Last step always to the top of the geometry with "-1"
 
     # Split layer
     new_soil_layer_phased = soil_layer_phased.layer_in_stages("20", steps_list)
@@ -324,9 +347,9 @@ for config_idx in range(0, len(bw_configs.df)):
     for idx, geom in enumerate(new_soil_layer_phased):
         if type(new_soil_layer_phased[idx].geometry) != Polygon:
             # When found, split Multipolygons into Polygons with .buffer(0)
-            multipoly = new_soil_layer_phased[idx].geometry.buffer(0) 
+            multipoly = new_soil_layer_phased[idx].geometry.buffer(0)
             for i, subgeo in enumerate(multipoly):
-                
+
                 stage = deepcopy(new_soil_layer_phased[idx])
                 stage.name = new_soil_layer_phased[idx].name + f".{i+1}"
                 stage.notes = ""
@@ -349,52 +372,61 @@ for config_idx in range(0, len(bw_configs.df)):
 
     # Initialize phased stages
     initial = SettledStabilityStage(
-            name="Initial",
-            headlines=my_headlines,
-            reflines=my_reflines,
-            soil_layers=new_soil_layer_dataframe,
-            analysis_method=my_analysis_method,
-        )
+        name="Initial",
+        headlines=my_headlines,
+        reflines=my_reflines,
+        soil_layers=new_soil_layer_dataframe,
+        analysis_method=my_analysis_method,
+    )
 
     analysis = SettledStabilityAnalysis(
-            materials=materials,
-            stages=[initial],
-            path=Path(f"results"),
-        )
+        materials=materials,
+        stages=[initial],
+        path=Path(f"results"),
+    )
 
     # To phased stability file
     model, mappings = analysis.to_stability_model()
-    model.serialize(Path(f"results/ScratchStabilityModel_ConfigNr-{config_idx}_Variant-{variant}_Phased.stix"))
+    model.serialize(
+        Path(
+            f"results/ScratchStabilityModel_ConfigNr-{config_idx}_Variant-{variant}_Phased.stix"
+        )
+    )
 
     # Apply load to settlement model from last layer in phased execution
     # Layers setup without last layer
     new_load = deepcopy(new_soil_layer_dataframe.geometry[-1])
     soil_layer_loading = deepcopy(new_soil_layer_dataframe.iloc[:-1])
 
-
     # Stage setup without last layer
     initial = SettledStabilityStage(
-            name="Initial",
-            headlines=my_headlines,
-            reflines=my_reflines,
-            soil_layers=soil_layer_loading,
-            analysis_method=my_analysis_method,
-        )
+        name="Initial",
+        headlines=my_headlines,
+        reflines=my_reflines,
+        soil_layers=soil_layer_loading,
+        analysis_method=my_analysis_method,
+    )
 
     # Settlement model setup
     settle_model = initial.to_settlement_model(materials=materials)
 
     # Top boundary for load
     new_load.geometry = soil_layers.top_boundary_from_polygon(new_load, 1)
-    new_load_points = skip_duplicates([(geolib.geometry.one.Point(x=x,z=z)) for x,z in new_load.geometry.coords])
+    new_load_points = skip_duplicates(
+        [(geolib.geometry.one.Point(x=x, z=z)) for x, z in new_load.geometry.coords]
+    )
 
     # Add non uniform load to settlement model
-    settle_model.add_non_uniform_load('Last load', new_load_points, datetime.timedelta(days=100), 18, 20)
+    settle_model.add_non_uniform_load(
+        "Last load", new_load_points, datetime.timedelta(days=100), 18, 20
+    )
 
     # To settlement file
-    settle_model.serialize(Path(f"results/ScratchSettlementModel_ConfigNr-{config_idx}_Variant-{variant}_Phased.sli"))
-
-
+    settle_model.serialize(
+        Path(
+            f"results/ScratchSettlementModel_ConfigNr-{config_idx}_Variant-{variant}_Phased.sli"
+        )
+    )
 
 
 # %%
