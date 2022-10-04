@@ -41,14 +41,14 @@ def surf_similarity(tana, H, T, g):
         """
         
 
-        xi = tana/np.sqrt((2*np.pi*H)/(g*T**2))
+        xi = tana/np.sqrt((2*np.pi/g)*(H/T**2))
 
 
         return xi
 
 def eurotop2018_6_5(
         g, Hm0, q, gamma_f, gamma_beta,
-        safety=1,
+        safety=0,
         Gc=None, Dn50=None, limit=True):
     """ Compute the crest freeboard of a rubble mound breakwater
 
@@ -89,7 +89,7 @@ def eurotop2018_6_5(
     permeability : {'permeable', 'impermeable'}, default: 'permeable'
         permeability of the armour layer, required if the armour layer
         is made out of Rock
-    safety : float, optional, default: 1
+    safety : float, optional, default: 0
         safety factor of the design, positive values increase the safety
         of the design by increasing the mean value of the model constants
         with the number of standard deviations specified. In accordance
@@ -143,10 +143,50 @@ def eurotop2018_6_5(
     if arg <= 1: # handle for RuntimeWarning
         Rc = ((Hm0*gam_f*gam_beta/constant_d)
                     * (-np.log(arg))**(1/1.3))
+    #    Rc = (((-1)*(np.log(q/(np.sqrt(g*Hm0**3)*0.09))))**(1/1.3)*Hm0*gamma_f*gamma_beta/1.5)
     else:
         Rc = 0
         user_warning('Encountered negative freeboard')
 
-   
+
 
     return Rc
+
+def gamma_beta_eurotop_2018_6_9(beta):
+    """ 
+    Adaptation to be in line with Constanta Phase II. Based on 
+    breakwater.core.overtopping.gamma_beta
+    
+    Influence factor for oblique wave attack
+
+    Computes the influence factor for oblique wave attack with equation
+    5.29 from EurOtop (2018).
+
+    .. math::
+       \\gamma_{\\beta} = 1 - 0.0063 \\mid \\beta \\mid
+
+    with a maximum of :math:`\\gamma_{\\beta} = 0.496` for
+    :math:`\\mid \\beta \\mid > 80`
+    
+    if :math: `\\beta > 0.496`, :math:`\\gamma_{\\beta} = 0.01`
+
+    Parameters
+    ----------
+    beta : float
+        the angle of wave attack [deg]
+
+    Returns
+    -------
+    gamma_beta : float
+        the influence factor for oblique wave attack
+    """
+    #beta_deg = beta*180/np.pi
+    beta_deg = beta
+
+    if beta_deg <= 80:
+        return 1 - 0.0063 * np.abs(beta_deg)
+    elif beta_deg > 90:
+        return 0.01
+    else:
+        return 0.496
+    
