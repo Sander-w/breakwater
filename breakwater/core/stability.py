@@ -126,7 +126,7 @@ def vandermeer_deep(Hs, Delta, P, Sd, N, xi_m, alpha, safety=1):
     return Dn50
 
 
-def vandermeer_shallow(Hs, H2, Delta, P, Sd, N, xi_s_min_1, alpha, safety=1):
+def vandermeer_shallow(Hs, H2, Delta, P, Sd, N, xi_s_min_1, alpha, Cpl = 8.4, Cs = 1.3, safety=1):
     """ Van der Meer formulae for shallow water conditions
 
     Based on the analysis of the stability of rock-armoured slopes in
@@ -210,8 +210,8 @@ def vandermeer_shallow(Hs, H2, Delta, P, Sd, N, xi_s_min_1, alpha, safety=1):
     Dn50 : float
         the nominal diameter of the armourstone [m]
     """
-    Cpl = 8.4 - safety*0.7
-    Cs = 1.3 - safety*0.15
+    Cpl = Cpl - safety*0.7
+    Cs = Cs - safety*0.15
 
     xi_cr = xi_critical(Cpl, Cs, P, alpha)
 
