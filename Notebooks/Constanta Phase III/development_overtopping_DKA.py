@@ -186,7 +186,7 @@ def gamma_beta_eurotop_2018_6_9(beta):
     if beta_deg <= 80:
         return 1 - 0.0063 * np.abs(beta_deg)
     elif beta_deg > 90:
-        return 0.01
+        return 0.001
     else:
         return 0.496
     
