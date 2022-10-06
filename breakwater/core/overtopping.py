@@ -4,7 +4,7 @@ from ..utils.exceptions import user_warning, NotSupportedError
 
 def gamma_f(
         armour_layer, xi_m_min_1, layers=None, permeability=None,
-        placement=None):
+        placement=None, rubble_mound_limit=False):
     """ Influence factor for the permeability and roughness of the slope
 
     Computes the influence factor on roughness with table 6.2 from
@@ -67,6 +67,9 @@ def gamma_f(
     placement : {'flat', 'random'}, optional, default: None
         placement of the armour layer, required if the armour layer is
         made out of Cubes
+    rubble_mound_limit : {'True', 'False'}, optional, default: False
+        Set 'True' if gamma_f_mod should be limited to 0.6 (used for
+        permeable, rubble mound structures)
 
     Returns
     -------
