@@ -38,7 +38,7 @@ class BattjesGroenendijk:
         # check if slope foreshore is given as a tuple (V, H)
         if isinstance(slope_foreshore, tuple):
             # if so, compute the angle
-            slope_foreshore = slope_foreshore[1]/slope_foreshore[0])
+            slope_foreshore = slope_foreshore[1]/slope_foreshore[0]
 
         Htr = (0.35 + 5.8*slope_foreshore)*h
 

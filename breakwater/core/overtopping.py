@@ -82,10 +82,10 @@ def gamma_f(
         If the armour layer is not in table 6.2 from EurOtop (2018)
     """
     table = {'Smooth': 1,
-             'Rock - 1 - permeable': 0.6,
-             'Rock - 1 - impermeable': 0.45,
-             'Rock - 2 - permeable': 0.55,
-             'Rock - 2 - impermeable': 0.40,
+             'Rock - 1 - impermeable': 0.6,
+             'Rock - 1 - permeable': 0.45,
+             'Rock - 2 - impermeable': 0.55,
+             'Rock - 2 - permeable': 0.40,
              'Cubes - 1 - flat': 0.49,
              'Cubes - 2 - random': 0.47,
              'Antifers': 0.5,
@@ -123,7 +123,7 @@ def gamma_f(
     if xi_m_min_1 > 5 and xi_m_min_1 <= 10:
         gamma_f = gamma_f + (xi_m_min_1-5)*(1-gamma_f)/5
     elif xi_m_min_1 >10:
-        gamma_f = 1
+        gamma_f = 1.0
     elif xi_m_min_1 < 2.8:
         user_warning(
             (f'xi out of range in gamma_f, {np.round(xi_m_min_1,2)} < 2.8. '
