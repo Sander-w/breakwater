@@ -38,9 +38,9 @@ class BattjesGroenendijk:
         # check if slope foreshore is given as a tuple (V, H)
         if isinstance(slope_foreshore, tuple):
             # if so, compute the angle
-            slope_foreshore = np.arctan(slope_foreshore[0]/slope_foreshore[1])
+            slope_foreshore = slope_foreshore[1]/slope_foreshore[0])
 
-        Htr = (0.35 + 5.8*np.tan(slope_foreshore))*h
+        Htr = (0.35 + 5.8*slope_foreshore)*h
 
         self.Hrms = (0.6725 + 0.2025*(Hm0/h))*Hm0
         self.Htr_tilde = Htr/self.Hrms

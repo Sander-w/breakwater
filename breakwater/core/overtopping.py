@@ -120,12 +120,18 @@ def gamma_f(
             ('EurOtop (2018) does not support a roughness factor for '
              f'{armour_layer}'))
 
-    if xi_m_min_1 > 5:
+    if xi_m_min_1 > 5 and xi_m_min_1 <= 10:
         gamma_f = gamma_f + (xi_m_min_1-5)*(1-gamma_f)/5
+    elif xi_m_min_1 >10:
+        gamma_f = 1
     elif xi_m_min_1 < 2.8:
         user_warning(
             (f'xi out of range in gamma_f, {np.round(xi_m_min_1,2)} < 2.8. '
              f'Continued with gamma_f = {gamma_f}'))
+    
+    if rubble_mound_limit == True and gamma_f >0.6:
+        gamma_f = 0.6
+    
     return gamma_f
 
 def gamma_beta(beta):
