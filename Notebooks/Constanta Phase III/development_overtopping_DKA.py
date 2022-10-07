@@ -46,6 +46,55 @@ def surf_similarity(tana, H, T, g):
 
         return xi
 
+def calc_beta(Dir_structure, Dir_wave):
+    """ Compute the wave obliqueness angle
+    
+    Computes the angle of wave obliqueness of a cross-section.
+    Directions are given in the nautical convention.
+
+    Parameters
+    ----------
+    Dir_structure : float
+        Direction of the structure normal in nautical convention. 0 deg is
+        facing north, 180 deg is facing south. Negative input is also 
+        accepted.
+        [deg]
+    Dir_wave : float
+        Direction where the waves come from, in nautical convention. 0 deg is
+        coming from north, 90 from east, 180 from south. Negative input is
+        also accepted.
+        [deg]
+
+    Returns
+    -------
+    beta : float
+        Angle between structure normal and wave direction [deg]
+
+    """
+    
+    # Calculate beta. Calculation method based on 
+    # AWP-#3504459-V48-IHS-COA-xxx-CAL_Armour_Stability_under_Waves.XLSM
+    if (Dir_wave-Dir_structure)%360 < 180:
+        beta = (Dir_wave-Dir_structure)%360
+    else: 
+        beta = (Dir_structure-Dir_wave)%360
+    
+    
+    
+    # Give warning if input is larger than 360
+    if abs(Dir_wave)>360:
+        user_warning(f'Wave direction is {Dir_wave} degrees. '
+                     'Make sure this is not an input mistake.')
+    elif abs(Dir_structure)>360:
+        user_warning(f'Structure direction is {Dir_structure} degrees. '
+                     'Make sure this is not an input mistake.')
+    
+    
+    
+    return(beta)
+
+
+
 def eurotop2018_6_5(
         g, Hm0, q, gamma_f, gamma_beta,
         safety=0,
