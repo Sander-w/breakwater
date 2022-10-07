@@ -133,11 +133,11 @@ for armour_layer in ["Rock", "Xbloc"]:
 
         combined_string = armour_layer + "_" + access.split("Overtopping limit ")[1]        
         wave_data["xi_m_min_1"] = xi_m_min_1_list        
+        wave_data["beta"] = beta_list        
         wave_data["gamma_beta"] = gamma_beta_list
         wave_data[combined_string + "_q_allowed"] = q_allowed_list
-        wave_data[combined_string + "_Rc"] = Rc_list
-        wave_data[combined_string + "_beta"] = beta_list
         wave_data[combined_string + "_gamma_f"] = gamma_f_list
+        wave_data[combined_string + "_Rc"] = Rc_list
         wave_data[combined_string + "_z_crest"] = z_crest_list
 
 wave_data.to_excel("wave_data_intermediate.xlsx")
