@@ -4,7 +4,7 @@ from ..utils.exceptions import user_warning, NotSupportedError
 
 def gamma_f(
         armour_layer, xi_m_min_1, layers=None, permeability=None,
-        placement=None):
+        placement=None, rubble_mound_limit=False):
     """ Influence factor for the permeability and roughness of the slope
 
     Computes the influence factor on roughness with table 6.2 from
@@ -67,6 +67,9 @@ def gamma_f(
     placement : {'flat', 'random'}, optional, default: None
         placement of the armour layer, required if the armour layer is
         made out of Cubes
+    rubble_mound_limit : {'True', 'False'}, optional, default: False
+        Set 'True' if gamma_f_mod should be limited to 0.6 (used for
+        permeable, rubble mound structures)
 
     Returns
     -------
@@ -79,10 +82,10 @@ def gamma_f(
         If the armour layer is not in table 6.2 from EurOtop (2018)
     """
     table = {'Smooth': 1,
-             'Rock - 1 - permeable': 0.6,
-             'Rock - 1 - impermeable': 0.45,
-             'Rock - 2 - permeable': 0.55,
-             'Rock - 2 - impermeable': 0.40,
+             'Rock - 1 - impermeable': 0.6,
+             'Rock - 1 - permeable': 0.45,
+             'Rock - 2 - impermeable': 0.55,
+             'Rock - 2 - permeable': 0.40,
              'Cubes - 1 - flat': 0.49,
              'Cubes - 2 - random': 0.47,
              'Antifers': 0.5,
@@ -117,12 +120,18 @@ def gamma_f(
             ('EurOtop (2018) does not support a roughness factor for '
              f'{armour_layer}'))
 
-    if xi_m_min_1 > 5:
+    if xi_m_min_1 > 5 and xi_m_min_1 <= 10:
         gamma_f = gamma_f + (xi_m_min_1-5)*(1-gamma_f)/5
+    elif xi_m_min_1 >10:
+        gamma_f = 1.0
     elif xi_m_min_1 < 2.8:
         user_warning(
             (f'xi out of range in gamma_f, {np.round(xi_m_min_1,2)} < 2.8. '
              f'Continued with gamma_f = {gamma_f}'))
+    
+    if rubble_mound_limit == True and gamma_f >0.6:
+        gamma_f = 0.6
+    
     return gamma_f
 
 def gamma_beta(beta):
