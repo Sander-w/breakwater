@@ -178,7 +178,7 @@ def rock_manual_5_194(Sd,
     
     Dn50 = (0.008 
             * (Sd/np.sqrt(N))**(-1/6) 
-            * ((u_1_percent*Tm_min_1)/np.sqrt(N)) 
+            * ((u_1_percent*Tm_min_1)/np.sqrt(Delta)) 
             *  (cota_rear)**(-2.5/6) 
             * (1+10*np.exp(-Rc_rear/Hs))**(1/6))
     
@@ -186,10 +186,16 @@ def rock_manual_5_194(Sd,
     
     return Dn50
 
-#Sd = 2; N = 3000; u_1_percent = 3; Tm_min_1 = 8;
-#Delta = 1.6; cota_rear =1.5; Rc_rear = 3; Hs = 3
+# Sd = 2 
+# N = 3407
+# u_1_percent = 5.7722
+# Tm_min_1 = 7.39
+# Delta = 1.574
+# cota_rear =1.5
+# Rc_rear = 2.18
+# Hs = 2.67
 
-#Dn50_rear = rock_manual_5_194(Sd, N, u_1_percent, Tm_min_1, Delta, cota_rear, Rc_rear, Hs)
+# Dn50_rear = rock_manual_5_194(Sd, N, u_1_percent, Tm_min_1, Delta, cota_rear, Rc_rear, Hs)
 
 def rock_manual_5_195(g,
                       slope_roughness,
@@ -307,6 +313,12 @@ def rock_manual_5_196(Hs, xi_s_min_1, slope_roughness, beta):
 
     Returns
     -------
+    gamma_f : float
+        Roughness reduction coefficient [-]
+    gamma_beta : float
+        Obliqueness reduction coefficient [-]
+    gamma : float
+        Combined reduction coefficient [-]
     Ru_1_percent : float
         maximum velocity (depth-averaged) at the rear side of the crest [m/s]
     
@@ -349,7 +361,7 @@ def rock_manual_5_196(Hs, xi_s_min_1, slope_roughness, beta):
     # print(f'gamma_f   : {gamma_f:.2f}')
     
     
-    return Ru_1_percent
+    return Ru_1_percent, gamma_f, gamma_beta, gamma
 
 
 # Hs = 2.67
