@@ -412,43 +412,7 @@ def hudson(H, Kd, Delta, alpha):
     return Dn50
 
 
-def vangent(Dn50_per, beta, cb):
-    """ Van Gent formula for reduction of stone diameter under 
-    oblique wave attack (Van Gent, 2014)
-    
-    The Van Gent formula is based on experimental research on the
-    stability of rock on a slope under oblique wave impact. The 
-    formula is derived by fitting a line through data points. 
-    The formula calculates a reduced Dn50 for oblique attack.
-    
-    .. math::
-        Dn50_beta = Dn50_per{(1-cb)*cos(beta)^2+cb}
-    
-    .. warning::
-        This function is under development. The validity limits have not
-        been established or added.
-        
-    .. note:
-        
-        
-    Parameters
-    ---------
-    Dn50_per: float
-        Dn50 as calculated for stability under perpendicular wave attack [m]
-    beta: float
-        Angle of oblique wave attack [rad]
-    cb: float
-        Correction factor for wave type [-]
-        cb = 0.42 for rock slopes with short-crested waves
-        cb = 0.35 for rock slopes with long-crested waves
-        cb = 0.35 for cubes in a double layer
-        cb = 0    for cubes in a single layer
-    
-    """
-    
-    Dn50_beta = Dn50_per*((1-cb)*np.cos(beta)**2+cb)
-    
-    return Dn50_beta 
+
 
 def vangent_modified(Dn50_per, beta, cb, Hs, Tm0, h):
     """ Van Gent formula for reduction of stone diameter under 

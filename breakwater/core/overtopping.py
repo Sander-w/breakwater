@@ -78,7 +78,7 @@ def gamma_f(
     Keyerror
         If the armour layer is not in table 6.2 from EurOtop (2018)
     """
-    table = {'Smooth': 1,
+    table = {'Smooth': 1.0,
              'Rock - 1 - impermeable': 0.6,
              'Rock - 1 - permeable': 0.45,
              'Rock - 2 - impermeable': 0.55,
@@ -116,14 +116,19 @@ def gamma_f(
         raise NotSupportedError(
             ('EurOtop (2018) does not support a roughness factor for '
              f'{armour_layer}'))
-     
-  
-    if xi_m_min_1 > 5:
+
+    if xi_m_min_1 > 5 and xi_m_min_1 <= 10:
         gamma_f = gamma_f + (xi_m_min_1-5)*(1-gamma_f)/5
+    elif xi_m_min_1 >10:
+        gamma_f = 1.0
     elif xi_m_min_1 < 2.8:
         user_warning(
             (f'xi out of range in gamma_f, {np.round(xi_m_min_1,2)} < 2.8. '
              f'Continued with gamma_f = {gamma_f}'))
+    
+    if armour_layer != 'Smooth' and permeability == 'permeable':
+        gamma_f = np.minimum(gamma_f, 0.6)
+    
     return gamma_f
 
 def gamma_beta(beta):
@@ -285,8 +290,6 @@ def rubble_mound(
     Rc = min(Rc, Rc_upper)
 
     return Rc
-    
-
 
 def vertical_deep(Hm0, q, safety=1, limit=True):
     """ Rc if the foreshore does not have an influence
