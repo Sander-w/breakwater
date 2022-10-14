@@ -8,95 +8,90 @@ ADAPTED FROM breakwater.rubble2D.py
 """
 
 from breakwater.core.toe import toe_stability
+from development_material_DKA import get_class, get_Dn50
+import pandas as pd
+import matplotlib.pyplot as plt
 
+#%% Input some data for testing purposes
+gradings_data = pd.read_excel(r"C:\Users\JY6\github\breakwater\Notebooks\Constanta Phase III\Input data\test_data_phase_II.xlsx", 
+                                      sheet_name='input_rock_gradings',
+                                      index_col = 0,
+                                      skiprows = 2)
+
+# Values from excel
 Delta = 1.574 # To be calculated in notebook
 toe_layers = 1.82 # Number of layers in the toe
-
-t_underlayer = 0.7 #To be determined once for the project.
-# Maybe not necessary when constructing on rock
-
+t_underlayer = 0.7  #To be determined once for the project.
+                    # Maybe not necessary when constructing on rock
 t_filter = 0 #0.8 #For 60-300kg filter. 1.3 for 300-1000kg filter
-
+rho_a = 2600
 
 # get values from the LimitState
-Hs = 3.23 # To be changed in notebook
-h = 6.46 # To be made case dependent in notebook
+Hs = 2.49 # To be changed in notebook
+h = 4.10 # To be made case dependent in notebook
 Nod = 0.5 # To be made case dependent in notebook
 
 
-# make first estimate for the water level above the toe
-ht_estimate = h - t_underlayer-t_filter
+#%% Actual calculation
 
-# use while loop since ht depends on dn50 of the toe
+
+# use while loop since ht depends on Dn50 of the toe
 # first set temporary values for the while loop
 Dn50_toe = 0
 Dn50_toe_temp = 0
 compute_toe = True
 counter = 0
-Dn50_toe_log = []
+# Dn50_toe_selected_log = []
+# Dn50_toe_computed_log = []
+
+toe_layer_thickness = t_underlayer + t_filter + Dn50_toe*toe_layers
+ht_estimate = h - toe_layer_thickness
 
 while compute_toe:
     Dn50_toe_computed = toe_stability(Hs, 
                                       h, 
                                       ht_estimate, 
                                       Delta, 
-                                      Nod)
-
+                                      Nod)    
+    # Dn50_toe_computed_log.append(Dn50_toe_computed)
+    
+    
     # check for convergence
-    if abs(Dn50_toe_computed - Dn50_toe_temp) < 0.05 or counter > 50:
+    if Dn50_toe_computed - Dn50_toe_temp < 0 or counter > 50:
         # value has converged, so break loop
         compute_toe = False
 
-    # replace old value with the new one
-    Dn50_toe_temp = Dn50_toe_computed
-
-    # make new estimate for the water level above the toe
-    toe_thickness = t_underlayer + t_filter + Dn50_toe_temp*toe_layers
-    ht_estimate = h - toe_thickness
-    
     counter += 1
     
     # check if computed Dn50 is larger than current normative Dn50
-    if Dn50_toe_temp > Dn50_toe:
+    if Dn50_toe_computed > Dn50_toe:
         # if larger the normative Dn50 must be changed
-        Dn50_toe = Dn50_toe_temp
-        Dn50_toe_log.append(Dn50_toe_temp)
+        Dn50_toe = Dn50_toe_computed
         
-        
-        
-#        state_toe = i
+    # Set Dn50 toe class average
+    class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
+    Dn50_toe_computed = get_Dn50(class_toe, gradings_data)
     
-#     class_toe = Grading.get_class(Dn50_toe)
-#     class_Dn50 = Grading.get_class_dn50(class_toe)
+    # replace old values with the new ones
+    Dn50_toe_temp = Dn50_toe_computed
+    toe_layer_thickness = t_underlayer + t_filter + Dn50_toe_temp*toe_layers
+    ht_estimate = h - toe_layer_thickness
+    
+    # Dn50_toe_selected_log.append(Dn50_toe_temp)
+    
 
+#%% Plot example of figures
 
-# def _estimate_htoe(self, Dn50=0):
-#     """Method to estimate the height of the toe"""
-#     # set ht variable
-#     htoe = 0
+# X = list(range(0,len(Dn50_toe_selected_log)))
 
-#     # get normative layer thickness
-#     for i, id in enumerate(self.variantIDs):
-#         # get structure
-#         structure = self.get_variant(id)
-
-#         # get thickness of the layer
-#         t_armour = self._layer_thickness(
-#             "armour", self._input_arguments["armour"], structure
-#         )
-#         t_underlayer = self._layer_thickness("underlayer", "Rock", structure)
-#         t_filter = self._layer_thickness("filter layer", "Rock", structure)
-
-#         htoe_est = t_underlayer + t_filter
-
-#         if Dn50 != 0:
-#             htoe_est += np.ceil(t_armour / Dn50) * Dn50
-
-#         # check if larger than previous estimate
-#         if htoe_est > htoe:
-#             htoe = htoe_est
-
-#     return htoe
-
-
+# plt.clf()
+# fig = plt.figure(1)
+# ax = fig.add_subplot(111)
+# ax.plot(X, Dn50_toe_selected_log, label = 'Dn50_toe_selected')
+# ax.plot(X, Dn50_toe_computed_log, label = 'Dn50_toe_compute')
+# ax.set(xlabel = 'Iteration',
+#             ylabel = 'Dn50')
+# ax.legend()
+# ax.grid('on')
+        
 
