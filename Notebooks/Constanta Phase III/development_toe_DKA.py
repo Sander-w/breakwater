@@ -27,8 +27,8 @@ t_filter = 0 #0.8 #For 60-300kg filter. 1.3 for 300-1000kg filter
 rho_a = 2600
 
 # get values from the LimitState
-Hs = 2.49 # To be changed in notebook
-h = 4.10 # To be made case dependent in notebook
+Hs = 3.63 # To be changed in notebook
+h = 6 # To be made case dependent in notebook
 Nod = 0.5 # To be made case dependent in notebook
 
 
@@ -41,8 +41,8 @@ Dn50_toe = 0
 Dn50_toe_temp = 0
 compute_toe = True
 counter = 0
-# Dn50_toe_selected_log = []
-# Dn50_toe_computed_log = []
+Dn50_toe_selected_log = []
+Dn50_toe_computed_log = []
 
 toe_layer_thickness = t_underlayer + t_filter + Dn50_toe*toe_layers
 ht_estimate = h - toe_layer_thickness
@@ -53,7 +53,7 @@ while compute_toe:
                                       ht_estimate, 
                                       Delta, 
                                       Nod)    
-    # Dn50_toe_computed_log.append(Dn50_toe_computed)
+    Dn50_toe_computed_log.append(Dn50_toe_computed)
     
     
     # check for convergence
@@ -72,26 +72,32 @@ while compute_toe:
     class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
     Dn50_toe_computed = get_Dn50(class_toe, gradings_data)
     
+    # Check if filter layer needs to be applied
+    if gradings_data.at[class_toe, 'Toe underlayer'] in gradings_data.index:
+        class_filter = gradings_data.at[class_toe, 'Toe underlayer']
+        Dn50_filter = get_Dn50(class_filter, gradings_data)
+        t_filter = Dn50_filter*toe_layers
+    
     # replace old values with the new ones
     Dn50_toe_temp = Dn50_toe_computed
     toe_layer_thickness = t_underlayer + t_filter + Dn50_toe_temp*toe_layers
     ht_estimate = h - toe_layer_thickness
     
-    # Dn50_toe_selected_log.append(Dn50_toe_temp)
+    Dn50_toe_selected_log.append(Dn50_toe_temp)
     
 
 #%% Plot example of figures
 
-# X = list(range(0,len(Dn50_toe_selected_log)))
+X = list(range(0,len(Dn50_toe_selected_log)))
 
-# plt.clf()
-# fig = plt.figure(1)
-# ax = fig.add_subplot(111)
-# ax.plot(X, Dn50_toe_selected_log, label = 'Dn50_toe_selected')
-# ax.plot(X, Dn50_toe_computed_log, label = 'Dn50_toe_compute')
-# ax.set(xlabel = 'Iteration',
-#             ylabel = 'Dn50')
-# ax.legend()
-# ax.grid('on')
+plt.clf()
+fig = plt.figure(1)
+ax = fig.add_subplot(111)
+ax.plot(X, Dn50_toe_selected_log, label = 'Dn50_toe_selected')
+ax.plot(X, Dn50_toe_computed_log, label = 'Dn50_toe_compute')
+ax.set(xlabel = 'Iteration',
+            ylabel = 'Dn50')
+ax.legend()
+ax.grid('on')
         
 

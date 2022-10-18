@@ -66,7 +66,7 @@ def get_class(Dn50, rho_a, gradings_table):
             )
     return rock_class
 
-def get_Dn50(rock_class, gradings_table):
+def get_Dn50(rock_class, gradings_table, minav):
     """Get the rock class for a given Dn50
 
     Parameters
@@ -76,6 +76,8 @@ def get_Dn50(rock_class, gradings_table):
     gradings_table : DataFrame
         table with the armourstone properties, based on Constanta Phase III
         input file
+    minav : str
+        check for minimum or average Dn50. Input 'Min' or 'Av'
 
     Returns
     -------
@@ -84,12 +86,13 @@ def get_Dn50(rock_class, gradings_table):
 
     Raises
     ------
-    RockGradingError
-        If the computed Dn50 of the armour layer is out of range for
-        the specified rock grading
+    
     """
     
-    Dn50 = gradings_table.at[rock_class, 'Dn50 av']
+    if minav == 'Av':
+        Dn50 = gradings_table.at[rock_class, 'Dn50 av']
+    elif minav == 'Min':
+        Dn50 = gradings_table.at[rock_class, 'Dn50 min']
     
     return Dn50
 
