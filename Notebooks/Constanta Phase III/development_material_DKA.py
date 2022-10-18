@@ -87,6 +87,11 @@ def get_Dn50(rock_class, gradings_table, minav):
     Raises
     ------
     
+    Note
+    ------
+    This function takes a string as input for minav. The options for this string are not given in the pop-up when
+    typing the function. Is this something that can be added in a way?
+
     """
     
     if minav == 'Av':
