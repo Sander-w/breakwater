@@ -14,10 +14,16 @@ from development_overtopping_DKA import (eurotop2018_6_5,
     surf_similarity,
     calc_beta)
 from development_armour_stability_DKA import (vangent_armour_reduction, 
-        hudson_fixed_slope, 
-        rock_manual_5_196, 
-        rock_manual_5_195, 
-        rock_manual_5_194)
+    hudson_fixed_slope, 
+    rock_manual_5_196, 
+    rock_manual_5_195, 
+    rock_manual_5_194)
+
+from development_material_DKA import(get_class,
+    get_Dn50)
+
+from development_scour_DKA import(sumer_fredsoe,
+    v_scour)
 
 from breakwater.utils.exceptions import user_warning
 
@@ -42,6 +48,11 @@ concrete_element_data = pd.read_excel(Path("./Input data/") / "test_data_phase_I
     sheet_name='Input_concrete_elements',
     index_col = 0,
     skiprows = 1)
+
+gradings_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+    sheet_name='input_rock_gradings',
+    index_col = 0,
+    skiprows = 2)
 
 
 # %%
@@ -71,9 +82,6 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     # Calculation_case = 1
     Cross_section_id = wave_data.at[Calculation_case, 'Location']
 
-    Storm_duration = 6 #Hours
-    Safety = 0 #Safety factor on top of regular VDM constants
-
     # Open project specific parameters
     g           = project_data.at['g'          , 'Value']
     rho_a       = project_data.at['rho_r'      , 'Value']
@@ -83,6 +91,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     c_beta      = project_data.at['c_beta'     , 'Value']
     c_rh        = project_data.at['c_rh'       , 'Value']
     beta_max    = project_data.at['beta_max'   , 'Value']
+    Storm_duration = project_data.at['storm_duration', 'Value']
+    Safety         = project_data.at['sf_vdm'        , 'Value']
 
     #Get info for sea state
     Hm0      = wave_data.at[Calculation_case, 'Hm0']
@@ -97,7 +107,6 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     # Open structure specific parameters
     tana            = cross_section_data.at[Cross_section_id, 'tan_a']
     dir_structure   = cross_section_data.at[Cross_section_id, 'dir_structure']
-    safety          = cross_section_data.at[Cross_section_id, 'safety']
     z_bed           = cross_section_data.at[Cross_section_id, 'z_bed']
     slope_foreshore = cross_section_data.at[Cross_section_id, 'slope_foreshore']
     P               = cross_section_data.at[Cross_section_id, 'P']
@@ -112,7 +121,6 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     h              = wl-z_bed
     Delta_r          = (rho_a-rho_w)/rho_w
     alpha          = np.arctan(tana)
-    NEN_gradings   = bw.RockGrading(rho=rho_a)
     waveinfo       = bw.BattjesGroenendijk(Hm0, h, slope_foreshore)
     H2_per         = waveinfo.get_Hp(0.02)
     Hs             = waveinfo.get_Hn(3) #NU BATTJES-GROENENDIJK VOOR Hs UIT Hmo. IS DAT WAT WE WILLEN?
@@ -160,7 +168,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
         Dn50_selected = 10000
 
     # Select grading    
-    grading = NEN_gradings.get_class(Dn50 = Dn50_selected) 
+    grading = get_class(Dn50_selected, rho_a, gradings_data)
     #It looks like this will only go to the next class if M50>M50_max for a class. Is this the behaviour we want?
 
     unit = 'Xbloc' #Xbloc or Accropode II

@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 
 # %%
-from development_overtopping_DKA import eurotop2018_6_5, surf_similarity, gamma_beta_eurotop_2018_6_9
+from development_overtopping_DKA import eurotop2018_6_5, surf_similarity, gamma_beta_eurotop_2018_6_9, calc_beta
 
 
 # %%
@@ -55,21 +55,6 @@ def get_cross_section_data(location):
 def get_requirements_data(access, LS):
     return requirements_data.at[access, LS]
 
-
-# armour_layer = 'Rock'
-# layers       = 2
-# permeability = 'permeable'
-
-# wave_data["xi_m_min_1"] = wave_data.apply(
-#     lambda x: surf_similarity(
-#         get_cross_section_data(x["Location"])[0], 
-#         x["Hm0"], 
-#         x["Tm-1,0"], 
-#         g
-#     ), 
-#     axis=1
-# )
-
 g = project_data.at['g', 'Value']
 
 for armour_layer in ["Rock", "Xbloc"]:
@@ -116,7 +101,7 @@ for armour_layer in ["Rock", "Xbloc"]:
             elif armour_layer == "Rock":
                 gamma_f = bw.core.overtopping.gamma_f(armour_layer, xi_m_min_1, layers = '2', permeability = 'permeable')
             #Calculate obliqueness reduction
-            beta       = dir_wave-(dir_structure-360) #Done like this for ECn2 north. Should find more robust solution
+            beta       = calc_beta(dir_structure, dir_wave)
             gamma_beta = gamma_beta_eurotop_2018_6_9(beta)
 
 
