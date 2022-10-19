@@ -50,6 +50,7 @@ concrete_element_data = pd.read_excel(Path("./Input data/") / "test_data_phase_I
 h_list = []
 Delta_r_list = []
 P_list = []
+Sd_allowed_list = []
 Hs_list = []
 H2_per_list = []
 H2_per_Hs_list = []
@@ -67,6 +68,7 @@ Dn50_concrete_list = []
 V_unit_list = []
 
 for Calculation_case in range(1, len(wave_data.index)+1):
+    # Calculation_case = 1
     Cross_section_id = wave_data.at[Calculation_case, 'Location']
 
     Storm_duration = 6 #Hours
@@ -125,7 +127,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     vdm_shallow_validity = h/Hs
 
     #Calculate required stone diameter without reduction
-    Dn50 = bw.core.vandermeer_shallow(Hs, 
+    Dn50 = bw.core.vandermeer_shallow(
+        Hs, 
         H2_per, 
         Delta_r, 
         P, 
@@ -135,7 +138,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
         alpha, 
         Cpl = Cpl_shallow, 
         Cs = Cs_shallow, 
-        safety = Safety)
+        safety = Safety
+    )
     #Reduce Dn50 with reduction factors from DAR
 
     #Calculate obliqueness reduction. Function based on SAWP-#3504459-V48-IHS-COA-xxx-CAL_Armour_Stability_under_Waves.XLSM
@@ -193,6 +197,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     h_list.append(h)
     Delta_r_list.append(Delta_r)
     P_list.append(P)
+    Sd_allowed_list.append(Sd_allowed)
     Hs_list.append(Hs)
     H2_per_list.append(H2_per)
     H2_per_Hs_list.append(H2_per/Hs)
@@ -212,6 +217,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
 wave_data["h"] = h_list 
 wave_data["Delta_r"] = Delta_r_list 
 wave_data["P"] = P_list 
+wave_data["Sd_allowed"] = Sd_allowed_list 
 wave_data["Hs"] = Hs_list 
 wave_data["H2_per"] = H2_per_list 
 wave_data["H2_per/Hs"] = Hs_list 
@@ -230,4 +236,43 @@ wave_data["V_unit"] = V_unit_list
 
 wave_data.to_excel("wave_data_intermediate_armour_stability.xlsx")
 
-logging.info("Finished script")
+logging.info("Finished intermediate section")
+
+results = []
+for chainage in wave_data.Chainage.unique():
+    chainage_data = []
+    
+    chainage_data.append(chainage)
+    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["Dn50"].dropna())
+    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Structure"])[0])
+    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Limit State"])[0])
+    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Offshore bin"])[0])
+    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Hm0"])[0])
+    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Sd_allowed"])[0])
+    chainage_data.append(max_LS)
+
+    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["V_unit"].dropna())
+    chainage_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Limit State"])[0])
+    chainage_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Offshore bin"])[0])
+    chainage_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Hm0"])[0])
+    chainage_data.append(max_LS)
+
+    results.append(chainage_data)
+
+print(results)
+columns = [
+    "Chainage",
+    "Structure",
+    "Dn50_concrete, LS", 
+    "Dn50_concrete, Offshore bin", 
+    "Dn50_concrete, Hm0", 
+    "Dn50_concrete, Sd_allowed", 
+    "Dn50_concrete, max Dn50", 
+    "V_unit, LS", 
+    "V_unit, Offshore bin",
+    "V_unit, Hm0",
+    "V_unit, max V_unit",
+]
+results_df = pd.DataFrame(results, columns=columns)
+results_df.to_excel("wave_data_design_armour_stability.xlsx")
+logging.info("Finished design section")
