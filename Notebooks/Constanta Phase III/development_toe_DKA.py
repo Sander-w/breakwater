@@ -8,95 +8,143 @@ ADAPTED FROM breakwater.rubble2D.py
 """
 
 from breakwater.core.toe import toe_stability
+from development_material_DKA import get_class, get_Dn50
+import pandas as pd
+import matplotlib.pyplot as plt
 
-Delta = 1.574 # To be calculated in notebook
-toe_layers = 1.82 # Number of layers in the toe
+#%% Input some data for testing purposes
+# gradings_data = pd.read_excel(r"C:\Users\JY6\github\breakwater\Notebooks\Constanta Phase III\Input data\test_data_phase_II.xlsx", 
+#                                       sheet_name='input_rock_gradings',
+#                                       index_col = 0,
+#                                       skiprows = 2)
 
-t_underlayer = 0.7 #To be determined once for the project.
-# Maybe not necessary when constructing on rock
+# # Values from excel
+# Delta = 1.574 # To be calculated in notebook
+# toe_layers = 1.82 # Number of layers in the toe
+# t_underlayer = 0.7  #To be determined once for the project.
+#                     # Maybe not necessary when constructing on rock
+# t_filter = 0 #0.8 #For 60-300kg filter. 1.3 for 300-1000kg filter
+# rho_a = 2600
 
-t_filter = 0 #0.8 #For 60-300kg filter. 1.3 for 300-1000kg filter
+# # get values from the LimitState
+# Hs = 3.63 # To be changed in notebook
+# h = 6 # To be made case dependent in notebook
+# Nod = 0.5 # To be made case dependent in notebook
 
 
-# get values from the LimitState
-Hs = 3.23 # To be changed in notebook
-h = 6.46 # To be made case dependent in notebook
-Nod = 0.5 # To be made case dependent in notebook
+#%% Actual calculation
 
 
-# make first estimate for the water level above the toe
-ht_estimate = h - t_underlayer-t_filter
-
-# use while loop since ht depends on dn50 of the toe
+# use while loop since ht depends on Dn50 of the toe
 # first set temporary values for the while loop
-Dn50_toe = 0
-Dn50_toe_temp = 0
-compute_toe = True
-counter = 0
-Dn50_toe_log = []
+# Dn50_toe = 0
+# Dn50_toe_temp = 0
+# compute_toe = True
+# counter = 0
+# Dn50_toe_selected_log = []
+# Dn50_toe_computed_log = []
 
-while compute_toe:
-    Dn50_toe_computed = toe_stability(Hs, 
-                                      h, 
-                                      ht_estimate, 
-                                      Delta, 
-                                      Nod)
+# toe_layer_thickness = t_underlayer + t_filter + Dn50_toe*toe_layers
+# ht_estimate = h - toe_layer_thickness
 
-    # check for convergence
-    if abs(Dn50_toe_computed - Dn50_toe_temp) < 0.05 or counter > 50:
-        # value has converged, so break loop
-        compute_toe = False
-
-    # replace old value with the new one
-    Dn50_toe_temp = Dn50_toe_computed
-
-    # make new estimate for the water level above the toe
-    toe_thickness = t_underlayer + t_filter + Dn50_toe_temp*toe_layers
-    ht_estimate = h - toe_thickness
+# while compute_toe:
+#     Dn50_toe_computed = toe_stability(Hs, 
+#                                       h, 
+#                                       ht_estimate, 
+#                                       Delta, 
+#                                       Nod)    
+#     Dn50_toe_computed_log.append(Dn50_toe_computed)
     
-    counter += 1
     
-    # check if computed Dn50 is larger than current normative Dn50
-    if Dn50_toe_temp > Dn50_toe:
-        # if larger the normative Dn50 must be changed
-        Dn50_toe = Dn50_toe_temp
-        Dn50_toe_log.append(Dn50_toe_temp)
-        
-        
-        
-#        state_toe = i
+#     # check for convergence
+#     if Dn50_toe_computed - Dn50_toe_temp < 0 or counter > 50:
+#         # value has converged, so break loop
+#         compute_toe = False
+
+#     counter += 1
     
-#     class_toe = Grading.get_class(Dn50_toe)
-#     class_Dn50 = Grading.get_class_dn50(class_toe)
+#     # check if computed Dn50 is larger than current normative Dn50
+#     if Dn50_toe_computed > Dn50_toe:
+#         # if larger the normative Dn50 must be changed
+#         Dn50_toe = Dn50_toe_computed
+        
+#     # Set Dn50 toe class average
+#     class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
+#     Dn50_toe_computed = get_Dn50(class_toe, gradings_data)
+    
+#     # Check if filter layer needs to be applied
+#     if gradings_data.at[class_toe, 'Toe underlayer'] in gradings_data.index:
+#         class_filter = gradings_data.at[class_toe, 'Toe underlayer']
+#         Dn50_filter = get_Dn50(class_filter, gradings_data)
+#         t_filter = Dn50_filter*toe_layers
+    
+#     # replace old values with the new ones
+#     Dn50_toe_temp = Dn50_toe_computed
+#     toe_layer_thickness = t_underlayer + t_filter + Dn50_toe_temp*toe_layers
+#     ht_estimate = h - toe_layer_thickness
+    
+#     Dn50_toe_selected_log.append(Dn50_toe_temp)
+    
 
+#%% Plot example of figures
 
-# def _estimate_htoe(self, Dn50=0):
-#     """Method to estimate the height of the toe"""
-#     # set ht variable
-#     htoe = 0
+# X = list(range(0,len(Dn50_toe_selected_log)))
 
-#     # get normative layer thickness
-#     for i, id in enumerate(self.variantIDs):
-#         # get structure
-#         structure = self.get_variant(id)
+# plt.clf()
+# fig = plt.figure(1)
+# ax = fig.add_subplot(111)
+# ax.plot(X, Dn50_toe_selected_log, label = 'Dn50_toe_selected')
+# ax.plot(X, Dn50_toe_computed_log, label = 'Dn50_toe_compute')
+# ax.set(xlabel = 'Iteration',
+#             ylabel = 'Dn50')
+# ax.legend()
+# ax.grid('on')
+        
 
-#         # get thickness of the layer
-#         t_armour = self._layer_thickness(
-#             "armour", self._input_arguments["armour"], structure
-#         )
-#         t_underlayer = self._layer_thickness("underlayer", "Rock", structure)
-#         t_filter = self._layer_thickness("filter layer", "Rock", structure)
+def toe_stability_Nod(Hs, h, ht, Delta, Dn50):
+    """ Toe stability formula of Van der Meer (1998), Rock Manual equation 5.188
 
-#         htoe_est = t_underlayer + t_filter
+    The armour layer should is supported by a toe, the formula of Van
+    der Meer (1998) computes the minimal required nominal diameter of
+    the stones necessary. The formula is given as:
 
-#         if Dn50 != 0:
-#             htoe_est += np.ceil(t_armour / Dn50) * Dn50
+    .. math::
+       \\frac{H_{s}}{\\Delta D_{n50}}=\\left(6.2 \\frac{h_{t}}{h}+2
+       \\right) N_{o d}^{0.15}
 
-#         # check if larger than previous estimate
-#         if htoe_est > htoe:
-#             htoe = htoe_est
+    The formula is based on experiments and the range of validity of
+    the parameters can be seen in the table below.
 
-#     return htoe
+    +---------------------------------+---------+-----------+
+    | Parameter                       | Symbol  | Range     |
+    +=================================+=========+===========+
+    | toe depth over water depth      | ht/h    | 0.4 - 0.9 |
+    +---------------------------------+---------+-----------+
+    | toe depth over nominal diameter | ht/Dn50 |   3 - 25  |
+    +---------------------------------+---------+-----------+
 
+    Parameters
+    ----------
+    Hs : float
+        The significant wave height of the incident waves [m]
+    h : float
+        The water depth in front of the toe [m]
+    ht : float
+        The water depth on top of the toe [m]
+    Delta : float
+        Relative buoyant density [-]
+    Nod : float
+        Damage number [-]
 
+    Returns
+    -------
+    Dn50 : float
+        Nominal diameter of the armourstones in the toe [m]
+    """
 
+    Nod  = (
+        (Hs)/
+        (Delta*Dn50*(2+6.2*(ht/h)**2.7))
+        )**(1/0.15)
+
+    return Nod
