@@ -21,6 +21,9 @@ wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
     sheet_name='input_hydrotechnical',
     skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
+columns = wave_data.columns.tolist()[:-1]
+columns.insert(2,"Location")
+wave_data = wave_data[columns]
 cross_section_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
     sheet_name='Input_Cross section',
     skiprows = 1)
@@ -125,44 +128,44 @@ for armour_layer in ["Rock", "Xbloc"]:
         wave_data[combined_string + "_Rc"] = Rc_list
         wave_data[combined_string + "_z_crest"] = z_crest_list
 
-wave_data.to_excel("wave_data_intermediate.xlsx")
+wave_data.to_excel("wave_data_intermediate_crest_height.xlsx")
 
 results = []
-for chainage in wave_data.Chainage.unique():
-    chainage_data = []
+for location in wave_data.Location.unique():
+    location_summary = []
     
-    chainage_data.append(chainage)
+    location_summary.append(location)
 
-    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["Rock_public access_z_crest"])
-    chainage_data.append(list(wave_data[wave_data["Rock_public access_z_crest"] == max_LS]["Structure"])[0])
-    chainage_data.append(list(wave_data[wave_data["Rock_public access_z_crest"] == max_LS]["Limit State"])[0])
-    chainage_data.append(list(wave_data[wave_data["Rock_public access_z_crest"] == max_LS]["Offshore bin"])[0])
-    chainage_data.append(list(wave_data[wave_data["Rock_public access_z_crest"] == max_LS]["Hm0"])[0])
-    chainage_data.append(max_LS)
+    normative_case = max(wave_data[wave_data["Location"] == location]["Rock_public access_z_crest"])
+    location_summary.append(list(wave_data[wave_data["Rock_public access_z_crest"] == normative_case]["Structure"])[0])
+    location_summary.append(list(wave_data[wave_data["Rock_public access_z_crest"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["Rock_public access_z_crest"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(list(wave_data[wave_data["Rock_public access_z_crest"] == normative_case]["Hm0"])[0])
+    location_summary.append(normative_case)
 
-    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["Rock_restricted access_z_crest"])
-    chainage_data.append(list(wave_data[wave_data["Rock_restricted access_z_crest"] == max_LS]["Limit State"])[0])
-    chainage_data.append(list(wave_data[wave_data["Rock_restricted access_z_crest"] == max_LS]["Offshore bin"])[0])
-    chainage_data.append(list(wave_data[wave_data["Rock_restricted access_z_crest"] == max_LS]["Hm0"])[0])
-    chainage_data.append(max_LS)
+    normative_case = max(wave_data[wave_data["Location"] == location]["Rock_restricted access_z_crest"])
+    location_summary.append(list(wave_data[wave_data["Rock_restricted access_z_crest"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["Rock_restricted access_z_crest"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(list(wave_data[wave_data["Rock_restricted access_z_crest"] == normative_case]["Hm0"])[0])
+    location_summary.append(normative_case)
 
-    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["Xbloc_public access_z_crest"])
-    chainage_data.append(list(wave_data[wave_data["Xbloc_public access_z_crest"] == max_LS]["Limit State"])[0])
-    chainage_data.append(list(wave_data[wave_data["Xbloc_public access_z_crest"] == max_LS]["Offshore bin"])[0])
-    chainage_data.append(list(wave_data[wave_data["Xbloc_public access_z_crest"] == max_LS]["Hm0"])[0])
-    chainage_data.append(max_LS)
+    normative_case = max(wave_data[wave_data["Location"] == location]["Xbloc_public access_z_crest"])
+    location_summary.append(list(wave_data[wave_data["Xbloc_public access_z_crest"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["Xbloc_public access_z_crest"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(list(wave_data[wave_data["Xbloc_public access_z_crest"] == normative_case]["Hm0"])[0])
+    location_summary.append(normative_case)
 
-    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["Xbloc_restricted access_z_crest"])
-    chainage_data.append(list(wave_data[wave_data["Xbloc_restricted access_z_crest"] == max_LS]["Limit State"])[0])
-    chainage_data.append(list(wave_data[wave_data["Xbloc_restricted access_z_crest"] == max_LS]["Offshore bin"])[0])
-    chainage_data.append(list(wave_data[wave_data["Xbloc_restricted access_z_crest"] == max_LS]["Hm0"])[0])
-    chainage_data.append(max_LS)
+    normative_case = max(wave_data[wave_data["Location"] == location]["Xbloc_restricted access_z_crest"])
+    location_summary.append(list(wave_data[wave_data["Xbloc_restricted access_z_crest"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["Xbloc_restricted access_z_crest"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(list(wave_data[wave_data["Xbloc_restricted access_z_crest"] == normative_case]["Hm0"])[0])
+    location_summary.append(normative_case)
 
-    results.append(chainage_data)
+    results.append(location_summary)
 
 print(results)
 columns = [
-    "Chainage",
+    "Location",
     "Structure",
     "Rock, Public, LS", 
     "Rock, Public, Offshore bin", 
@@ -182,4 +185,4 @@ columns = [
     "Xbloc, Restricted, max z_crest"
 ]
 results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_z_crest_1.xlsx")
+results_df.to_excel("wave_data_design_crest_height.xlsx")

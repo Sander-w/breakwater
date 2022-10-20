@@ -34,11 +34,16 @@ project_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
 requirements_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
                                   index_col = 0,
                                   sheet_name='Input_requirements')
+
 wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
                           index_col = 0,
                           sheet_name='input_hydrotechnical',
                          skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
+columns = wave_data.columns.tolist()[:-1]
+columns.insert(2,"Location")
+wave_data = wave_data[columns]
+
 cross_section_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
                                    sheet_name='Input_Cross section',
                                   skiprows = 1)
@@ -55,6 +60,7 @@ gradings_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
 
 # %%
 # CALCULATE TOE STABILITY
+[].insert
 
 Nod_allowed_list = []
 Delta_list = []
@@ -129,14 +135,19 @@ for Calculation_case in range(1, len(wave_data.index)+1):
             Dn50_toe = Dn50_toe_computed
             
         # Set Dn50 toe class average
-        class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
-        Dn50_toe_computed = get_Dn50(class_toe, gradings_data, 'Av')
+        if not pd.isna(Dn50_toe_computed):
+            class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
+            Dn50_toe_computed = get_Dn50(class_toe, gradings_data, 'Av')
+            # Check if filter layer needs to be applied
+            if gradings_data.at[class_toe, 'Toe underlayer'] in gradings_data.index:
+                class_filter = gradings_data.at[class_toe, 'Toe underlayer']
+                Dn50_filter = get_Dn50(class_filter, gradings_data)
+                t_filter = Dn50_filter*Lt
+        else:
+            Dn50_toe_computed = 0
+            t_filter = 0
         
-        # Check if filter layer needs to be applied
-        if gradings_data.at[class_toe, 'Toe underlayer'] in gradings_data.index:
-            class_filter = gradings_data.at[class_toe, 'Toe underlayer']
-            Dn50_filter = get_Dn50(class_filter, gradings_data)
-            t_filter = Dn50_filter*Lt
+        
         
         # replace old values with the new ones
         Dn50_toe_temp = Dn50_toe_computed
@@ -163,19 +174,39 @@ wave_data["h"]= h_list
 wave_data["t_filter"]= t_filter_list
 wave_data["toe_layer_thickness"]= toe_layer_thickness_list
 wave_data["ht"]= ht_list
-wave_data["Dn50_toe"]= Dn50_toe_list
+wave_data["Dn50_toe_calculated"]= Dn50_toe_list
 wave_data["toe_armour_class"]= toe_armour_class_list
-wave_data["Dn50_toe_temp"]= Dn50_toe_temp_list
+wave_data["Dn50_grading"]= Dn50_toe_temp_list
 
 wave_data.to_excel("wave_data_intermediate_toe_stability.xlsx")
 
-logging.info("Finished intermediate section")
+logging.info("Finished toe stability intermediate section")
 
 results = []
 for location in wave_data.Location.unique():
-    print(location)
+    location_summary = []
+    
+    location_summary.append(location)
 
+    normative_case = max(wave_data[wave_data["Location"] == location]["Dn50_grading"])
+    location_summary.append(list(wave_data[wave_data["Dn50_grading"] == normative_case]["Structure"])[0])
+    location_summary.append(list(wave_data[wave_data["Dn50_grading"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["Dn50_grading"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(normative_case)
 
+    results.append(location_summary)
+
+columns = [
+    "Location",
+    "Structure",
+    "LS", 
+    "Offshore bin",
+    "max Dn50_grading", 
+]
+results_df = pd.DataFrame(results, columns=columns)
+results_df.to_excel("wave_data_design_toe_stability.xlsx")
+
+logging.info("Finished toe stability design section")
 
 # %%
 # CALCULATE SCOUR DEPTH
@@ -185,11 +216,13 @@ wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
                           sheet_name='input_hydrotechnical',
                          skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
+columns = wave_data.columns.tolist()[:-1]
+columns.insert(2,"Location")
+wave_data = wave_data[columns]
 
 Hs_list = []
 Tp_list = []
 h_list = []
-C2_sf_list = []
 S_list = []
 
 for Calculation_case in range(1, len(wave_data.index)+1):
@@ -221,17 +254,42 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     Hs_list.append(Hs)
     Tp_list.append(Tp)
     h_list.append(h)
-    C2_sf_list.append(C2_sf)
     S_list.append(S)
 
 wave_data['Hs'] = Hs_list
 wave_data['Tp'] = Tp_list
 wave_data['h'] = h_list
-wave_data['C2_sf'] = C2_sf_list
 wave_data['S'] = S_list
 
 wave_data.to_excel("wave_data_intermediate_scour.xlsx")
 
+logging.info("Finished scour intermediate section")
+
+results = []
+for location in wave_data.Location.unique():
+    location_summary = []
+    
+    location_summary.append(location)
+
+    normative_case = max(wave_data[wave_data["Location"] == location]["S"])
+    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Structure"])[0])
+    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(normative_case)
+
+    results.append(location_summary)
+
+columns = [
+    "Location",
+    "Structure",
+    "LS", 
+    "Offshore bin",
+    "max S", 
+]
+results_df = pd.DataFrame(results, columns=columns)
+results_df.to_excel("wave_data_design_scour.xlsx")
+
+logging.info("Finished scour design section")
 
 
 
