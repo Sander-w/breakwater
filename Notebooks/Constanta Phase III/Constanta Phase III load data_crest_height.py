@@ -1,3 +1,5 @@
+input_file = "first_test_data_phase_III.xlsx"
+
 # %%
 import breakwater as bw
 import pandas as pd
@@ -10,18 +12,18 @@ from development_overtopping_DKA import eurotop2018_6_5, surf_similarity, gamma_
 
 
 # %%
-project_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+project_data = pd.read_excel(Path("./Input data/") / input_file,
     index_col = 1,
     sheet_name='Input_Project specific')
-requirements_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+requirements_data = pd.read_excel(Path("./Input data/") / input_file,
     index_col = 0,
     sheet_name='Input_requirements')
-wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+wave_data = pd.read_excel(Path("./Input data/") / input_file,
     # index_col = 0,
     sheet_name='input_hydrotechnical',
     skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
-cross_section_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
+cross_section_data = pd.read_excel(Path("./Input data/") / input_file, 
     sheet_name='Input_Cross section',
     skiprows = 1)
 cross_section_data["Location"] = cross_section_data["Structure"] + cross_section_data["Chainage"]
@@ -47,10 +49,11 @@ cross_section_data = cross_section_data.set_index('Location')
    
 
 def get_cross_section_data(location):
-    tana          = cross_section_data.at[location, 'tan_a']
+    tana_rock          = cross_section_data.at[location, 'tan_a_rock']
+    tana_concrete      = cross_section_data.at[location, 'tan_a_concrete']
     dir_structure = cross_section_data.at[location, 'dir_structure']
     safety        = cross_section_data.at[location, 'safety']
-    return tana, dir_structure, safety
+    return tana_rock, tana_concrete, dir_structure, safety
 
 def get_requirements_data(access, LS):
     return requirements_data.at[access, LS]
@@ -76,7 +79,13 @@ for armour_layer in ["Rock", "Xbloc"]:
             
 
             # Open structure specific parameters
-            tana, dir_structure, safety = get_cross_section_data(Cross_section_id)
+            tana_rock, tana_concrete, dir_structure, safety = get_cross_section_data(Cross_section_id)
+
+            # Beun fix to stay in line with armour_layer input
+            if armour_layer == 'Rock':
+                tana = tana_rock
+            elif armour_layer == 'Xbloc':
+                tana = tana_concrete
 
             # Get info for sea state. Currently implemented to do only the first sea state
             Hm0      = wave_data.at[Calculation_case, 'Hm0']
@@ -160,7 +169,7 @@ for chainage in wave_data.Chainage.unique():
 
     results.append(chainage_data)
 
-print(results)
+#print(results)
 columns = [
     "Chainage",
     "Structure",
