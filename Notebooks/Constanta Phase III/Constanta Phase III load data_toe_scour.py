@@ -1,6 +1,6 @@
 #%% Define input and output files
 input_file = "test_data_phase_II.xlsx"
-output_file = 'An1_first_test_results.xlsx'
+output_file = 'Ecn2_test_results.xlsx'
 
 # %% Import functions and packages
 import breakwater as bw
@@ -75,6 +75,9 @@ ht_list = []
 Dn50_toe_list = []
 toe_armour_class_list = []
 Dn50_toe_temp_list = []
+Tp_list = []
+S_list = []
+
 
 for Calculation_case in range(1, len(wave_data.index)+1):
     # Calculation_case = 1
@@ -86,10 +89,12 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     rho_w        = project_data.at['rho_w'       , 'Value']
     Lt           = project_data.at['Lt'          , 'Value']
     t_underlayer = project_data.at['t_underlayer', 'Value']
+    C2_sf        = project_data.at['C2_sf'       , 'Value']
 
     #Get info for sea state
     Hm0      = wave_data.at[Calculation_case, 'Hm0']
     wl       = wave_data.at[Calculation_case, 'wl']
+    Tp       = wave_data.at[Calculation_case, 'Tp']
 
     # Open structure specific parameters
     z_bed           = cross_section_data.at[Cross_section_id, 'z_bed']
@@ -104,6 +109,9 @@ for Calculation_case in range(1, len(wave_data.index)+1):
 
     #TEMPORARY FIX TO BE IN LINE WITH PHASE II
     Hs = Hm0
+
+    # Calculate scour depth
+    S = sumer_fredsoe(Hs, Tp, g, h, C2_sf)
 
     # Calculate required stone size for toe
 
@@ -168,6 +176,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     Dn50_toe_list.append(Dn50_toe)
     toe_armour_class_list.append(toe_armour_class)
     Dn50_toe_temp_list.append(Dn50_toe_temp)
+    Tp_list.append(Tp)
+    S_list.append(S)
 
 wave_data["Nod_allowed"]= Nod_allowed_list
 wave_data["Delta"]= Delta_list
@@ -179,6 +189,7 @@ wave_data["ht"]= ht_list
 wave_data["Dn50_toe_calculated"]= Dn50_toe_list
 wave_data["toe_armour_class"]= toe_armour_class_list
 wave_data["Dn50_grading"]= Dn50_toe_temp_list
+wave_data["S"] = S_list
 
 wave_data.to_excel("wave_data_intermediate_toe_stability.xlsx")
 
@@ -197,6 +208,13 @@ for location in wave_data.Location.unique():
     location_summary.append(list(wave_data[wave_data["Dn50_grading"] == normative_case]["Offshore bin"])[0])
     location_summary.append(normative_case)
 
+    normative_case = max(wave_data[wave_data["Location"] == location]["S"])
+    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(normative_case)
+
+    results.append(location_summary)
+
     results.append(location_summary)
 
 columns = [
@@ -205,6 +223,9 @@ columns = [
     "LS",
     "Offshore bin",
     "max Dn50_grading",
+    "LS",
+    "Offshore bin",
+    "max S",
 ]
 results_df = pd.DataFrame(results, columns=columns)
 # results_df.to_excel("wave_data_design_toe_stability.xlsx")
@@ -213,105 +234,105 @@ logging.info("Finished toe stability design section")
 
 # %% CALCULATE SCOUR DEPTH
 
-wave_data = pd.read_excel(Path("./Input data/") / input_file,
-                          index_col = 0,
-                          sheet_name='input_hydrotechnical',
-                         skiprows = 1)
-wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
-columns = wave_data.columns.tolist()[:-1]
-columns.insert(2,"Location")
-wave_data = wave_data[columns]
+# wave_data = pd.read_excel(Path("./Input data/") / input_file,
+#                           index_col = 0,
+#                           sheet_name='input_hydrotechnical',
+#                          skiprows = 1)
+# wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
+# columns = wave_data.columns.tolist()[:-1]
+# columns.insert(2,"Location")
+# wave_data = wave_data[columns]
 
-Hs_list = []
-Tp_list = []
-h_list = []
-S_list = []
+# Hs_list = []
+# Tp_list = []
+# h_list = []
+# S_list = []
 
-for Calculation_case in range(1, len(wave_data.index)+1):
-    # Calculation_case = 1
-    Cross_section_id = wave_data.at[Calculation_case, 'Location']
-
-
-    # Open project specific parameters
-    g            = project_data.at['g'           , 'Value']
-    C2_sf        = project_data.at['C2_sf'       , 'Value']
-
-    #Get info for sea state
-    Hm0      = wave_data.at[Calculation_case, 'Hm0']
-    Tp       = wave_data.at[Calculation_case, 'Tp']
-    wl       = wave_data.at[Calculation_case, 'wl']
-
-    # Open structure specific parameters
-    z_bed           = cross_section_data.at[Cross_section_id, 'z_bed']
-
-    # Intermediate parameters
-    h               = wl-z_bed
-
-    #TEMPORARY FIX TO BE IN LINE WITH PHASE II
-    Hs = Hm0
-
-    # Calculate scour depth
-    S = sumer_fredsoe(Hs, Tp, g, h, C2_sf)
-
-    Hs_list.append(Hs)
-    Tp_list.append(Tp)
-    h_list.append(h)
-    S_list.append(S)
-
-wave_data['Hs'] = Hs_list
-wave_data['Tp'] = Tp_list
-wave_data['h'] = h_list
-wave_data['S'] = S_list
-
-wave_data.to_excel("wave_data_intermediate_scour.xlsx")
-
-logging.info("Finished scour intermediate section")
+# for Calculation_case in range(1, len(wave_data.index)+1):
+#     # Calculation_case = 1
+#     Cross_section_id = wave_data.at[Calculation_case, 'Location']
 
 
-results = []
-for location in wave_data.Location.unique():
-    location_summary = []
+#     # Open project specific parameters
+#     g            = project_data.at['g'           , 'Value']
+#     C2_sf        = project_data.at['C2_sf'       , 'Value']
 
-    location_summary.append(location)
+    # #Get info for sea state
+    # Hm0      = wave_data.at[Calculation_case, 'Hm0']
+    # Tp       = wave_data.at[Calculation_case, 'Tp']
+    # wl       = wave_data.at[Calculation_case, 'wl']
 
-    normative_case = max(wave_data[wave_data["Location"] == location]["S"])
-    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Structure"])[0])
-    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Limit State"])[0])
-    location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Offshore bin"])[0])
-    location_summary.append(normative_case)
+    # # Open structure specific parameters
+    # z_bed           = cross_section_data.at[Cross_section_id, 'z_bed']
 
-    results.append(location_summary)
+    # # Intermediate parameters
+    # h               = wl-z_bed
 
-columns = [
-    "Location",
-    "Structure",
-    "LS",
-    "Offshore bin",
-    "max S",
-]
-results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_design_scour.xlsx")
+    # #TEMPORARY FIX TO BE IN LINE WITH PHASE II
+    # Hs = Hm0
 
-logging.info("Finished scour design section")
+    # # Calculate scour depth
+    # S = sumer_fredsoe(Hs, Tp, g, h, C2_sf)
 
-# #%% Write to single excel file per structure
-# # If the file exists: load file and adapt tabs only. If the file does not exist: create it
+    # Hs_list.append(Hs)
+    # Tp_list.append(Tp)
+    # h_list.append(h)
+    # S_list.append(S)
 
-# if os.path.exists(output_file):
-#     writer = pd.ExcelWriter(output_file,
-#                             engine = 'openpyxl',
-#                             mode = 'a',
-#                             if_sheet_exists = 'replace')
-# else:
-#     writer = pd.ExcelWriter(output_file,
-#                             engine = 'openpyxl',
-#                             mode = 'w')
+# wave_data['Hs'] = Hs_list
+# wave_data['Tp'] = Tp_list
+# wave_data['h'] = h_list
+# wave_data['S'] = S_list
 
-# wave_data.to_excel(writer, sheet_name = 'armour_sta_intermediate', index = False)
-# results_df.to_excel(writer, sheet_name = 'armour_sta_summary', index = False)
+# wave_data.to_excel("wave_data_intermediate_scour.xlsx")
 
-# #writer.save()
-# writer.close()
+# logging.info("Finished scour intermediate section")
+
+
+# results = []
+# for location in wave_data.Location.unique():
+#     location_summary = []
+
+#     location_summary.append(location)
+
+#     normative_case = max(wave_data[wave_data["Location"] == location]["S"])
+#     location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Structure"])[0])
+#     location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Limit State"])[0])
+#     location_summary.append(list(wave_data[wave_data["S"] == normative_case]["Offshore bin"])[0])
+#     location_summary.append(normative_case)
+
+#     results.append(location_summary)
+
+# columns = [
+#     "Location",
+#     "Structure",
+#     "LS",
+#     "Offshore bin",
+#     "max S",
+# ]
+# results_df = pd.DataFrame(results, columns=columns)
+# results_df.to_excel("wave_data_design_scour.xlsx")
+
+# logging.info("Finished scour design section")
+
+#%% Write to single excel file per structure
+# If the file exists: load file and adapt tabs only. If the file does not exist: create it
+
+if os.path.exists(output_file):
+    writer = pd.ExcelWriter(output_file,
+                            engine = 'openpyxl',
+                            mode = 'a',
+                            if_sheet_exists = 'replace')
+else:
+    writer = pd.ExcelWriter(output_file,
+                            engine = 'openpyxl',
+                            mode = 'w')
+
+wave_data.to_excel(writer, sheet_name = 'toe_intermediate', index = False)
+results_df.to_excel(writer, sheet_name = 'toe_summary', index = False)
+
+#writer.save()
+writer.close()
 
 
 
