@@ -1,6 +1,8 @@
+#%% Define input and output files
 input_file = "test_data_phase_II.xlsx"
+output_file = 'An1_first_test_results.xlsx'
 
-# %%
+# %% Import functions and packages
 import breakwater as bw
 import pandas as pd
 import os
@@ -10,15 +12,15 @@ import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 logging.info("Initiated script")
 
-# %%
-from development_overtopping_DKA import (eurotop2018_6_5, 
-                                         surf_similarity, 
-                                         gamma_beta_eurotop_2018_6_9, 
+# %% Import local functions
+from development_overtopping_DKA import (eurotop2018_6_5,
+                                         surf_similarity,
+                                         gamma_beta_eurotop_2018_6_9,
                                          calc_beta)
-from development_armour_stability_DKA import (vangent_armour_reduction, 
-                                              hudson_fixed_slope, 
-                                              rock_manual_5_196, 
-                                              rock_manual_5_195, 
+from development_armour_stability_DKA import (vangent_armour_reduction,
+                                              hudson_fixed_slope,
+                                              rock_manual_5_196,
+                                              rock_manual_5_195,
                                               rock_manual_5_194)
 from development_material_DKA import(get_class,
                                      get_Dn50)
@@ -29,7 +31,7 @@ from development_scour_DKA import(sumer_fredsoe,
 
 from breakwater.utils.exceptions import user_warning
 
-# %%
+# %% Import input data
 project_data = pd.read_excel(Path("./Input data/") / input_file,
                              index_col = 1,
                              sheet_name='Input_Project specific')
@@ -46,22 +48,21 @@ columns = wave_data.columns.tolist()[:-1]
 columns.insert(2,"Location")
 wave_data = wave_data[columns]
 
-cross_section_data = pd.read_excel(Path("./Input data/") / input_file, 
+cross_section_data = pd.read_excel(Path("./Input data/") / input_file,
                                    sheet_name='Input_Cross section',
                                   skiprows = 1)
 cross_section_data["Location"] = cross_section_data["Structure"] + cross_section_data["Chainage"]
-cross_section_data = cross_section_data.set_index('Location')                           
-concrete_element_data = pd.read_excel(Path("./Input data/") / input_file, 
+cross_section_data = cross_section_data.set_index('Location')
+concrete_element_data = pd.read_excel(Path("./Input data/") / input_file,
                                       sheet_name='Input_concrete_elements',
                                       index_col = 0,
                                       skiprows = 1)
-gradings_data = pd.read_excel(Path("./Input data/") / input_file, 
+gradings_data = pd.read_excel(Path("./Input data/") / input_file,
                                       sheet_name='input_rock_gradings',
                                       index_col = 0,
                                       skiprows = 2)
 
-# %%
-# CALCULATE TOE STABILITY
+# %% CALCULATE TOE STABILITY
 [].insert
 
 Nod_allowed_list = []
@@ -118,11 +119,11 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     ht = h - toe_layer_thickness
 
     while compute_toe:
-        Dn50_toe_computed = bw.core.toe_stability(Hs, 
-                                                h, 
-                                                ht, 
-                                                Delta, 
-                                                Nod_allowed)    
+        Dn50_toe_computed = bw.core.toe_stability(Hs,
+                                                h,
+                                                ht,
+                                                Delta,
+                                                Nod_allowed)
         if np.isnan(Dn50_toe_computed):
             Dn50_toe_computed = 0.01
 
@@ -132,12 +133,12 @@ for Calculation_case in range(1, len(wave_data.index)+1):
             compute_toe = False
 
         counter += 1
-        
+
         # check if computed Dn50 is larger than current normative Dn50
         if Dn50_toe_computed > Dn50_toe:
             # if larger the normative Dn50 must be changed
             Dn50_toe = Dn50_toe_computed
-            
+
         # Set Dn50 toe class average
         class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
         Dn50_toe_computed = get_Dn50(class_toe, gradings_data, 'Av')
@@ -147,14 +148,14 @@ for Calculation_case in range(1, len(wave_data.index)+1):
             Dn50_filter = get_Dn50(class_filter, gradings_data, 'Av')
             t_filter = Dn50_filter*Lt
 
-        
-        
-        
+
+
+
         # replace old values with the new ones
         Dn50_toe_temp = Dn50_toe_computed
         toe_layer_thickness = t_underlayer + t_filter + Dn50_toe_temp*Lt
         ht = h - toe_layer_thickness
-        
+
     toe_armour_class = get_class(Dn50_toe, rho_a, gradings_data)
 
     Nod_allowed_list.append(Nod_allowed)
@@ -183,10 +184,11 @@ wave_data.to_excel("wave_data_intermediate_toe_stability.xlsx")
 
 logging.info("Finished toe stability intermediate section")
 
+
 results = []
 for location in wave_data.Location.unique():
     location_summary = []
-    
+
     location_summary.append(location)
 
     normative_case = max(wave_data[wave_data["Location"] == location]["Dn50_grading"])
@@ -200,17 +202,16 @@ for location in wave_data.Location.unique():
 columns = [
     "Location",
     "Structure",
-    "LS", 
+    "LS",
     "Offshore bin",
-    "max Dn50_grading", 
+    "max Dn50_grading",
 ]
 results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_design_toe_stability.xlsx")
+# results_df.to_excel("wave_data_design_toe_stability.xlsx")
 
 logging.info("Finished toe stability design section")
 
-# %%
-# CALCULATE SCOUR DEPTH
+# %% CALCULATE SCOUR DEPTH
 
 wave_data = pd.read_excel(Path("./Input data/") / input_file,
                           index_col = 0,
@@ -266,10 +267,11 @@ wave_data.to_excel("wave_data_intermediate_scour.xlsx")
 
 logging.info("Finished scour intermediate section")
 
+
 results = []
 for location in wave_data.Location.unique():
     location_summary = []
-    
+
     location_summary.append(location)
 
     normative_case = max(wave_data[wave_data["Location"] == location]["S"])
@@ -283,15 +285,35 @@ for location in wave_data.Location.unique():
 columns = [
     "Location",
     "Structure",
-    "LS", 
+    "LS",
     "Offshore bin",
-    "max S", 
+    "max S",
 ]
 results_df = pd.DataFrame(results, columns=columns)
 results_df.to_excel("wave_data_design_scour.xlsx")
 
 logging.info("Finished scour design section")
 
+# #%% Write to single excel file per structure
+# # If the file exists: load file and adapt tabs only. If the file does not exist: create it
+
+# if os.path.exists(output_file):
+#     writer = pd.ExcelWriter(output_file,
+#                             engine = 'openpyxl',
+#                             mode = 'a',
+#                             if_sheet_exists = 'replace')
+# else:
+#     writer = pd.ExcelWriter(output_file,
+#                             engine = 'openpyxl',
+#                             mode = 'w')
+
+# wave_data.to_excel(writer, sheet_name = 'armour_sta_intermediate', index = False)
+# results_df.to_excel(writer, sheet_name = 'armour_sta_summary', index = False)
+
+# #writer.save()
+# writer.close()
 
 
 
+
+# %%

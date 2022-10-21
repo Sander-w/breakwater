@@ -8,6 +8,7 @@ import pandas as pd
 import os
 from pathlib import Path
 import numpy as np
+from os import path
 
 import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
@@ -255,7 +256,7 @@ wave_data["Hudson_outcome"] = Hudson_outcome_list
 wave_data["Dn50_concrete"] = Dn50_concrete_list 
 wave_data["V_unit"] = V_unit_list 
 
-wave_data.to_excel("wave_data_intermediate_armour_stability.xlsx")
+# wave_data.to_excel("wave_data_intermediate_armour_stability.xlsx")
 
 logging.info("Finished intermediate section")
 
@@ -295,7 +296,7 @@ columns = [
     "V_unit, max V_unit",
 ]
 results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_design_armour_stability.xlsx")
+# results_df.to_excel("wave_data_design_armour_stability.xlsx")
 logging.info("Finished design section")
 
 
