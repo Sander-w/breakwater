@@ -1,3 +1,5 @@
+input_file = "test_data_phase_II.xlsx"
+
 # %%
 import breakwater as bw
 import pandas as pd
@@ -28,14 +30,14 @@ from development_scour_DKA import(sumer_fredsoe,
 from breakwater.utils.exceptions import user_warning
 
 # %%
-project_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+project_data = pd.read_excel(Path("./Input data/") / input_file,
                              index_col = 1,
                              sheet_name='Input_Project specific')
-requirements_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+requirements_data = pd.read_excel(Path("./Input data/") / input_file,
                                   index_col = 0,
                                   sheet_name='Input_requirements')
 
-wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+wave_data = pd.read_excel(Path("./Input data/") / input_file,
                           index_col = 0,
                           sheet_name='input_hydrotechnical',
                          skiprows = 1)
@@ -44,16 +46,16 @@ columns = wave_data.columns.tolist()[:-1]
 columns.insert(2,"Location")
 wave_data = wave_data[columns]
 
-cross_section_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
+cross_section_data = pd.read_excel(Path("./Input data/") / input_file, 
                                    sheet_name='Input_Cross section',
                                   skiprows = 1)
 cross_section_data["Location"] = cross_section_data["Structure"] + cross_section_data["Chainage"]
 cross_section_data = cross_section_data.set_index('Location')                           
-concrete_element_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
+concrete_element_data = pd.read_excel(Path("./Input data/") / input_file, 
                                       sheet_name='Input_concrete_elements',
                                       index_col = 0,
                                       skiprows = 1)
-gradings_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
+gradings_data = pd.read_excel(Path("./Input data/") / input_file, 
                                       sheet_name='input_rock_gradings',
                                       index_col = 0,
                                       skiprows = 2)
@@ -121,6 +123,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
                                                 ht, 
                                                 Delta, 
                                                 Nod_allowed)    
+        if np.isnan(Dn50_toe_computed):
+            Dn50_toe_computed = 0.01
 
         # check for convergence
         if Dn50_toe_computed - Dn50_toe_temp < 0 or counter > 50:
@@ -135,17 +139,14 @@ for Calculation_case in range(1, len(wave_data.index)+1):
             Dn50_toe = Dn50_toe_computed
             
         # Set Dn50 toe class average
-        if not pd.isna(Dn50_toe_computed):
-            class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
-            Dn50_toe_computed = get_Dn50(class_toe, gradings_data, 'Av')
-            # Check if filter layer needs to be applied
-            if gradings_data.at[class_toe, 'Toe underlayer'] in gradings_data.index:
-                class_filter = gradings_data.at[class_toe, 'Toe underlayer']
-                Dn50_filter = get_Dn50(class_filter, gradings_data)
-                t_filter = Dn50_filter*Lt
-        else:
-            Dn50_toe_computed = 0
-            t_filter = 0
+        class_toe = get_class(Dn50_toe_computed, rho_a, gradings_data)
+        Dn50_toe_computed = get_Dn50(class_toe, gradings_data, 'Av')
+        # Check if filter layer needs to be applied
+        if gradings_data.at[class_toe, 'Toe underlayer'] in gradings_data.index:
+            class_filter = gradings_data.at[class_toe, 'Toe underlayer']
+            Dn50_filter = get_Dn50(class_filter, gradings_data, 'Av')
+            t_filter = Dn50_filter*Lt
+
         
         
         
@@ -211,7 +212,7 @@ logging.info("Finished toe stability design section")
 # %%
 # CALCULATE SCOUR DEPTH
 
-wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
+wave_data = pd.read_excel(Path("./Input data/") / input_file,
                           index_col = 0,
                           sheet_name='input_hydrotechnical',
                          skiprows = 1)
