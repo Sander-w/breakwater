@@ -81,6 +81,9 @@ Hudson_outcome_list = []
 Dn50_concrete_list = []
 V_unit_list = []
 
+
+# For single run comment/uncomment for loop and calculation case
+
 for Calculation_case in range(1, len(wave_data.index)+1):
     # Calculation_case = 1
     Cross_section_id = wave_data.at[Calculation_case, 'Location']
@@ -224,6 +227,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     Hudson_outcome_list.append(Hudson_outcome)
     Dn50_concrete_list.append(Dn50_concrete)
     V_unit_list.append(V_unit)
+
+# For single run indent/unindent till here
 
 wave_data["h"] = h_list 
 wave_data["Delta_r"] = Delta_r_list 
