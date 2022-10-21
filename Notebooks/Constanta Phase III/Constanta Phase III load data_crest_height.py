@@ -23,6 +23,9 @@ wave_data = pd.read_excel(Path("./Input data/") / input_file,
     sheet_name='input_hydrotechnical',
     skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
+columns = wave_data.columns.tolist()[:-1]
+columns.insert(2,"Location")
+wave_data = wave_data[columns]
 cross_section_data = pd.read_excel(Path("./Input data/") / input_file, 
     sheet_name='Input_Cross section',
     skiprows = 1)
@@ -134,7 +137,7 @@ for armour_layer in ["Rock", "Xbloc"]:
         wave_data[combined_string + "_Rc"] = Rc_list
         wave_data[combined_string + "_z_crest"] = z_crest_list
 
-wave_data.to_excel("wave_data_intermediate.xlsx")
+wave_data.to_excel("wave_data_intermediate_crest_height.xlsx")
 
 results = []
 for location in wave_data.Location.unique():
@@ -191,4 +194,4 @@ columns = [
     "Xbloc, Restricted, max z_crest"
 ]
 results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_z_crest_1.xlsx")
+results_df.to_excel("wave_data_design_crest_height.xlsx")

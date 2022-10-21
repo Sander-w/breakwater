@@ -41,9 +41,12 @@ wave_data = pd.read_excel(Path("./Input data/") / input_file,
                           sheet_name='input_hydrotechnical',
                          skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
+columns = wave_data.columns.tolist()[:-1]
+columns.insert(2,"Location")
+wave_data = wave_data[columns]
 cross_section_data = pd.read_excel(Path("./Input data/") / input_file, 
-                                   sheet_name='Input_Cross section',
-                                  skiprows = 1)
+    sheet_name='Input_Cross section',
+    skiprows = 1)
 cross_section_data["Location"] = cross_section_data["Structure"] + cross_section_data["Chainage"]
 cross_section_data = cross_section_data.set_index('Location')
 concrete_element_data = pd.read_excel(Path("./Input data/") / input_file, 
@@ -79,6 +82,9 @@ Delta_c_list = []
 Hudson_outcome_list = []
 Dn50_concrete_list = []
 V_unit_list = []
+
+
+# For single run comment/uncomment for loop and calculation case
 
 for Calculation_case in range(1, len(wave_data.index)+1):
     # Calculation_case = 1
@@ -226,6 +232,8 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     Dn50_concrete_list.append(Dn50_concrete)
     V_unit_list.append(V_unit)
 
+# For single run indent/unindent till here
+
 wave_data["h"] = h_list 
 wave_data["Delta_r"] = Delta_r_list 
 wave_data["P"] = P_list 
@@ -251,29 +259,29 @@ wave_data.to_excel("wave_data_intermediate_armour_stability.xlsx")
 logging.info("Finished intermediate section")
 
 results = []
-for chainage in wave_data.Chainage.unique():
-    chainage_data = []
+for location in wave_data.Location.unique():
+    location_data = []
     
-    chainage_data.append(chainage)
-    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["Dn50"].dropna())
-    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Structure"])[0])
-    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Limit State"])[0])
-    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Offshore bin"])[0])
-    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Hm0"])[0])
-    chainage_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Sd_allowed"])[0])
-    chainage_data.append(max_LS)
+    location_data.append(location)
+    max_LS = max(wave_data[wave_data["Location"] == location]["Dn50"].dropna())
+    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Structure"])[0])
+    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Limit State"])[0])
+    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Offshore bin"])[0])
+    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Hm0"])[0])
+    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Sd_allowed"])[0])
+    location_data.append(max_LS)
 
-    max_LS = max(wave_data[wave_data["Chainage"] == chainage]["V_unit"].dropna())
-    chainage_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Limit State"])[0])
-    chainage_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Offshore bin"])[0])
-    chainage_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Hm0"])[0])
-    chainage_data.append(max_LS)
+    max_LS = max(wave_data[wave_data["Location"] == location]["V_unit"].dropna())
+    location_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Limit State"])[0])
+    location_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Offshore bin"])[0])
+    location_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Hm0"])[0])
+    location_data.append(max_LS)
 
-    results.append(chainage_data)
+    results.append(location_data)
 
 print(results)
 columns = [
-    "Chainage",
+    "Location",
     "Structure",
     "Dn50_rock, LS", 
     "Dn50_rock, Offshore bin", 
