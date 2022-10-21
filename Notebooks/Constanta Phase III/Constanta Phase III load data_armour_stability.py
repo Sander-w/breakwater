@@ -1,6 +1,8 @@
+#%% Define input and output files
 input_file = "first_test_data_phase_III.xlsx"
+output_file = 'An1_first_test_results.xlsx'
 
-# %%
+# %% import functions and packages
 import breakwater as bw
 import pandas as pd
 import os
@@ -11,7 +13,7 @@ import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 logging.info("Initiated script")
 
-# %%
+# %% Import local functions
 from development_overtopping_DKA import (eurotop2018_6_5, 
     surf_similarity,
     calc_beta)
@@ -29,7 +31,7 @@ from development_scour_DKA import(sumer_fredsoe,
 
 from breakwater.utils.exceptions import user_warning
 
-# %%
+# %% Import input data
 project_data = pd.read_excel(Path("./Input data/") / input_file,
                              index_col = 1,
                              sheet_name='Input_Project specific')
@@ -60,8 +62,7 @@ gradings_data = pd.read_excel(Path("./Input data/") / input_file,
                                       skiprows = 2)
 
 
-# %%
-# CALCULATE REQUIRED STONE DIAMETER (Rock armour)
+# %% CALCULATE REQUIRED STONE DIAMETER (Rock armour)
 
 h_list = []
 Delta_r_list = []
@@ -279,7 +280,7 @@ for location in wave_data.Location.unique():
 
     results.append(location_summary)
 
-print(results)
+#print(results)
 columns = [
     "Location",
     "Structure",
@@ -296,5 +297,28 @@ columns = [
 results_df = pd.DataFrame(results, columns=columns)
 results_df.to_excel("wave_data_design_armour_stability.xlsx")
 logging.info("Finished design section")
+
+
+#%% Write to single excel file per structure
+# If the file exists: load file and adapt tabs only. If the file does not exist: create it
+
+if path.exists(output_file):
+    writer = pd.ExcelWriter(output_file, 
+                            engine = 'openpyxl',
+                            mode = 'a',
+                            if_sheet_exists = 'replace')
+else: 
+    writer = pd.ExcelWriter(output_file, 
+                            engine = 'openpyxl',
+                            mode = 'w')
+
+wave_data.to_excel(writer, 
+                    sheet_name = 'armour_sta_intermediate', 
+                    index = False)
+results_df.to_excel(writer, sheet_name = 'armour_sta_summary', index = False)
+
+#writer.save()
+writer.close()
+
 
 print('Done')

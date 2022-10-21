@@ -1,17 +1,22 @@
-input_file = "first_test_data_phase_III.xlsx"
+#%% Define input and output files
 
-# %%
+input_file = "first_test_data_phase_III.xlsx"
+output_file = 'An1_first_test_results.xlsx'
+
+# %% Import functions and packages
 import breakwater as bw
 import pandas as pd
 import os
 from pathlib import Path
 import numpy as np
+from openpyxl import load_workbook
+from os import path
 
 # %%
 from development_overtopping_DKA import eurotop2018_6_5, surf_similarity, gamma_beta_eurotop_2018_6_9, calc_beta
 
 
-# %%
+# %% Import input data
 project_data = pd.read_excel(Path("./Input data/") / input_file,
     index_col = 1,
     sheet_name='Input_Project specific')
@@ -33,8 +38,7 @@ cross_section_data["Location"] = cross_section_data["Structure"] + cross_section
 cross_section_data = cross_section_data.set_index('Location')
 
 
-# %%
-# CALCULATE CREST HEIGHT FOR OVERTOPPING
+# %% CALCULATE CREST HEIGHT FOR OVERTOPPING
 
 # Do we want to put this entire part in a function to keep the scripts clean a bit?
 
@@ -137,7 +141,7 @@ for armour_layer in ["Rock", "Xbloc"]:
         wave_data[combined_string + "_Rc"] = Rc_list
         wave_data[combined_string + "_z_crest"] = z_crest_list
 
-wave_data.to_excel("wave_data_intermediate_crest_height.xlsx")
+#wave_data.to_excel("wave_data_intermediate_crest_height.xlsx")
 
 results = []
 for location in wave_data.Location.unique():
@@ -194,4 +198,29 @@ columns = [
     "Xbloc, Restricted, max z_crest"
 ]
 results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_design_crest_height.xlsx")
+# results_df.to_excel("wave_data_design_crest_height.xlsx")
+
+#%% Write to single excel file per structure
+# If the file exists: load file and adapt tabs only. If the file does not exist: create it
+
+if path.exists(output_file):
+    writer = pd.ExcelWriter(output_file, 
+                            engine = 'openpyxl',
+                            mode = 'a',
+                            if_sheet_exists = 'replace')
+else: 
+    writer = pd.ExcelWriter(output_file, 
+                            engine = 'openpyxl',
+                            mode = 'w')
+
+
+
+wave_data.to_excel(writer, 
+                    sheet_name = 'overtopping_intermediate', 
+                    index = False)
+results_df.to_excel(writer, sheet_name = 'overtopping_summary', index = False)
+
+#writer.save()
+writer.close()
+
+# %%
