@@ -1,15 +1,20 @@
-# %%
+#%% Define input and output files
+input_file = "first_test_data_phase_III.xlsx"
+output_file = 'An1_first_test_results.xlsx'
+
+# %% import functions and packages
 import breakwater as bw
 import pandas as pd
 import os
 from pathlib import Path
 import numpy as np
+from os import path
 
 import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 logging.info("Initiated script")
 
-# %%
+# %% Import local functions
 from development_overtopping_DKA import (eurotop2018_6_5, 
     surf_similarity,
     calc_beta)
@@ -27,39 +32,38 @@ from development_scour_DKA import(sumer_fredsoe,
 
 from breakwater.utils.exceptions import user_warning
 
-# %%
-project_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
-    index_col = 1,
-    sheet_name='Input_Project specific')
-requirements_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
-    index_col = 0,
-    sheet_name='Input_requirements')
-wave_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
-    index_col = 0,
-    sheet_name='input_hydrotechnical',
-    skiprows = 1)
+# %% Import input data
+project_data = pd.read_excel(Path("./Input data/") / input_file,
+                             index_col = 1,
+                             sheet_name='Input_Project specific')
+requirements_data = pd.read_excel(Path("./Input data/") / input_file,
+                                  index_col = 0,
+                                  sheet_name='Input_requirements')
+wave_data = pd.read_excel(Path("./Input data/") / input_file,
+                          index_col = 0,
+                          sheet_name='input_hydrotechnical',
+                         skiprows = 1)
 wave_data["Location"] = wave_data["Structure"] + wave_data["Chainage"]
 columns = wave_data.columns.tolist()[:-1]
 columns.insert(2,"Location")
 wave_data = wave_data[columns]
-cross_section_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
+cross_section_data = pd.read_excel(Path("./Input data/") / input_file, 
     sheet_name='Input_Cross section',
     skiprows = 1)
 cross_section_data["Location"] = cross_section_data["Structure"] + cross_section_data["Chainage"]
 cross_section_data = cross_section_data.set_index('Location')
-concrete_element_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx", 
-    sheet_name='Input_concrete_elements',
-    index_col = 0,
-    skiprows = 1)
+concrete_element_data = pd.read_excel(Path("./Input data/") / input_file, 
+                                      sheet_name='Input_concrete_elements',
+                                      index_col = 0,
+                                      skiprows = 1)
 
-gradings_data = pd.read_excel(Path("./Input data/") / "test_data_phase_II.xlsx",
-    sheet_name='input_rock_gradings',
-    index_col = 0,
-    skiprows = 2)
+gradings_data = pd.read_excel(Path("./Input data/") / input_file, 
+                                      sheet_name='input_rock_gradings',
+                                      index_col = 0,
+                                      skiprows = 2)
 
 
-# %%
-# CALCULATE REQUIRED STONE DIAMETER (Rock armour)
+# %% CALCULATE REQUIRED STONE DIAMETER (Rock armour)
 
 h_list = []
 Delta_r_list = []
@@ -99,6 +103,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     beta_max    = project_data.at['beta_max'   , 'Value']
     Storm_duration = project_data.at['storm_duration', 'Value']
     Safety         = project_data.at['sf_vdm'        , 'Value']
+    unit        = project_data.at['c_unit'     , 'Value']
 
     #Get info for sea state
     Hm0      = wave_data.at[Calculation_case, 'Hm0']
@@ -111,7 +116,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
 
 
     # Open structure specific parameters
-    tana            = cross_section_data.at[Cross_section_id, 'tan_a']
+    tana_rock       = cross_section_data.at[Cross_section_id, 'tan_a_rock']
     dir_structure   = cross_section_data.at[Cross_section_id, 'dir_structure']
     z_bed           = cross_section_data.at[Cross_section_id, 'z_bed']
     slope_foreshore = cross_section_data.at[Cross_section_id, 'slope_foreshore']
@@ -126,7 +131,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     #Intermediate calculations
     h              = wl-z_bed
     Delta_r          = (rho_a-rho_w)/rho_w
-    alpha          = np.arctan(tana)
+    alpha          = np.arctan(tana_rock)
     waveinfo       = bw.BattjesGroenendijk(Hm0, h, slope_foreshore)
     H2_per         = waveinfo.get_Hp(0.02)
     Hs             = waveinfo.get_Hn(3) #NU BATTJES-GROENENDIJK VOOR Hs UIT Hmo. IS DAT WAT WE WILLEN?
@@ -135,7 +140,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     Hs = Hm0
     #H2_per = Hs*1.34
     #user_warning(f"Hs = Hm0, H2_per taken from W+B calculation due to inconsistencies in Battjes Groenendijk")
-    xi_s_0_2     = surf_similarity(tana, Hs, Tm_0_2, g)
+    xi_s_0_2     = surf_similarity(tana_rock, Hs, Tm_0_2, g)
 
     # Check validity of Van der Meer shallow
     vdm_shallow_validity = h/Hs
@@ -175,9 +180,10 @@ for Calculation_case in range(1, len(wave_data.index)+1):
 
     # Select grading    
     grading = get_class(Dn50_selected, rho_a, gradings_data)
-    #It looks like this will only go to the next class if M50>M50_max for a class. Is this the behaviour we want?
+    
 
-    unit = 'Xbloc' #Xbloc or Accropode II
+
+    # CALCULATE CONCRETE UNIT VOLUME FROM HERE
 
     # Open project specific parameters
     rho_c  = project_data.at['rho_c'      , 'Value'] #For rock armour. Needs adaptation for concrete
@@ -250,45 +256,70 @@ wave_data["Hudson_outcome"] = Hudson_outcome_list
 wave_data["Dn50_concrete"] = Dn50_concrete_list 
 wave_data["V_unit"] = V_unit_list 
 
-wave_data.to_excel("wave_data_intermediate_armour_stability.xlsx")
+# wave_data.to_excel("wave_data_intermediate_armour_stability.xlsx")
 
 logging.info("Finished intermediate section")
 
 results = []
 for location in wave_data.Location.unique():
-    location_data = []
+    location_summary = []
     
-    location_data.append(location)
-    max_LS = max(wave_data[wave_data["Location"] == location]["Dn50"].dropna())
-    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Structure"])[0])
-    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Limit State"])[0])
-    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Offshore bin"])[0])
-    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Hm0"])[0])
-    location_data.append(list(wave_data[wave_data["Dn50"] == max_LS]["Sd_allowed"])[0])
-    location_data.append(max_LS)
+    location_summary.append(location)
+    normative_case = max(wave_data[wave_data["Location"] == location]["Dn50"].dropna())
+    location_summary.append(list(wave_data[wave_data["Dn50"] == normative_case]["Structure"])[0])
+    location_summary.append(list(wave_data[wave_data["Dn50"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["Dn50"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(list(wave_data[wave_data["Dn50"] == normative_case]["Hm0"])[0])
+    location_summary.append(list(wave_data[wave_data["Dn50"] == normative_case]["Sd_allowed"])[0])
+    location_summary.append(normative_case)
 
-    max_LS = max(wave_data[wave_data["Location"] == location]["V_unit"].dropna())
-    location_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Limit State"])[0])
-    location_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Offshore bin"])[0])
-    location_data.append(list(wave_data[wave_data["V_unit"] == max_LS]["Hm0"])[0])
-    location_data.append(max_LS)
+    normative_case = max(wave_data[wave_data["Location"] == location]["V_unit"].dropna())
+    location_summary.append(list(wave_data[wave_data["V_unit"] == normative_case]["Limit State"])[0])
+    location_summary.append(list(wave_data[wave_data["V_unit"] == normative_case]["Offshore bin"])[0])
+    location_summary.append(list(wave_data[wave_data["V_unit"] == normative_case]["Hm0"])[0])
+    location_summary.append(normative_case)
 
-    results.append(location_data)
+    results.append(location_summary)
 
-print(results)
+#print(results)
 columns = [
     "Location",
     "Structure",
-    "Dn50_concrete, LS", 
-    "Dn50_concrete, Offshore bin", 
-    "Dn50_concrete, Hm0", 
-    "Dn50_concrete, Sd_allowed", 
-    "Dn50_concrete, max Dn50", 
+    "Dn50_rock, LS", 
+    "Dn50_rock, Offshore bin", 
+    "Dn50_rock, Hm0", 
+    "Dn50_rock, Sd_allowed", 
+    "Dn50_rock, max Dn50", 
     "V_unit, LS", 
     "V_unit, Offshore bin",
     "V_unit, Hm0",
     "V_unit, max V_unit",
 ]
 results_df = pd.DataFrame(results, columns=columns)
-results_df.to_excel("wave_data_design_armour_stability.xlsx")
+# results_df.to_excel("wave_data_design_armour_stability.xlsx")
 logging.info("Finished design section")
+
+
+#%% Write to single excel file per structure
+# If the file exists: load file and adapt tabs only. If the file does not exist: create it
+
+if path.exists(output_file):
+    writer = pd.ExcelWriter(output_file, 
+                            engine = 'openpyxl',
+                            mode = 'a',
+                            if_sheet_exists = 'replace')
+else: 
+    writer = pd.ExcelWriter(output_file, 
+                            engine = 'openpyxl',
+                            mode = 'w')
+
+wave_data.to_excel(writer, 
+                    sheet_name = 'armour_sta_intermediate', 
+                    index = False)
+results_df.to_excel(writer, sheet_name = 'armour_sta_summary', index = False)
+
+#writer.save()
+writer.close()
+
+
+print('Done')
