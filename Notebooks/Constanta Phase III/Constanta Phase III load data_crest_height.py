@@ -1,5 +1,5 @@
 #%% Define input and output files
-
+project_parameters = "project_specific_input.xlsx"
 input_file = "first_test_data_phase_III.xlsx"
 output_file = 'An1_first_test_results.xlsx'
 
@@ -17,12 +17,13 @@ from development_overtopping_DKA import eurotop2018_6_5, surf_similarity, gamma_
 
 
 # %% Import input data
-project_data = pd.read_excel(Path("./Input data/") / input_file,
-    index_col = 1,
-    sheet_name='Input_Project specific')
-requirements_data = pd.read_excel(Path("./Input data/") / input_file,
-    index_col = 0,
-    sheet_name='Input_requirements')
+project_data = pd.read_excel(Path("./Input data/") / project_parameters,
+                             index_col = 1,
+                             sheet_name='Input_Project specific')
+requirements_data = pd.read_excel(Path("./Input data/") / project_parameters,
+                                  index_col = 0,
+                                  sheet_name='Input_requirements')
+
 wave_data = pd.read_excel(Path("./Input data/") / input_file,
     # index_col = 0,
     sheet_name='input_hydrotechnical',
@@ -133,10 +134,10 @@ for armour_layer in ["Rock", "Xbloc"]:
             z_crest_list.append(z_crest)
 
         combined_string = armour_layer + "_" + access.split("Overtopping limit ")[1]        
-        wave_data["xi_m_min_1"] = xi_m_min_1_list        
         wave_data["beta"] = beta_list        
         wave_data["gamma_beta"] = gamma_beta_list
         wave_data[combined_string + "_q_allowed"] = q_allowed_list
+        wave_data[combined_string + "_xi_m_min_1"] = xi_m_min_1_list
         wave_data[combined_string + "_gamma_f"] = gamma_f_list
         wave_data[combined_string + "_Rc"] = Rc_list
         wave_data[combined_string + "_z_crest"] = z_crest_list

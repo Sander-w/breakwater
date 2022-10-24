@@ -32,12 +32,16 @@ from development_scour_DKA import(sumer_fredsoe,
 from breakwater.utils.exceptions import user_warning
 
 # %% Import input data
-project_data = pd.read_excel(Path("./Input data/") / input_file,
+project_data = pd.read_excel(Path("./Input data/") / project_parameters,
                              index_col = 1,
                              sheet_name='Input_Project specific')
-requirements_data = pd.read_excel(Path("./Input data/") / input_file,
+requirements_data = pd.read_excel(Path("./Input data/") / project_parameters,
                                   index_col = 0,
                                   sheet_name='Input_requirements')
+gradings_data = pd.read_excel(Path("./Input data/") / project_parameters, 
+                                      sheet_name='input_rock_gradings',
+                                      index_col = 0,
+                                      skiprows = 2)
 
 wave_data = pd.read_excel(Path("./Input data/") / input_file,
                           index_col = 0,
@@ -57,10 +61,6 @@ concrete_element_data = pd.read_excel(Path("./Input data/") / input_file,
                                       sheet_name='Input_concrete_elements',
                                       index_col = 0,
                                       skiprows = 1)
-gradings_data = pd.read_excel(Path("./Input data/") / input_file,
-                                      sheet_name='input_rock_gradings',
-                                      index_col = 0,
-                                      skiprows = 2)
 
 # %% CALCULATE TOE STABILITY
 [].insert
@@ -98,6 +98,7 @@ for Calculation_case in range(1, len(wave_data.index)+1):
 
     # Open structure specific parameters
     z_bed           = cross_section_data.at[Cross_section_id, 'z_bed']
+    slope_foreshore = cross_section_data.at[Cross_section_id, 'slope_foreshore']
 
     # Get allowed Sd for the location and calculation case
     LS          = wave_data.at[Calculation_case, 'Limit State']
@@ -106,6 +107,10 @@ for Calculation_case in range(1, len(wave_data.index)+1):
     # Intermediate parameters
     h               = wl-z_bed
     Delta          = (rho_a-rho_w)/rho_w
+    waveinfo       = bw.BattjesGroenendijk(Hm0, h, slope_foreshore)
+    H2_per         = waveinfo.get_Hp(0.02)
+    Hs             = waveinfo.get_Hn(3) #NU BATTJES-GROENENDIJK VOOR Hs UIT Hmo. IS DAT WAT WE WILLEN?
+ 
 
     #TEMPORARY FIX TO BE IN LINE WITH PHASE II
     Hs = Hm0
