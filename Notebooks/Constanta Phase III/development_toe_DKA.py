@@ -10,6 +10,7 @@ ADAPTED FROM breakwater.rubble2D.py
 from breakwater.core.toe import toe_stability
 from development_material_DKA import get_class, get_Dn50
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 #%% Input some data for testing purposes
@@ -55,7 +56,8 @@ import matplotlib.pyplot as plt
 #                                       Nod)    
 #     Dn50_toe_computed_log.append(Dn50_toe_computed)
     
-    
+    # if np.isnan(Dn50_toe_computed):
+    #     Dn50_toe_computed = 0.01
 #     # check for convergence
 #     if Dn50_toe_computed - Dn50_toe_temp < 0 or counter > 50:
 #         # value has converged, so break loop
